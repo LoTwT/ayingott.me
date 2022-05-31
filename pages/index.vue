@@ -1,14 +1,8 @@
+<script setup lang="ts">
+const { data } = useFetch("/api/home")
+const status = useStatus()
+</script>
+
 <template>
-  <div>
-    <Logos mb-6 />
-    <Suspense>
-      <PageView />
-      <template #fallback>
-        <div op50 italic>
-          <span animate-pulse>Loading...</span>
-        </div>
-      </template>
-    </Suspense>
-    <InputEntry />
-  </div>
+  <div text-10>{{ data }} {{ status }}</div>
 </template>

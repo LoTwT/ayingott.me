@@ -12,10 +12,11 @@ useHead({
 </script>
 
 <template>
-  <main class="py-20 px-10 text-center">
-    <NuxtPage />
-    <Footer />
-  </main>
+  <div w-full h-full text-center flex justify-center items-center>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
 
 <style>
