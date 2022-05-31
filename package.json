@@ -1,0 +1,44 @@
+{
+  "name": "ayingott.me",
+  "packageManager": "pnpm@7.1.7",
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "start": "node .output/server/index.mjs",
+    "prettier": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LoTwT/ayingott.me.git"
+  },
+  "author": "LoTwT <709937065@qq.com>",
+  "bugs": {
+    "url": "https://github.com/LoTwT/ayingott.me/issues"
+  },
+  "homepage": "https://github.com/LoTwT/ayingott.me#readme",
+  "dependencies": {
+    "pinia": "^2.0.14"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.1.5",
+    "@iconify-json/twemoji": "^1.1.4",
+    "@nuxtjs/color-mode": "^3.0.3",
+    "@pinia/nuxt": "^0.1.9",
+    "@unocss/nuxt": "^0.37.0",
+    "@vueuse/nuxt": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.3",
+    "nuxt": "^3.0.0-rc.3",
+    "pnpm": "^7.1.7",
+    "prettier": "^2.6.2",
+    "typescript": "^4.7.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,md,vue}": [
+      "prettier --write"
+    ]
+  }
+}
