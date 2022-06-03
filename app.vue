@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: "Nuxt3 starter",
+  title: "ayingott",
   link: [
     {
       rel: "icon",
-      type: "image/png",
-      href: "/nuxt.png",
+      type: "image/jpg",
+      href: "/mea.jpg",
     },
   ],
 })
