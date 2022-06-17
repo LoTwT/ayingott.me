@@ -13,6 +13,8 @@ useHead({
 
 <template>
   <div w-full h-full text-center flex justify-center items-center>
+    <DarkToggle absolute right-4 top-4 text-2xl />
+
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
