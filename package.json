@@ -1,46 +1,50 @@
 {
-  "name": "ayingott.me",
-  "packageManager": "pnpm@7.2.1",
+  "name": "pkg-name",
+  "packageManager": "pnpm@7.12.2",
   "scripts": {
-    "dev": "nuxi dev",
+    "dev": "nuxi dev -o -p 3333",
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
     "start": "node .output/server/index.mjs",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "simple-git-hooks",
+    "up": "taze latest -I",
+    "nuxi:up": "nuxi upgrade --force"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LoTwT/ayingott.me.git"
+    "url": "git+https://github.com/LoTwT/pkg-name.git"
   },
   "author": "LoTwT <709937065@qq.com>",
   "bugs": {
-    "url": "https://github.com/LoTwT/ayingott.me/issues"
+    "url": "https://github.com/LoTwT/pkg-name/issues"
   },
-  "homepage": "https://github.com/LoTwT/ayingott.me#readme",
+  "homepage": "https://github.com/LoTwT/pkg-name#readme",
   "dependencies": {
-    "@vueuse/motion": "2.0.0-beta.18",
-    "pinia": "^2.0.14"
+    "pinia": "^2.0.22"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.1.5",
-    "@iconify-json/twemoji": "^1.1.4",
-    "@nuxt/kit": "3.0.0-rc.4",
-    "@nuxtjs/color-mode": "^3.1.4",
-    "@pinia/nuxt": "^0.1.9",
-    "@unocss/nuxt": "^0.39.0",
-    "@vueuse/nuxt": "^8.6.0",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.1",
-    "nuxt": "^3.0.0-rc.4",
-    "pnpm": "^7.2.1",
-    "prettier": "^2.7.0",
-    "typescript": "^4.7.3"
+    "@iconify-json/carbon": "^1.1.8",
+    "@iconify-json/twemoji": "^1.1.5",
+    "@nuxtjs/color-mode": "^3.1.6",
+    "@pinia/nuxt": "^0.4.2",
+    "@unocss/nuxt": "^0.45.22",
+    "@vueuse/nuxt": "^9.2.0",
+    "lint-staged": "^13.0.3",
+    "nuxt": "3.0.0-rc.11",
+    "pnpm": "^7.12.2",
+    "prettier": "^2.7.1",
+    "simple-git-hooks": "^2.8.0",
+    "taze": "^0.8.1",
+    "typescript": "^4.8.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts,json,md,vue}": [
-      "prettier --write"
+    "*": [
+      "prettier --write --ignore-unknown"
     ]
   }
 }
