@@ -1,21 +1,20 @@
 <script setup lang="ts">
 useHead({
-  title: "Nuxt3 starter",
+  title: "ayingott",
   link: [
     {
       rel: "icon",
       type: "image/png",
-      href: "/nuxt.png",
+      href: "/mea.jpg",
     },
   ],
 })
 </script>
 
 <template>
-  <main class="py-20 px-10 text-center">
+  <NuxtLayout>
     <NuxtPage />
-    <Footer />
-  </main>
+  </NuxtLayout>
 </template>
 
 <style>
