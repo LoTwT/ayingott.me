@@ -1,12 +1,48 @@
 <script setup lang="ts"></script>
 
 <template>
-  <button class="custom-btn">
-    <span><slot /></span>
-  </button>
+  <div class="custom-btn-wrapper">
+    <button class="custom-btn">
+      <span class="btn-text"><slot /></span>
+    </button>
+  </div>
 </template>
 
 <style scoped>
+.custom-btn-wrapper {
+ position: relative;
+ z-index: 1;
+}
+
+.custom-btn-wrapper::before,
+.custom-btn-wrapper::after {
+ content: '';
+ position: absolute;
+ width: 3rem;
+ height: 3rem;
+ z-index: -5;
+ transition: 0.4s;
+}
+
+.custom-btn-wrapper::before {
+  top: 0rem;
+  left: 0rem;
+  --at-apply: border-l-3 border-t-3 border-solid border-black dark:border-white;
+}
+
+.custom-btn-wrapper::after {
+  right: 0rem;
+  bottom: 0rem;
+  --at-apply: border-r-3 border-b-3 border-solid border-black dark:border-white;
+}
+
+.custom-btn-wrapper:hover::before,
+.custom-btn-wrapper:hover::after {
+ width: 0;
+ height: 0;
+ border-width: 0;
+}
+
 .custom-btn {
   border: none;
   position: relative;
@@ -21,7 +57,6 @@
   mask-size: 100%;
   cursor: pointer;
   background-color: transparent;
-  transform: translateY(1rem);
 }
 
 .custom-btn:after {
