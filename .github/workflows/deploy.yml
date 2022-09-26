@@ -24,7 +24,7 @@ jobs:
         run: nci
 
       - name: Build
-        run: nr generate
+        run: nr build
 
       - name: Ssh-deploy
         uses: easingthemes/ssh-deploy@main
