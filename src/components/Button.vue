@@ -21,17 +21,19 @@ const { text } = defineProps<{ text: string }>()
 /* button styling */
 .button {
   --border-right: .25rem;
-  --text-stroke-color: rgba(255,255,255,0.6);
+  --text-stroke-color: rgba(107, 114, 128, 1);
   --animation-color: #37FF8B;
-  --fs-size: 2em;
-  letter-spacing: 0.25rem;
+  --fs-size: 4rem;
+  letter-spacing: 0.5rem;
   text-decoration: none;
   font-size: var(--fs-size);
   font-family: "Arial";
   position: relative;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: transparent;
+  font-weight: 700;
   -webkit-text-stroke: .0625rem var(--text-stroke-color);
+
 }
 /* this is the text, when you hover on button */
 .hover-text {
