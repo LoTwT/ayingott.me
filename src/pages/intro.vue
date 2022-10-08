@@ -7,11 +7,14 @@
         Hi!
       </div>
       <div text-6 pt-8>
-        <div>I'm Ayingott, you can also call me LoTwT.</div>
+        <div>I'm Lo, or you can also call me Ayingott.</div>
+        <br>
+
+        <div>An ordinary front-end developer.</div>
         <br>
 
         <div>
-          I'm just an ordinary developer interested in JavaScript / TypeScript.
+          I can't do anything...
         </div>
         <br>
 
@@ -24,8 +27,6 @@
 
         <div>Mail me at <span border-b-1>l709937065@gmail.com</span> .</div>
         <br>
-
-        <div>Hope and looking for a remote job.</div>
       </div>
     </div>
 
