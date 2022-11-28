@@ -1,6 +1,6 @@
 <script setup>
 useHead({
-  title: "Vitesse Nuxt 3",
+  title: "Lo",
   link: [
     {
       rel: "icon",

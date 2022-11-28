@@ -1,9 +1,6 @@
 <template>
-  <main class="py-20 px-10 text-center">
+  <main p-10 pb-0 text-center h-full flex flex-col justify-between>
     <slot />
     <Footer />
-    <div class="mt-5 mx-auto text-center opacity-25 text-sm">
-      [Default Layout]
-    </div>
   </main>
 </template>
