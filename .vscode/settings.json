@@ -4,13 +4,12 @@
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": "locales",
   "i18n-ally.sortKeys": true,
-  "prettier.enable": true,
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll": true
   },
   "files.associations": {
     "*.css": "postcss"
   },
-  "editor.formatOnSave": false,
   "svg.preview.background": "editor"
 }
