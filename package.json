@@ -1,40 +1,38 @@
 {
   "private": true,
-  "packageManager": "pnpm@7.17.1",
   "scripts": {
-    "build": "nuxi build",
-    "dev": "nuxi dev -o",
-    "start": "node .output/server/index.mjs",
-    "lint": "prettier -c .",
-    "prettier": "prettier --write .",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "nuxi prepare",
-    "generate": "nuxi generate",
+    "build": "npm run build:ssg && npm run rss",
+    "build:spa": "valaxy build",
+    "build:ssg": "valaxy build --ssg",
+    "dev": "valaxy",
+    "rss": "valaxy rss",
+    "serve": "vite preview",
     "prepare": "simple-git-hooks",
-    "up": "taze latest -I"
+    "up": "taze latest -I",
+    "lint": "eslint .",
+    "prettier": "prettier --write ."
+  },
+  "dependencies": {
+    "valaxy": "0.14.53",
+    "valaxy-theme-yun": "0.14.53"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.1.11",
-    "@iconify-json/twemoji": "^1.1.6",
-    "@nuxtjs/color-mode": "^3.2.0",
-    "@pinia/nuxt": "^0.4.6",
-    "@unocss/nuxt": "^0.46.5",
-    "@vueuse/nuxt": "^9.6.0",
-    "lint-staged": "^13.0.4",
-    "nuxt": "^3.0.0",
-    "pinia": "^2.0.27",
-    "pnpm": "^7.17.1",
-    "prettier": "^2.8.0",
-    "simple-git-hooks": "^2.8.1",
-    "taze": "^0.8.4",
-    "typescript": "^4.9.3"
+    "@ayingott/eslint-config": "^0.2.7",
+    "eslint": "^8.47.0",
+    "lint-staged": "^14.0.0",
+    "pnpm": "^8.6.12",
+    "prettier": "^3.0.2",
+    "simple-git-hooks": "^2.9.0",
+    "taze": "^0.11.2",
+    "typescript": "^5.1.6"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*": [
-      "prettier --write --ignore-unknown"
-    ]
+    "*": "eslint --fix"
+  },
+  "eslintConfig": {
+    "extends": "@ayingott/eslint-config"
   }
 }
