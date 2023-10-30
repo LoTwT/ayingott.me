@@ -1,38 +1,41 @@
 {
+  "name": "ayingott.me",
+  "version": "0.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
-    "build": "npm run build:ssg && npm run rss",
-    "build:spa": "valaxy build",
-    "build:ssg": "valaxy build --ssg",
-    "dev": "valaxy",
-    "rss": "valaxy rss",
-    "serve": "vite preview",
-    "prepare": "simple-git-hooks",
-    "up": "taze latest -I",
+    "build": "vue-tsc && vite build",
+    "dev": "vite",
     "lint": "eslint .",
-    "prettier": "prettier --write ."
+    "prepare": "simple-git-hooks",
+    "prettier": "prettier --write .",
+    "preview": "vite preview",
+    "up": "taze latest -I"
   },
   "dependencies": {
-    "valaxy": "0.14.53",
-    "valaxy-theme-yun": "0.14.53"
+    "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@ayingott/eslint-config": "^0.2.7",
-    "eslint": "^8.47.0",
-    "lint-staged": "^14.0.0",
-    "pnpm": "^8.6.12",
-    "prettier": "^3.0.2",
+    "@ayingott/eslint-config": "^0.7.3",
+    "@ayingott/prettier-config": "^0.1.2",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.52.0",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3",
     "simple-git-hooks": "^2.9.0",
-    "taze": "^0.11.2",
-    "typescript": "^5.1.6"
+    "taze": "^0.12.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.5",
+    "vue-tsc": "^1.8.5"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*": [
+      "eslint --fix",
+      "prettier --write --ignore-unknown"
+    ]
   },
-  "eslintConfig": {
-    "extends": "@ayingott/eslint-config"
-  }
+  "prettier": "@ayingott/prettier-config"
 }

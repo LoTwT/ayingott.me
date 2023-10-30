@@ -1,51 +1,18 @@
-# create-valaxy
+# Vue 3 + TypeScript + Vite
 
-Example: [valaxy.site](https://valaxy.site)
+This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## Usage
+## Recommended IDE Setup
 
-```bash
-# install
-npm i
-# or pnpm i
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-# start
-npm run dev
-# or pnpm dev
-```
+## Type Support For `.vue` Imports in TS
 
-See `http://localhost:4859/`, have fun!
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
-### Config
+If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
-Modify `valaxy.config.ts` to custom your blog.
-
-English & Chinese Docs is coming!
-
-> Wait a minute.
-
-### Docker
-
-```bash
-docker build . -t your-valaxy-blog-name:latest
-```
-
-## Structure
-
-In most cases, you only need to work in the `pages` folder.
-
-### Main folders
-
-- `pages`: your all pages
-  - `posts`: write your posts here, will be counted as posts
-- `styles`: override theme styles, `index.scss`/`vars.csss`/`index.css` will be loaded automatically
-- `components`: custom your vue components (will be loaded automatically)
-- `layouts`: custom layouts (use it by `layout: xxx` in md)
-- `locales`: custom i18n
-
-### Other
-
-- `.vscode`: recommend some useful plugins & settings, you can preview icon/i18n/class...
-- `.github`: GitHub Actions to auto build & deploy to GitHub Pages
-- `netlify.toml`: for [netlify](https://www.netlify.com/)
-- `vercel.json`: for [vercel](https://vercel.com/)
+1. Disable the built-in TypeScript Extension
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
