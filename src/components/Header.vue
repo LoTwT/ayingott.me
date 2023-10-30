@@ -3,5 +3,7 @@
 <template>
   <header>
     <LangSwitch />
+    <Github />
+    <Mode />
   </header>
 </template>
