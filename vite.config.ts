@@ -19,10 +19,16 @@ export default defineConfig({
     }),
     VueComponents({
       extensions: ["vue", "md"],
-      dirs: ["src/components", "content"],
+      dirs: ["src/components", "content", "src/layouts"],
     }),
     AutoImport({
-      imports: ["vue", "vue-router", "@vueuse/head"],
+      imports: [
+        "vue",
+        "vue-router",
+        "vue-i18n",
+        "@vueuse/head",
+        "@vueuse/core",
+      ],
     }),
   ],
 })

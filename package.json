@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@unhead/vue": "^1.8.1",
+    "@vueuse/core": "^10.5.0",
     "@vueuse/head": "^2.0.0",
     "unplugin-vue-markdown": "^0.24.3",
     "vue": "^3.3.4",
+    "vue-i18n": "^9.6.2",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

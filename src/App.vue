@@ -1,3 +1,6 @@
 <template>
-  <RouterView />
+  <Header />
+  <Layouts>
+    <RouterView />
+  </Layouts>
 </template>
