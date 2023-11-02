@@ -19,8 +19,10 @@ export default defineConfig({
       headEnabled: true,
     }),
     VueComponents({
+      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
       extensions: ["vue", "md"],
-      dirs: ["src/components", "content", "src/layouts"],
+      dirs: ["src/components", "content"],
+      directoryAsNamespace: true,
     }),
     AutoImport({
       imports: [
