@@ -1,33 +1,23 @@
 {
   "name": "ayingott.me",
   "type": "module",
-  "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "build": "vitepress build",
+    "dev": "vitepress dev",
     "lint": "eslint .",
-    "postinstall": "nuxt prepare",
     "prepare": "simple-git-hooks",
     "prettier": "prettier --write .",
-    "preview": "nuxt preview",
     "up": "taze latest -I"
-  },
-  "dependencies": {
-    "@nuxt/content": "^2.9.0"
   },
   "devDependencies": {
     "@ayingott/eslint-config": "^0.7.4",
     "@ayingott/prettier-config": "^0.1.2",
-    "@nuxt/devtools": "latest",
     "eslint": "^8.54.0",
     "lint-staged": "^15.1.0",
-    "nuxt": "^3.8.1",
     "prettier": "^3.1.0",
     "simple-git-hooks": "^2.9.0",
     "taze": "^0.12.0",
-    "vue": "^3.3.8",
-    "vue-router": "^4.2.5"
+    "vitepress": "1.0.0-rc.29"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
