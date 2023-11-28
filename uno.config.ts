@@ -1,3 +1,4 @@
+import { resolve } from "node:path"
 import {
   defineConfig,
   presetAttributify,
@@ -11,6 +12,9 @@ import {
 import { presetDaisy } from "unocss-preset-daisy"
 
 export default defineConfig({
+  content: {
+    filesystem: [resolve(__dirname, "content/**/*.md")],
+  },
   shortcuts: [],
   presets: [
     presetUno(),

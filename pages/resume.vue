@@ -1,3 +1,11 @@
+<script setup lang="ts">
+const { data } = await useAsyncData("resume", () =>
+  queryContent("/resume").findOne(),
+)
+</script>
+
 <template>
-  <div>resume</div>
+  <div max-w-none prose prose-gray>
+    <ContentRenderer :value="data ?? {}" />
+  </div>
 </template>
