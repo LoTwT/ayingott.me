@@ -1,6 +1,6 @@
-# 曹宇杰 | 三年 | 前端工程师
+# 曹宇杰 | 三年 | 前端开发
 
-电话/微信: MTMyNjA4ODc4MjM= | 邮箱: l709937065@gmail.com | github: https://github.com/lotwt
+**电话/微信**: MTMyNjA4ODc4MjM= | **邮箱**: l709937065@gmail.com | **Github**: https://github.com/lotwt
 
 ## 教育经历
 
@@ -8,11 +8,11 @@
 
 ## 个人优势
 
-- 熟练掌握 React、Next，Vue、Nuxt 等框架及其生态
-- 熟练使用 TypeScript、JavaScript、CSS、HTML 等前端技术
-- 熟练使用 Vite、Tsup 等构建工具和 Vitest 测试框架
-- 熟悉常见的工程化配置
-- 熟练使用 Git
+- 熟悉 ES 语法，具有良好的编程规范
+- 熟练使用 TypeScript，了解其类型系统，可以使用泛型等特性实现简单的的类型元编程
+- 熟悉 React、Next.js 和 Vue、Nuxt 等框架及其生态
+- 熟悉 Node.js，可以使用 Node 进行简单的服务端开发以及 CLI 开发
+- 熟悉 Vite、Tsup 等构建工具和 Vitest、Jest 等测试框架
 
 ## 工作经历
 
@@ -42,28 +42,31 @@
 
 ### Paypal China Website 官网
 
-技术栈: TypeScript、Next ( Page Router )、GraphQL、Vitest
+技术栈: TypeScript、Next.js ( Page Router )、GraphQL、Sass、Vitest
 
 1. 依据 rebrand 设计，重构对应页面
-1. 项目迁移，升级 Next v13
-   - 取消使用定制化的 Next 的 Custom Server，使用高阶函数提供 Native Node API 能力
+1. 项目迁移，升级 Next.js v13
+   - 更换内部定制化 Next.js 的 Custom Server，使用高阶函数提供 Native Node API 能力
+   - 实现简易的中间件机制，改写原有 express-like 的中间件
+   - 结合 BFF、CDN 实现类 CMS 的动态内容服务
    - 将 Jest 替换为 Vitest，提高单测运行速度
+   - 为 i18n、配置文件、工具函数等提供良好的类型支持
    - 抹平版本升级过程中的破坏性更新
 
 ### 宜家米多 Single Solution
 
 用户可以快速设计搭配米多柜体，并使用 3D 引擎实时渲染，生成报价明细
 
-技术栈: TypeScript、React
+技术栈: TypeScript、React、Babylon.js
 
 1. 安装方式、landing page 详情、价格组件等的 UI 及接口联调
 1. 布局调整页替换柜体、移动柜体、重置柜体的前后端及 3D 联调
 
-### Microfocus 后台管理系统 4 期
+### MicroFocus 后台管理系统 4 期
 
-对 Microfocus 老管理系统的重构
+对 MicroFocus 老管理系统的重构
 
-技术栈: Vue2、Ant design Vue
+技术栈: Vue2、Ant Design Vue
 
 1. app servers 页面
 1. tools 的 Quality Insight、Project Planning and Tracking 页面
