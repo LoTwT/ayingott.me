@@ -5,7 +5,7 @@ const { data } = await useAsyncData("resume", () =>
 </script>
 
 <template>
-  <div max-w-none prose prose-gray>
+  <div max-w-none prose>
     <ContentRenderer :value="data ?? {}" />
   </div>
 </template>

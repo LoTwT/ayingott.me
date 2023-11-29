@@ -11,6 +11,8 @@ import {
 } from "unocss"
 import { presetDaisy } from "unocss-preset-daisy"
 
+export const AvailableThemes = ["light", "dark"]
+
 export default defineConfig({
   content: {
     filesystem: [resolve(__dirname, "content/**/*.md")],
@@ -20,7 +22,7 @@ export default defineConfig({
     presetUno(),
     presetAttributify(),
     presetIcons({
-      // scale: 1.2,
+      scale: 1.2,
     }),
     presetTypography(),
     presetWebFonts({
@@ -32,7 +34,7 @@ export default defineConfig({
     }),
     presetDaisy({
       styled: false,
-      themes: ["light", "dracula"],
+      themes: ["light", "dark"],
     }),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],

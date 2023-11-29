@@ -25,6 +25,9 @@ devDependencies:
   '@ayingott/prettier-config':
     specifier: ^0.1.2
     version: 0.1.2
+  '@iconify-json/carbon':
+    specifier: ^1.1.23
+    version: 1.1.23
   '@nuxt/devtools':
     specifier: ^1.0.3
     version: 1.0.3(nuxt@3.8.2)(vite@4.5.0)
@@ -942,6 +945,12 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.1:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
+
+  /@iconify-json/carbon@1.1.23:
+    resolution: {integrity: sha512-Ue+IRSxCBt28KEM7nf0XeMqedxhK9ku8KtTnb8H3TM+QOMMBG8VnralEH0RnV11gzrhAadoMeeeRQ9Oey8TqlQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
 
   /@iconify/types@2.0.0:
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}

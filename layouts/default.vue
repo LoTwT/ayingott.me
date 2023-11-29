@@ -1,3 +1,4 @@
 <template>
-  <div flex justify-center py-24><slot /></div>
+  <MyHeader />
+  <div flex justify-center py-16><slot /></div>
 </template>
