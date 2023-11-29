@@ -6,4 +6,9 @@ export default defineNuxtConfig({
     defaultLocale: "en",
   },
   css: ["@unocss/reset/tailwind.css"],
+  content: {
+    markdown: {
+      anchorLinks: false,
+    },
+  },
 })
