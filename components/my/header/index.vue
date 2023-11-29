@@ -1,17 +1,23 @@
 <script setup lang="ts"></script>
 
 <template>
-  <header
-    fixed
-    max-h-16
-    w-full
-    flex
-    items-center
-    justify-end
-    px-4
-    py-4
-    backdrop-blur-lg
-  >
+  <header class="my-bg" fixed w-full flex items-center justify-end px-4 py-4>
     <ThemeToggle />
   </header>
 </template>
+
+<style scoped>
+.my-bg {
+  background-color: hsl(var(--b1) / var(--un-bg-opacity, 1));
+}
+
+.my-bg::before {
+  --at-apply: absolute left-0 w-full h-8 bottom--8;
+
+  content: "";
+  background: linear-gradient(
+    hsl(var(--b1) / var(--un-bg-opacity, 1)),
+    transparent 70%
+  );
+}
+</style>
