@@ -1,9 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="my-bg" fixed w-full flex items-center justify-end px-4 py-4>
+  <header class="my-bg" fixed w-full flex items-center justify-end px-4 py-4>
     <ThemeToggle />
-  </div>
+  </header>
 </template>
 
 <style scoped>
