@@ -18,7 +18,7 @@
       <div>2021.8 - 至今</div>
     </div>
     <div>
-      Paypal China Website 官网前端开发、宜家米多 Single Solution 前端开发、Microfocus 后台管理系统4期的前端开发
+      Paypal China Website 官网前端开发、宜家米多 Single Solution 前端开发、Microfocus 后台管理系统 4 期的前端开发
     </div>
   </section>
   
@@ -47,7 +47,7 @@
    - 结合 BFF、CDN 实现类 CMS 的动态内容服务
    - 将 Jest 替换为 Vitest，提高单测运行速度
    - 为 i18n、配置文件、工具函数等提供良好的类型支持
-   - 抹平版本升级过程中的破坏性更新
+   - 抹平版本升级过程中其他相关依赖的破坏性更新
 
 ### 宜家米多 Single Solution
 

@@ -1,5 +1,9 @@
+<script setup lang="ts">
+const { data } = useAsyncData("resume", () => queryContent("/resume").findOne())
+</script>
+
 <template>
   <div max-w-none px-8 prose lg="max-w-80ch px-0">
-    <ContentDoc path="/resume" />
+    <ContentRenderer :value="data ?? {}" />
   </div>
 </template>
