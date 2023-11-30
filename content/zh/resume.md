@@ -8,7 +8,8 @@
 - 熟练使用 TypeScript，了解其类型系统，可以使用泛型等特性实现简单的的类型元编程
 - 熟悉 React、Next.js 和 Vue、Nuxt 等框架及其生态
 - 熟悉 Node.js，可以使用 Node 进行简单的服务端开发以及 CLI 开发
-- 熟悉 Vite、Tsup 等构建工具和 Vitest、Jest 等测试框架
+- 熟悉 Vite、Tsup 等构建工具
+- 熟悉 Vitest、Jest 等测试框架
 
 ## 工作经历
 
