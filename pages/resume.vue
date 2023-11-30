@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { data } = useAsyncData("resume", () => queryContent("/resume").findOne())
+const { data } = await useAsyncData("resume", () =>
+  queryContent("/resume").findOne(),
+)
 </script>
 
 <template>
