@@ -15,7 +15,7 @@
 
   <section>
     <div flex justify-between font-bold text-lg>
-      <div>上海昇迪凡科技术有限公司无锡分公司</div>
+      <div>Centific</div>
       <div>2021.8 - Present</div>
     </div>
     <div>
@@ -27,7 +27,7 @@
 
   <section>
     <div flex justify-between font-bold text-lg>
-      <div>无锡永中软件股份有限公司</div>
+      <div>YOZOSOFTCO.,LTD</div>
       <div>2020.9 - 2021.7</div>
     </div>
     <div>
