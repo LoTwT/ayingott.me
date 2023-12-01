@@ -1,7 +1,5 @@
 import { defineI18nConfig } from "#imports"
 
-const SUPPORT_LOCALES = ["zh", "en"]
-
 export default defineI18nConfig(async () => {
   const globs = import.meta.glob("./locales/*.json")
 
@@ -16,9 +14,9 @@ export default defineI18nConfig(async () => {
 
   return {
     legacy: false,
-    locale: "en",
-    fallbackLocale: "en",
-    availableLocales: SUPPORT_LOCALES,
+    locale: "zh",
+    fallbackLocale: "zh",
+    availableLocales: ["zh", "en"],
     messages,
   }
 })

@@ -14,7 +14,14 @@ export default defineNuxtConfig({
   modules: ["@nuxt/content", "@nuxtjs/i18n", "@vueuse/nuxt", "@unocss/nuxt"],
 
   i18n: {
-    defaultLocale: "en",
+    defaultLocale: "zh",
+    locales: ["zh", "en"],
+    strategy: "prefix_and_default",
+    detectBrowserLanguage: {
+      cookieKey: "ayingott_locale",
+      useCookie: true,
+      redirectOn: "root",
+    },
   },
 
   content: {
