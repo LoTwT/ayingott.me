@@ -1,17 +1,18 @@
 <script setup lang="ts">
 const theme = useTheme()
 
-const isLight = ref(theme.value === "light")
+const changeTheme = () =>
+  (theme.value = theme.value === "light" ? "dark" : "light")
 
-watch(isLight, (value) => {
-  theme.value = value ? "light" : "dark"
-})
+const isLight = computed(() => theme.value === "light")
 </script>
 
 <template>
-  <label class="swap" cursor-pointer>
-    <input v-model="isLight" type="checkbox" />
-    <div class="swap-off" i-carbon-light h-8 w-8 />
-    <div class="swap-on" i-carbon-moon h-8 w-8 />
-  </label>
+  <div
+    h-8
+    w-8
+    cursor-pointer
+    :class="[isLight ? 'i-carbon-moon' : 'i-carbon-light']"
+    @click="changeTheme"
+  />
 </template>
