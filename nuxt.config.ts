@@ -18,9 +18,12 @@ export default defineNuxtConfig({
     locales: ["zh", "en"],
     strategy: "prefix_and_default",
     detectBrowserLanguage: {
-      cookieKey: "ayingott_locale",
+      alwaysRedirect: true,
       useCookie: true,
       redirectOn: "root",
+      fallbackLocale: "zh",
+      cookieKey: "ayingott_locale",
+      cookieCrossOrigin: true,
     },
   },
 
