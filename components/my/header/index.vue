@@ -1,9 +1,8 @@
-<script setup lang="ts"></script>
-
 <template>
   <header class="my-bg" fixed w-full flex items-center justify-end px-4 py-4>
     <LocaleChange mr-2 />
-    <ThemeToggle />
+    <ThemeToggle mr-2 />
+    <SocialGithub />
   </header>
 </template>
 

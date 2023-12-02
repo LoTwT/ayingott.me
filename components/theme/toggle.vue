@@ -9,8 +9,7 @@ const isLight = computed(() => theme.value === "light")
 
 <template>
   <div
-    h-8
-    w-8
+    header-icon
     cursor-pointer
     :class="[isLight ? 'i-carbon-moon' : 'i-carbon-light']"
     @click="changeTheme"

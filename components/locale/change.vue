@@ -19,6 +19,6 @@ const icon = computed(() => `i-icon-park-outline-${iconsMap[locale.value]}`)
 
 <template>
   <button flex items-center justify-center @click="changeLocale">
-    <div :class="[icon]" h-8 w-8 />
+    <div :class="[icon]" header-icon />
   </button>
 </template>

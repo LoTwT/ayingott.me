@@ -18,7 +18,7 @@ export default defineConfig({
     filesystem: [resolve(__dirname, "content/**/*.md")],
   },
   safelist: ["i-icon-park-outline-chinese", "i-icon-park-outline-english"],
-  shortcuts: [],
+  shortcuts: [["header-icon", "w-8 h-8"]],
   presets: [
     presetUno(),
     presetAttributify(),
