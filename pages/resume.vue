@@ -1,6 +1,12 @@
 <script setup lang="ts">
-const { data } = await useAsyncData("resume", () =>
-  queryContent("/resume").findOne(),
+const { locale } = useI18n()
+
+const { data } = await useAsyncData(
+  "resume",
+  () => queryContent(`/${locale.value}/resume`).findOne(),
+  {
+    watch: [locale],
+  },
 )
 </script>
 
