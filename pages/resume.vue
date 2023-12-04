@@ -11,7 +11,7 @@ const { data } = await useAsyncData(
 </script>
 
 <template>
-  <div max-w-none px-8 prose lg="max-w-80ch px-0">
+  <div max-w-none px-8 prose lg="max-w-85ch px-0">
     <ContentRenderer :value="data ?? {}" />
   </div>
 </template>

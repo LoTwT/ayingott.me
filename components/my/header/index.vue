@@ -12,7 +12,7 @@
 }
 
 .my-bg::before {
-  --at-apply: absolute left-0 w-full h-8 bottom--8;
+  --uno: absolute left-0 w-full h-8 bottom--8;
 
   content: "";
   background: linear-gradient(

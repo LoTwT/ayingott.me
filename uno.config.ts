@@ -27,11 +27,9 @@ export default defineConfig({
     }),
     presetTypography(),
     presetWebFonts({
-      // fonts: {
-      //   sans: "DM Sans",
-      //   serif: "DM Serif Display",
-      //   mono: "DM Mono",
-      // },
+      fonts: {
+        sans: ["Noto Sans SC"],
+      },
     }),
     presetDaisy({
       styled: false,

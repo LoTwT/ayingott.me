@@ -9,3 +9,9 @@ const { locale } = useI18n()
     <NuxtPage />
   </NuxtLayout>
 </template>
+
+<style>
+body {
+  --uno: font-sans;
+}
+</style>
