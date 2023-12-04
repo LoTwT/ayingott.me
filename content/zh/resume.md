@@ -1,6 +1,6 @@
-# 曹宇杰 | 三年 | 前端开发
+# 简历 | 三年 | 前端开发
 
-**电话/微信**: MTMyNjA4ODc4MjM= | **邮箱**: l709937065@gmail.com | **Github**: https://github.com/lotwt
+**姓名**: 5pu55a6H5p2w | **邮箱**: l709937065@gmail.com | **Github**: https://github.com/lotwt
 
 ## 个人优势
 

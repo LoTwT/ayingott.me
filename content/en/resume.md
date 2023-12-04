@@ -1,6 +1,6 @@
-## Yujie Cao | Three Years | Front-end Developer
+## Resume | Three Years | Front-end Developer
 
-**Phone/WeChat**: MTMyNjA4ODc4MjM= | **Email**: l709937065@gmail.com | **Github**: https://github.com/lotwt
+**Name**: WXVqaWUgQ2Fv | **Email**: l709937065@gmail.com | **Github**: https://github.com/lotwt
 
 ## Personal Strengths
 
