@@ -28,7 +28,7 @@ export default defineConfig({
     presetTypography(),
     presetWebFonts({
       fonts: {
-        sans: ["Noto Sans SC"],
+        sans: ["Noto Sans SC:400,500,600,700"],
       },
     }),
     presetDaisy({
