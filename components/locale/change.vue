@@ -4,9 +4,11 @@ const router = useRouter()
 const { locale } = useI18n()
 const localePath = useLocalePath()
 
+const route = useRoute()
+
 const changeLocale = () => {
   locale.value = locale.value === "en" ? "zh" : "en"
-  router.push(localePath("resume"))
+  router.push(localePath(route.path))
 }
 
 const iconsMap: Record<string, string> = {
