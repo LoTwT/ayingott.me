@@ -61,7 +61,7 @@
 
 ### MicroFocus 后台管理系统 4 期
 
-对 MicroFocus 老管理系统的重构
+对 MicroFocus 原有后台管理系统的重构
 
 技术栈: Vue2、Ant Design Vue
 
