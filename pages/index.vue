@@ -22,7 +22,7 @@ definePageMeta({
         <div i-line-md-github-loop size-6 />
       </NuxtLink>
 
-      <NuxtLink to="mailto:l709937065@gmail.com">
+      <NuxtLink to="mailto:hi@ayingott.me">
         <div i-line-md-email size-6 />
       </NuxtLink>
     </div>
