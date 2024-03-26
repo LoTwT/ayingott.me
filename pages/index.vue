@@ -6,14 +6,14 @@ definePageMeta({
 
 <template>
   <div>
-    <div text-xl transition-opacity>
+    <div text-2xl transition-opacity>
       <span>Hi, I'm </span>
       <span font-bold>Lo</span>
       <span>, also</span>
       <span font-bold> Ayingott</span>
       <span>.</span>
     </div>
-    <div mt-2 flex items-center justify-center gap-4>
+    <div mt-8 flex items-center justify-center gap-4>
       <NuxtLink to="https://twitter.com/ayingott319" target="_blank">
         <div i-line-md-twitter-x size-6 />
       </NuxtLink>
