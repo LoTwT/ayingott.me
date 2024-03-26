@@ -1,0 +1,28 @@
+body {
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.8);
+  --uno: font-sans;
+}
+
+.dark-mode body {
+  background-color: #1b1b1f;
+  color: #ebf4f1;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+.dark-mode::view-transition-old(root) {
+  z-index: 9999;
+}
+.dark-mode::view-transition-new(root) {
+  z-index: 1;
+}
