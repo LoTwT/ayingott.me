@@ -7,6 +7,13 @@ useHead({
       content: "Ayingott's website",
     },
   ],
+  link: [
+    {
+      rel: "icon",
+      type: "image/svg+xml",
+      href: () => (usePreferredDark().value ? "/lo-white.svg" : "/lo.svg"),
+    },
+  ],
 })
 
 useSeoMeta({
@@ -14,7 +21,7 @@ useSeoMeta({
   ogTitle: "Ayingott's website",
   description: "Ayingott's website",
   ogDescription: "Ayingott's website",
-  // ogImage: "",
+  ogImage: "/lo.svg",
 })
 </script>
 

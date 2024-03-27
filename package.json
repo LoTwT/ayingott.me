@@ -24,6 +24,7 @@
     "@iconify-json/line-md": "^1.1.37",
     "@nuxtjs/color-mode": "^3.3.3",
     "@unocss/nuxt": "^0.58.6",
+    "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "eslint": "^8.57.0",
     "lint-staged": "^15.2.2",
