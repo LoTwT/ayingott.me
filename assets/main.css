@@ -1,12 +1,15 @@
 body {
-  background-color: #fff;
-  color: rgba(0, 0, 0, 0.8);
+  --ayingott-bg-color: #fff;
+  --ayingott-color: rgba(0, 0, 0, 0.8);
+
+  background-color: var(--ayingott-bg-color);
+  color: var(--ayingott-color);
   --uno: font-sans;
 }
 
 .dark-mode body {
-  background-color: #1b1b1f;
-  color: #ebf4f1;
+  --ayingott-bg-color: #1b1b1f;
+  --ayingott-color: #ebf4f1;
 }
 
 ::view-transition-old(root),

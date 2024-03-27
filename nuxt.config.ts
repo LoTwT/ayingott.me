@@ -9,7 +9,7 @@ export default defineNuxtConfig({
 
   modules: ["@unocss/nuxt", "@vueuse/nuxt", "@nuxtjs/color-mode"],
 
-  css: ["@unocss/reset/tailwind.css", "~/styles/main.css"],
+  css: ["@unocss/reset/tailwind.css", "~/assets/main.css"],
 
   colorMode: {
     storageKey: "vueuse-color-scheme",
