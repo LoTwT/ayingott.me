@@ -71,7 +71,11 @@ function toggleDark(event: MouseEvent) {
 
 <template>
   <div cursor-pointer @click="toggleDark">
-    <div v-if="isDark" i-line-md-moon-filled-loop size-12 bg-yellow />
-    <div v-else i-line-md-sunny-filled-loop size-12 bg-orange />
+    <div
+      dark="i-line-md-moon-filled-loop bg-yellow"
+      class="size-12!"
+      i-line-md-sunny-filled-loop
+      bg-orange
+    />
   </div>
 </template>
