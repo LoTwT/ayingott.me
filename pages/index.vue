@@ -6,7 +6,14 @@ definePageMeta({
 
 <template>
   <div>
-    <div flex items-center text-2xl transition-opacity>
+    <div
+      flex
+      cursor-default
+      select-none
+      items-center
+      text-2xl
+      transition-opacity
+    >
       <span>Hi, I'm</span>
 
       <svg
@@ -23,6 +30,7 @@ definePageMeta({
       </svg>
 
       <span>, also</span>
+
       <svg
         ml-2
         w-40
