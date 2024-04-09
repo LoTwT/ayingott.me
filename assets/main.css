@@ -1,3 +1,10 @@
+#__nuxt {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   --ayingott-bg-color: #fff;
   --ayingott-color: rgba(0, 0, 0, 0.8);

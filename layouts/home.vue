@@ -3,7 +3,7 @@
     <Signature h-12 />
     <ThemeToggle />
   </header>
-  <main h-screen w-screen flex items-center justify-center>
+  <main flex flex-1 items-center justify-center>
     <slot />
   </main>
 </template>
