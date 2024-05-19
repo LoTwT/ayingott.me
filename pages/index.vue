@@ -47,7 +47,7 @@ definePageMeta({
       <span>.</span>
     </div>
     <div mt-8 flex items-center justify-center gap-4>
-      <NuxtLink to="https://twitter.com/ayingott319" target="_blank">
+      <NuxtLink to="https://x.com/ayingott_lo" target="_blank">
         <div
           i-line-md-twitter-x
           size-6
