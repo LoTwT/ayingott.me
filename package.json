@@ -2,7 +2,7 @@
   "name": "nuxt-app",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.12.2",
+  "packageManager": "pnpm@10.6.3",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev -o",
@@ -15,25 +15,35 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@unocss/reset": "^0.63.4",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "@unocss/reset": "^66.1.0-beta.5",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@ayingott/eslint-config": "^1.4.7",
-    "@ayingott/prettier-config": "^1.2.7",
-    "@iconify-json/line-md": "^1.2.2",
-    "@nuxtjs/color-mode": "^3.5.1",
-    "@unocss/nuxt": "^0.63.4",
-    "@vueuse/core": "^11.1.0",
-    "@vueuse/nuxt": "^11.1.0",
-    "eslint": "^9.13.0",
-    "lint-staged": "^15.2.10",
-    "nuxt": "^3.13.2",
-    "prettier": "^3.3.3",
+    "@ayingott/eslint-config": "^2.0.1",
+    "@ayingott/prettier-config": "^2.1.2",
+    "@iconify-json/line-md": "^1.2.5",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@unocss/eslint-plugin": "66.1.0-beta.5",
+    "@unocss/nuxt": "^66.1.0-beta.5",
+    "@vueuse/core": "^13.0.0",
+    "@vueuse/nuxt": "^13.0.0",
+    "eslint": "^9.22.0",
+    "lint-staged": "^15.5.0",
+    "nuxt": "^3.16.0",
+    "prettier": "^3.5.3",
     "simple-git-hooks": "^2.11.1",
-    "taze": "^0.17.2",
-    "unocss": "^0.63.4"
+    "taze": "^19.0.2",
+    "unocss": "^66.1.0-beta.5"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "simple-git-hooks"
+    ]
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
