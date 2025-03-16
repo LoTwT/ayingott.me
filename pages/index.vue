@@ -47,6 +47,16 @@ definePageMeta({
       <span>.</span>
     </div>
     <div mt-8 flex items-center justify-center gap-4>
+      <NuxtLink to="/resume.pdf" target="_blank">
+        <div
+          i-qlementine-icons-resume-16
+          size-6
+          transition-all
+          duration-200
+          hover:scale-120
+        />
+      </NuxtLink>
+
       <NuxtLink to="https://x.com/ayingott_lo" target="_blank">
         <div
           i-line-md-twitter-x

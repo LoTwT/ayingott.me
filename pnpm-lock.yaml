@@ -27,6 +27,9 @@ importers:
       '@iconify-json/line-md':
         specifier: ^1.2.5
         version: 1.2.5
+      '@iconify-json/qlementine-icons':
+        specifier: ^1.2.4
+        version: 1.2.4
       '@nuxtjs/color-mode':
         specifier: ^3.5.2
         version: 3.5.2(magicast@0.3.5)
@@ -524,6 +527,9 @@ packages:
 
   '@iconify-json/line-md@1.2.5':
     resolution: {integrity: sha512-6zFKhs6g++kFJLLi+ye5nPoHgjYh44yVLjua0tmbxH1HdImMQZ6rkRsPnBgxADY4bQWiapXBzfoiz7+UBXgtWg==}
+
+  '@iconify-json/qlementine-icons@1.2.4':
+    resolution: {integrity: sha512-wXiApcabvB/hTkJKf2zC5mqsOoabwBhb+SO3FUBZJBJfTVPoG9S+ucAck3nJ+AEChNmbS3VvwhGmSKP/5VbPzw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -5191,6 +5197,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.2': {}
 
   '@iconify-json/line-md@1.2.5':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/qlementine-icons@1.2.4':
     dependencies:
       '@iconify/types': 2.0.0
 
