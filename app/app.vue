@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const colorMode = useColorMode()
+const requestUrl = useRequestURL()
+
+const faviconHref = computed(() =>
+  colorMode.value === "dark" ? "/lo-white.svg" : "/lo.svg",
+)
+const ogImageUrl = computed(() =>
+  new URL("/lo.svg", requestUrl.origin).toString(),
+)
+
 useHead({
   title: "Ayingott",
   meta: [
@@ -11,7 +21,7 @@ useHead({
     {
       rel: "icon",
       type: "image/svg+xml",
-      href: () => (usePreferredDark().value ? "/lo-white.svg" : "/lo.svg"),
+      href: () => faviconHref.value,
     },
   ],
 })
@@ -21,7 +31,7 @@ useSeoMeta({
   ogTitle: "Ayingott's website",
   description: "Ayingott's website",
   ogDescription: "Ayingott's website",
-  ogImage: "/lo.svg",
+  ogImage: () => ogImageUrl.value,
 })
 </script>
 

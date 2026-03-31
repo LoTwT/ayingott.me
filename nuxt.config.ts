@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-10-22",
+  compatibilityDate: "2026-03-31",
 
   devtools: {
     enabled: true,
@@ -14,6 +14,8 @@ export default defineNuxtConfig({
   css: ["@unocss/reset/tailwind-compat.css", "~/assets/main.css"],
 
   colorMode: {
-    storageKey: "vueuse-color-scheme",
+    classSuffix: "-mode",
+    storage: "cookie",
+    storageKey: "ayin-theme",
   },
 })

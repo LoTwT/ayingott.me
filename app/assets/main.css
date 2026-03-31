@@ -1,0 +1,35 @@
+html,
+body,
+#__nuxt {
+  min-height: 100vh;
+}
+
+html {
+  --ayingott-bg-color: #fff;
+  --ayingott-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--ayingott-bg-color);
+  color-scheme: light;
+}
+
+body,
+#__nuxt {
+  background-color: var(--ayingott-bg-color);
+  color: var(--ayingott-color);
+}
+
+body {
+  margin: 0;
+  --uno: font-sans;
+}
+
+.dark-mode {
+  --ayingott-bg-color: #1b1b1f;
+  --ayingott-color: #ebf4f1;
+  color-scheme: dark;
+}
+
+#__nuxt {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
