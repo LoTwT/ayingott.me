@@ -32,9 +32,17 @@
 
 ## AY-D-05 技术栈
 
-**决策**：保留 Nuxt + Vue 生态，V1 升级到最新版（TL 评估）。**atomic CSS 引擎当前实现为 UnoCSS，最终由 #design-system 路径决策（I/II/III）+ Tailwind v4 vs UnoCSS RFC 决定**；III 双轨情况下当下保留 UnoCSS。
+**决策**：保留 Nuxt + Vue 生态，V1 升级到最新版（TL 评估）。**atomic CSS 引擎 = Tailwind CSS v4**（由 #design-system DS-D-02 锁定，2026-05-06）。
+
+**当前 ayingott.me 状态**：仍使用 UnoCSS；待 `@ayingott/theme` V0 ready 后通过独立 PR 完成 "UnoCSS → Tailwind v4 + 接入 @ayingott/theme" 迁移。S1 升级 PR 不在 V1 强制范围；具体迁移时机由 #design-system V0 发布节奏决定。
+
 **可逆性**：中（迁移成本中等）
-**来源**：lo-user 17:02 答 "nuxt 和 vue 生态后续需要先升级到最新" + lo-user 21:47 在 #design-system 触发 Tailwind/UnoCSS 对比 RFC
+
+**来源**：
+
+- lo-user 17:02 答 "nuxt 和 vue 生态后续需要先升级到最新"
+- lo-user 21:47 在 #design-system 触发 Tailwind/UnoCSS 对比 RFC
+- lo-user 2026-05-06 00:05 在 #design-system 锁定 DS-D-02 = Tailwind CSS v4
 
 ## AY-D-06 部署
 
