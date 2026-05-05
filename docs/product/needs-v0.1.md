@@ -201,6 +201,7 @@
 ### 11.2 技术 + 产品交叉类（待触发时拍）
 
 - **OQ-05** **Nuxt 渲染模式**：纯 SSG / SSR / hybrid？影响 Cloudflare 适配 + 后续表单/RSS/API 方案。**S1 启动前必须拍**
+  - TL 初步验证（2026-05-05）：当前 Nuxt 4.4.2 可 `pnpm generate` 为 static output；V1 倾向 SSG，正式拍板在 S1 评估（与 design-system 路径、`@nuxt/content` 页面结构、Cloudflare 配置一起验完后定）
 - **OQ-06** **博客内容管线**：与 OQ-02 紧耦合，已锁 `@nuxt/content` v3 → S2 设计前定具体目录结构
 
 ### 11.3 S3 实施前必须拍
