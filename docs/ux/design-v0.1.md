@@ -25,13 +25,13 @@ The document is intentionally page-focused. Token names, hex values, and dark-mo
 
 V1 ships five page templates and the routing / IA shell that holds them.
 
-| Page | Path | Purpose | Required for V1 |
-| --- | --- | --- | --- |
-| Home | `/` | Landing, signature block, contact strip, optional now and resume entries | Yes |
-| About | `/about` | Long-form bio (B+A mixed: tagline + interests + working notes) | Yes |
-| Blog list | `/blog` | Reverse chronological post index, container only — V1 may ship empty | Yes |
-| Blog detail | `/blog/[slug]` | Single post template, prose + meta + share | Yes |
-| Not found | catch-all | Soft 404 with one-line copy + return-home link | Yes |
+| Page        | Path           | Purpose                                                                  | Required for V1 |
+| ----------- | -------------- | ------------------------------------------------------------------------ | --------------- |
+| Home        | `/`            | Landing, signature block, contact strip, optional now and resume entries | Yes             |
+| About       | `/about`       | Long-form bio (B+A mixed: tagline + interests + working notes)           | Yes             |
+| Blog list   | `/blog`        | Reverse chronological post index, container only — V1 may ship empty     | Yes             |
+| Blog detail | `/blog/[slug]` | Single post template, prose + meta + share                               | Yes             |
+| Not found   | catch-all      | Soft 404 with one-line copy + return-home link                           | Yes             |
 
 Out of scope for V1 per `needs-v0.1.md` §3.3:
 
@@ -78,14 +78,14 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 
 ### 3.1 URL structure
 
-| Path | Page | Notes |
-| --- | --- | --- |
-| `/` | Home | `app/pages/index.vue` |
-| `/about` | About | `app/pages/about.vue` |
-| `/blog` | Blog list | `app/pages/blog/index.vue` |
-| `/blog/[slug]` | Blog detail | `app/pages/blog/[slug].vue`, `@nuxt/content` v3 |
-| `/feed.xml` | RSS / Atom | Optional, deferred until first post ships |
-| catch-all | 404 | `app/error.vue` (Nuxt error page convention) |
+| Path           | Page        | Notes                                                                                                                       |
+| -------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `/`            | Home        | `app/pages/index.vue`                                                                                                       |
+| `/about`       | About       | `app/pages/about.vue`                                                                                                       |
+| `/blog`        | Blog list   | `app/pages/blog/index.vue`                                                                                                  |
+| `/blog/[slug]` | Blog detail | `app/pages/blog/[slug].vue` (S2 page template + prose styles); `@nuxt/content` v3 wiring lands in S3 per `needs-v0.1.md` §6 |
+| `/feed.xml`    | RSS / Atom  | Optional, deferred until first post ships                                                                                   |
+| catch-all      | 404         | `app/error.vue` (Nuxt error page convention)                                                                                |
 
 `/now`, `/uses`, and resume PDF download are explicitly deferred to V1.x. The home page may carry a one-line "now" entry or a single-button resume entry when AY-D-08 conditions are met.
 
@@ -108,10 +108,10 @@ Every page sets:
 - `<link rel="canonical">` → canonical absolute URL.
 - Author meta → `lo-user` only. No real-name PII per AY-D-07.
 
-Blog posts additionally publish:
+Blog posts additionally publish (Open Graph article properties; use `property=`, not `name=`):
 
-- `<meta name="article:published_time">` from frontmatter `date`.
-- `<meta name="article:tag">` per frontmatter `tags` (V1.x scope; V1 may omit).
+- `<meta property="article:published_time">` from frontmatter `date`.
+- `<meta property="article:tag">` per frontmatter `tags` (V1.x scope; V1 may omit).
 
 ### 3.4 Routing rules
 
@@ -299,7 +299,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 ### 4.4 Blog detail (`/blog/[slug]`)
 
-**Purpose**: single post. `@nuxt/content` v3 renders Markdown / MDC into the prose layout.
+**Purpose**: single post. The page template + prose styles defined in this section are S2 deliverables. The Markdown / MDC rendering pipeline (`@nuxt/content` v3) is wired in S3 per `docs/product/needs-v0.1.md` §6, and the V1 blog list may ship empty until that wiring is complete. UX intent is: S2 builds the visual shell against a stub fixture; S3 swaps the stub for `@nuxt/content` without changing the visual contract.
 
 **Block layout**:
 
@@ -384,7 +384,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 - "404" digit uses `var(--font-display)` weight 700 at `var(--text-7xl)`, color `var(--accent-primary)`, `letter-spacing: var(--tracking-tighter)`.
 - Subtitle copy: a single sentence, sentence case, no apology language. Example: "The page is not there. The home page is."
-- Button: primary surface, `var(--accent-primary)` background, `var(--text-inverse)` text, `var(--radius-control)`, `var(--font-display)` weight 500, `--transition-interactive`. Min-height `--touch-target-min` (44px).
+- Button: primary surface, `var(--accent-primary)` background, `var(--accent-contrast)` text (deep-lavender near-black, AA-verified at 5.50:1 light / 8.56:1 dark), `var(--radius-control)`, `var(--font-display)` weight 500, `--transition-interactive`. Min-height `--touch-target-min` (44px). White / `--text-inverse` is **not** an option on `--accent-primary` in V0 — that pair fails AA at 2.86:1.
 - Vertical centering uses CSS grid; the centered block sits at roughly 30% from the top, leaving headroom for the header.
 
 **Decoration**:
@@ -434,7 +434,7 @@ Per AY-D-19, V1 ships at WCAG AA. QA validates all four items below before any S
 - Secondary text on canvas: `var(--text-secondary)` on `var(--surface-canvas)` ≥ 4.5:1.
 - Muted text on canvas: `var(--text-muted)` on `var(--surface-canvas)` ≥ 4.5:1 for body sizes; ≥ 3:1 acceptable for large display sizes (≥ 18pt regular or ≥ 14pt bold).
 - Accent text: `var(--text-accent)` (= `--color-lavender-700` light, `--color-lavender-300` dark) on `var(--surface-canvas)` ≥ 4.5:1.
-- Inverse text on accent button: `var(--text-inverse)` on `var(--accent-primary)` ≥ 4.5:1.
+- Accent button text: `var(--accent-contrast)` on `var(--accent-primary)` ≥ 4.5:1 (verified 5.50:1 light, 8.56:1 dark). The pair `var(--text-inverse)` on `var(--accent-primary)` is **not** AA-compliant (2.86:1 light) and is explicitly forbidden for V1 buttons.
 
 QA evidence: capture light + dark screenshots, run a contrast checker against the rendered hex pairs, attach the report to the PR.
 
@@ -505,8 +505,10 @@ Page composition (top to bottom):
    chips. Pill-shaped, mono labels, low contrast.
 4. Optional now line: one short sentence about what the author is
    currently working on. Muted text.
-5. Optional resume button: single primary button, lavender background,
-   warm cream text. Only renders when a PDF link is configured.
+5. Optional resume button: single primary button, lavender background
+   (V0 `--accent-primary`), deep-lavender near-black text (V0
+   `--accent-contrast`). White text on lavender fails contrast in V0
+   and must not be used. Only renders when a PDF link is configured.
 6. Contact strip: four inline icons (GitHub, X, email, RSS), 24×24,
    monoline, currentColor.
 7. Footer: copyright, license line, site identity. Mono, xs, muted.
@@ -635,8 +637,10 @@ Page composition:
   - "Not found." in display 2xl primary text.
   - One subtitle sentence in body base muted: "The page is not there.
     The home page is."
-  - One primary button: "Back to home". Lavender background, warm cream
-    text, small radius, min-height 44px.
+  - One primary button: "Back to home". Lavender background, deep-
+    lavender near-black text (V0 `--accent-contrast`). Do not use
+    white or warm cream text on the lavender background — that pair
+    fails WCAG AA in V0. Small radius, min-height 44px.
 - Standard footer.
 
 Constraints:
@@ -715,12 +719,12 @@ When any of the above triggers, file an RFC under `docs/product/decisions/` (ayi
 
 ## Appendix A · Reference matrix
 
-| Need | Source |
-| --- | --- |
-| Token names and hex | `@ayingott/theme` `packages/theme/src/` (pinned `f8c1d8e`) |
-| Token usage rules | `skills/ayingott-design-system/SKILL.md` |
-| Voice and tone | `skills/ayingott-design-system/references/voice-examples.md` |
-| Live token reference | https://design.ayingott.me |
-| Product requirements | `docs/product/needs-v0.1.md` v0.1 |
-| Product decisions | `docs/product/decisions/index.md` (AY-D-01~19) |
-| Site agent guide | `CLAUDE.md` / `AGENTS.md` |
+| Need                 | Source                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| Token names and hex  | `@ayingott/theme` `packages/theme/src/` (pinned `f8c1d8e`)   |
+| Token usage rules    | `skills/ayingott-design-system/SKILL.md`                     |
+| Voice and tone       | `skills/ayingott-design-system/references/voice-examples.md` |
+| Live token reference | https://design.ayingott.me                                   |
+| Product requirements | `docs/product/needs-v0.1.md` v0.1                            |
+| Product decisions    | `docs/product/decisions/index.md` (AY-D-01~19)               |
+| Site agent guide     | `CLAUDE.md` / `AGENTS.md`                                    |
