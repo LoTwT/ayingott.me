@@ -92,16 +92,16 @@
 
 ## 5. 边界与约束
 
-| 项           | 决策                                                                                                                                      |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **语言**     | 中文优先；V1 仅中文，EN 视后续访客需求再加                                                                                                |
-| **时间线**   | 长期演进，无 deadline；小步快跑                                                                                                           |
-| **技术栈**   | 保留 Nuxt + Vue 生态，V1 升级到最新版（TL 评估）；atomic CSS 引擎当前实现 = UnoCSS，最终由 #design-system 路径 + Tailwind/UnoCSS RFC 决定 |
-| **部署**     | 当前 Cloudflare；必要时迁 Railway（TL 评估，目前不主动换）                                                                                |
-| **数据存储** | V1 默认静态；V1.x 视具体功能（如评论）再定                                                                                                |
-| **隐私**     | 脱敏一切真实信息（真实姓名 / 现居 / 邮箱 / 简历 PII / 其他社媒）；公开 = GitHub / X / 邮箱                                                |
-| **可访问性** | WCAG AA 起步（详见 §10）                                                                                                                  |
-| **响应式**   | 桌面优先 + 移动可读；不强求 mobile-first                                                                                                  |
+| 项           | 决策                                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| **语言**     | 中文优先；V1 仅中文，EN 视后续访客需求再加                                                                            |
+| **时间线**   | 长期演进，无 deadline；小步快跑                                                                                       |
+| **技术栈**   | 保留 Nuxt + Vue 生态；S1 迁移为 Tailwind CSS v4 + `@ayingott/theme`（design-system V0 commit `f8c1d8e`），UnoCSS 移除 |
+| **部署**     | 当前 Cloudflare；必要时迁 Railway（TL 评估，目前不主动换）                                                            |
+| **数据存储** | V1 默认静态；V1.x 视具体功能（如评论）再定                                                                            |
+| **隐私**     | 脱敏一切真实信息（真实姓名 / 现居 / 邮箱 / 简历 PII / 其他社媒）；公开 = GitHub / X / 邮箱                            |
+| **可访问性** | WCAG AA 起步（详见 §10）                                                                                              |
+| **响应式**   | 桌面优先 + 移动可读；不强求 mobile-first                                                                              |
 
 ---
 
@@ -109,9 +109,16 @@
 
 ### S1：技术栈升级（独立 PR · 不改视觉）
 
-- Nuxt 3.x → 最新（含 Vue / Nitro / UnoCSS / color-mode 同步升级）
+- Nuxt / Vue / Nitro / color-mode 保持最新兼容线
+- UnoCSS → Tailwind CSS v4
+- 接入 `@ayingott/theme`：
+  ```css
+  @import "tailwindcss";
+  @import "@ayingott/theme/fonts.css";
+  @import "@ayingott/theme";
+  ```
+- 保持静态生成与 Cloudflare 部署路径
 - ESLint / TS config 跟进
-- 部署平台保持 Cloudflare，确认新栈兼容性
 - 验收：现有签名页面在新栈下视觉与功能完全一致
 
 ### S2：设计语言重构 + UI（独立 PR · 不加新功能）
@@ -136,27 +143,27 @@
 
 详见 [`docs/product/decisions/`](./decisions/)。
 
-| ID          | 决策                                                                                                       |
-| ----------- | ---------------------------------------------------------------------------------------------------------- |
-| **AY-D-01** | V1 定位 = 个人自留地（博客 + 作品集 + 数字花园 + 兴趣），非求职                                            |
-| **AY-D-02** | 受众优先级 = 自己 > 同行 > 一般访客                                                                        |
-| **AY-D-03** | V1 Must = bio + 博客容器 + 联系方式；其他 nice-to-have 按需加                                              |
-| **AY-D-04** | 中文优先；EN 后续看访客需求                                                                                |
-| **AY-D-05** | 保留 Nuxt + Vue 生态升级到最新版；atomic CSS 引擎（UnoCSS / Tailwind v4）由 #design-system 路径 + RFC 决定 |
-| **AY-D-06** | Cloudflare 当前，Railway 备选；不主动换                                                                    |
-| **AY-D-07** | 隐私：公开 = GitHub / X / 邮箱；其他真实信息全部脱敏                                                       |
-| **AY-D-08** | 简历 = 按钮 + 条件渲染 + CDN PDF（link 由 lo-user 维护）                                                   |
-| **AY-D-09** | 阶段化 = S1 升级 → S2 设计 → S3 功能；小步快跑                                                             |
-| **AY-D-10** | 视觉 = 简洁 + 点线面 + slock.ai 参考；UX 拍最终方向                                                        |
-| **AY-D-11** | X handle 公开形式 = A 显式 @handle，呈现样式符合 UX 新设计语言                                             |
-| **AY-D-12** | 博客内容来源 + 管线 = `@nuxt/content` v3（本地 MD/MDC，frontmatter / RSS / TOC / SEO 内置）                |
-| **AY-D-13** | 文章 license = CC-BY 4.0                                                                                   |
-| **AY-D-14** | Bio 写法 = B + A 混合（极简 tagline 主入口 + 兴趣段落，不写传统传记式 bio）                                |
-| **AY-D-15** | 博客 taxonomy = V1 纯时间线，V1.x 视需要加 tags                                                            |
-| **AY-D-16** | 联系入口 = 别名（如 hi@ayingott.me）+ JS encode 反爬                                                       |
-| **AY-D-17** | 字体选型 → 交由 UX 在设计系统阶段定（候选基线：system-ui 中文 + Space Grotesk + Space Mono）               |
-| **AY-D-18** | 隐私静态文件脱敏流程 = lo-user 上传前发出来全员检查 + UX 出 checklist + QA 复核                            |
-| **AY-D-19** | a11y 验收 = WCAG AA 对比度 / 焦点可见 / 暗色不退化 / 触屏热区 ≥44×44                                       |
+| ID          | 决策                                                                                         |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| **AY-D-01** | V1 定位 = 个人自留地（博客 + 作品集 + 数字花园 + 兴趣），非求职                              |
+| **AY-D-02** | 受众优先级 = 自己 > 同行 > 一般访客                                                          |
+| **AY-D-03** | V1 Must = bio + 博客容器 + 联系方式；其他 nice-to-have 按需加                                |
+| **AY-D-04** | 中文优先；EN 后续看访客需求                                                                  |
+| **AY-D-05** | 保留 Nuxt + Vue 生态；S1 迁移到 Tailwind CSS v4 + `@ayingott/theme`，UnoCSS 移除             |
+| **AY-D-06** | Cloudflare 当前，Railway 备选；不主动换                                                      |
+| **AY-D-07** | 隐私：公开 = GitHub / X / 邮箱；其他真实信息全部脱敏                                         |
+| **AY-D-08** | 简历 = 按钮 + 条件渲染 + CDN PDF（link 由 lo-user 维护）                                     |
+| **AY-D-09** | 阶段化 = S1 升级 → S2 设计 → S3 功能；小步快跑                                               |
+| **AY-D-10** | 视觉 = 简洁 + 点线面 + slock.ai 参考；UX 拍最终方向                                          |
+| **AY-D-11** | X handle 公开形式 = A 显式 @handle，呈现样式符合 UX 新设计语言                               |
+| **AY-D-12** | 博客内容来源 + 管线 = `@nuxt/content` v3（本地 MD/MDC，frontmatter / RSS / TOC / SEO 内置）  |
+| **AY-D-13** | 文章 license = CC-BY 4.0                                                                     |
+| **AY-D-14** | Bio 写法 = B + A 混合（极简 tagline 主入口 + 兴趣段落，不写传统传记式 bio）                  |
+| **AY-D-15** | 博客 taxonomy = V1 纯时间线，V1.x 视需要加 tags                                              |
+| **AY-D-16** | 联系入口 = 别名（如 hi@ayingott.me）+ JS encode 反爬                                         |
+| **AY-D-17** | 字体选型 → 交由 UX 在设计系统阶段定（候选基线：system-ui 中文 + Space Grotesk + Space Mono） |
+| **AY-D-18** | 隐私静态文件脱敏流程 = lo-user 上传前发出来全员检查 + UX 出 checklist + QA 复核              |
+| **AY-D-19** | a11y 验收 = WCAG AA 对比度 / 焦点可见 / 暗色不退化 / 触屏热区 ≥44×44                         |
 
 ---
 
@@ -170,9 +177,9 @@
 
 ## 9. 待 TL 评估的项（S1 / S2 触发时）
 
-- Nuxt 最新版升级路径 + breaking change 影响面
-- UnoCSS / color-mode / @nuxtjs ecosystem 兼容性
-- Cloudflare Pages vs Railway 部署对比（是否需要迁移？）
+- Nuxt 最新兼容线 + breaking change 影响面
+- Tailwind CSS v4 / `@ayingott/theme` / color-mode / @nuxtjs ecosystem 兼容性
+- Cloudflare Pages / Workers Static Assets vs Railway 部署对比（仅在 runtime 需求出现时迁移）
 - 数据存储方案（V1.x 启用评论 / 表单时回头评估）
 
 ## 10. QA 验收口径锚点
@@ -200,8 +207,7 @@
 
 ### 11.2 技术 + 产品交叉类（待触发时拍）
 
-- **OQ-05** **Nuxt 渲染模式**：纯 SSG / SSR / hybrid？影响 Cloudflare 适配 + 后续表单/RSS/API 方案。**S1 启动前必须拍**
-  - TL 初步验证（2026-05-05）：当前 Nuxt 4.4.2 可 `pnpm generate` 为 static output；V1 倾向 SSG，正式拍板在 S1 评估（与 design-system 路径、`@nuxt/content` 页面结构、Cloudflare 配置一起验完后定）
+- **OQ-05** **Nuxt 渲染模式**：✅ S1 锁定纯 SSG / static output（`pnpm generate` → `.output/public`）+ Cloudflare。SSR / hybrid 仅在未来评论、表单、私有 API 或其他 runtime 需求出现时重新评估。
 - **OQ-06** **博客内容管线**：与 OQ-02 紧耦合，已锁 `@nuxt/content` v3 → S2 设计前定具体目录结构
 
 ### 11.3 S3 实施前必须拍
@@ -213,14 +219,14 @@
 
 ## 附录 A · 现状速读（2026-05-05）
 
-| 维度   | 现状                                                          |
-| ------ | ------------------------------------------------------------- |
-| 仓库   | https://github.com/lotwt/ayingott.me                          |
-| 框架   | Nuxt 3 + Vue + UnoCSS + @nuxtjs/color-mode                    |
-| 页面   | `app/pages/index.vue`（签名 SVG "Hi, I'm 龙" + theme toggle） |
-| 组件   | `app/components/signature.vue` + `theme/`                     |
-| Server | `server/` 空目录                                              |
-| 部署   | https://ayingott-me.vercel.app（生产 Cloudflare 待确认）      |
-| README | Nuxt 3 starter 模板，未自定义                                 |
+| 维度   | 现状                                                                    |
+| ------ | ----------------------------------------------------------------------- |
+| 仓库   | https://github.com/lotwt/ayingott.me                                    |
+| 框架   | Nuxt 4 + Vue + Tailwind CSS v4 + `@ayingott/theme` + @nuxtjs/color-mode |
+| 页面   | `app/pages/index.vue`（签名 SVG "Hi, I'm 龙" + theme toggle）           |
+| 组件   | `app/components/signature.vue` + `theme/`                               |
+| Server | `server/` 空目录                                                        |
+| 部署   | https://ayingott-me.vercel.app（生产 Cloudflare 待确认）                |
+| README | 已替换为项目说明 + S1 栈说明                                            |
 
 附录 B / C 由 UX + TL 在 S1 / S2 启动后补充。

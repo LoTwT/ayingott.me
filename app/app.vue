@@ -1,12 +1,15 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-const requestUrl = useRequestURL()
+const runtimeConfig = useRuntimeConfig()
 
-const faviconHref = computed(() =>
-  colorMode.value === "dark" ? "/lo-white.svg" : "/lo.svg",
+const isDark = computed(
+  () =>
+    colorMode.preference === "dark" ||
+    (colorMode.preference === "system" && colorMode.value === "dark"),
 )
+const faviconHref = computed(() => (isDark.value ? "/lo-white.svg" : "/lo.svg"))
 const ogImageUrl = computed(() =>
-  new URL("/lo.svg", requestUrl.origin).toString(),
+  new URL("/lo.svg", runtimeConfig.public.siteUrl).toString(),
 )
 
 useHead({

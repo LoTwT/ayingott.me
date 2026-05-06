@@ -1,75 +1,71 @@
-# Nuxt 3 Minimal Starter
+# ayingott.me
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Personal site for Ayingott. V1 is a long-lived personal space for bio, writing, selected work, and contact paths. It is not a hiring page, link-in-bio aggregator, or commercial brand site.
 
-## Setup
+Product requirements and decisions live in:
 
-Make sure to install the dependencies:
+- `docs/product/needs-v0.1.md`
+- `docs/product/decisions/index.md`
 
-```bash
-# npm
-npm install
+## Stack
 
-# pnpm
-pnpm install
+- Nuxt 4 + Vue 3
+- Tailwind CSS v4
+- `@ayingott/theme` from `LoTwT/design-system`
+- `@nuxtjs/color-mode` with a `.dark` class
+- Static generation for Cloudflare deployment
 
-# yarn
-yarn install
+Use Node 22.12.0 or newer. The repository pins this in `.node-version` to match the Nuxt 4 engine requirement and Cloudflare build target.
 
-# bun
-bun install
+The design-system package is pinned to the V0 closure commit:
+
+```json
+{
+  "@ayingott/theme": "github:LoTwT/design-system#f8c1d8e&path:packages/theme"
+}
 ```
 
-## Development Server
+## Development
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
+Install dependencies:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+pnpm install --frozen-lockfile
 ```
 
-Locally preview production build:
+Start the dev server:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+pnpm dev
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Run checks:
+
+```bash
+pnpm lint
+pnpm generate
+```
+
+## Styling
+
+The app CSS entry is `app/assets/main.css`.
+
+```css
+@import "tailwindcss";
+@import "@ayingott/theme/fonts.css";
+@import "@ayingott/theme";
+```
+
+`@ayingott/theme` provides Tailwind v4 tokens, semantic CSS variables, focus/touch utilities, base styles, and opt-in Space Grotesk / Space Mono webfonts.
+
+S1 keeps the existing signature page visually stable while replacing UnoCSS with Tailwind v4. S2 will handle the visual redesign and page expansion.
+
+## Deployment
+
+The current target is static output on Cloudflare:
+
+```bash
+pnpm generate
+```
+
+The generated site is written to `.output/public`.

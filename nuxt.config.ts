@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite"
+
 export default defineNuxtConfig({
   compatibilityDate: "2026-03-31",
 
@@ -9,13 +11,23 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@unocss/nuxt", "@vueuse/nuxt", "@nuxtjs/color-mode"],
+  modules: ["@vueuse/nuxt", "@nuxtjs/color-mode"],
 
-  css: ["@unocss/reset/tailwind-compat.css", "~/assets/main.css"],
+  css: ["~/assets/main.css"],
 
   colorMode: {
-    classSuffix: "-mode",
+    classSuffix: "",
     storage: "cookie",
     storageKey: "ayin-theme",
+  },
+
+  runtimeConfig: {
+    public: {
+      siteUrl: "https://ayingott.me",
+    },
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
   },
 })
