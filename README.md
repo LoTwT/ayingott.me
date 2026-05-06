@@ -15,6 +15,8 @@ Product requirements and decisions live in:
 - `@nuxtjs/color-mode` with a `.dark` class
 - Static generation for Cloudflare deployment
 
+Use Node 22.12.0 or newer. The repository pins this in `.node-version` to match the Nuxt 4 engine requirement and Cloudflare build target.
+
 The design-system package is pinned to the V0 closure commit:
 
 ```json

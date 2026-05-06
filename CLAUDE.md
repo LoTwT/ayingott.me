@@ -23,6 +23,8 @@ Do not implement the S2 redesign, blog IA, new page shells, `@nuxt/content`, res
 - `@nuxtjs/color-mode` with `.dark` class output
 - Static generation for Cloudflare deployment
 
+Use Node 22.12.0 or newer; `.node-version` pins the project runtime baseline for local work and Cloudflare builds.
+
 ## Styling Rules
 
 The CSS entry is `app/assets/main.css`:
