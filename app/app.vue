@@ -1,25 +1,11 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
-const runtimeConfig = useRuntimeConfig()
-
-const isDark = computed(
-  () =>
-    colorMode.preference === "dark" ||
-    (colorMode.preference === "system" && colorMode.value === "dark"),
-)
+const { isDark } = useAppliedColorMode()
 const faviconHref = computed(() => (isDark.value ? "/lo-white.svg" : "/lo.svg"))
-const ogImageUrl = computed(() =>
-  new URL("/lo.svg", runtimeConfig.public.siteUrl).toString(),
-)
 
 useHead({
-  title: "Ayingott",
-  meta: [
-    {
-      name: "description",
-      content: "Ayingott's website",
-    },
-  ],
+  htmlAttrs: {
+    lang: "zh-CN",
+  },
   link: [
     {
       rel: "icon",
@@ -27,14 +13,6 @@ useHead({
       href: () => faviconHref.value,
     },
   ],
-})
-
-useSeoMeta({
-  title: "Ayingott",
-  ogTitle: "Ayingott's website",
-  description: "Ayingott's website",
-  ogDescription: "Ayingott's website",
-  ogImage: () => ogImageUrl.value,
 })
 </script>
 

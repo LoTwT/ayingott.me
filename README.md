@@ -58,7 +58,7 @@ The app CSS entry is `app/assets/main.css`.
 
 `@ayingott/theme` provides Tailwind v4 tokens, semantic CSS variables, focus/touch utilities, base styles, and opt-in Space Grotesk / Space Mono webfonts.
 
-S1 keeps the existing signature page visually stable while replacing UnoCSS with Tailwind v4. S2 will handle the visual redesign and page expansion.
+S2 implements the locked `design-v0.1` page system: home, about, blog list, blog detail route, 404, `.dark` mode, and the contact-strip resume affordance. Blog content ingestion with `@nuxt/content`, RSS, and real resume PDF configuration remain follow-up work.
 
 ## Deployment
 

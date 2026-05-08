@@ -1,12 +1,7 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
-const isDark = computed(
-  () =>
-    colorMode.preference === "dark" ||
-    (colorMode.preference === "system" && colorMode.value === "dark"),
-)
+const { colorMode, isDark } = useAppliedColorMode()
 const toggleLabel = computed(() =>
-  isDark.value ? "Switch to light mode" : "Switch to dark mode",
+  isDark.value ? "切换到亮色模式" : "切换到暗色模式",
 )
 
 function toggleDark() {
@@ -18,15 +13,16 @@ function toggleDark() {
 <template>
   <button
     type="button"
-    class="cursor-pointer border-0 bg-transparent p-0"
+    class="theme-toggle touch-target focus-ring"
     :aria-label="toggleLabel"
+    :aria-pressed="isDark"
     :title="toggleLabel"
     @click="toggleDark"
   >
     <svg
       v-if="isDark"
       aria-hidden="true"
-      class="size-12 text-yellow-400"
+      class="theme-toggle__icon"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -111,7 +107,7 @@ function toggleDark() {
     <svg
       v-else
       aria-hidden="true"
-      class="size-12 text-orange-500"
+      class="theme-toggle__icon"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -184,3 +180,27 @@ function toggleDark() {
     </svg>
   </button>
 </template>
+
+<style scoped>
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.theme-toggle:hover {
+  color: var(--text-accent);
+  transform: scale(1.05);
+}
+
+.theme-toggle__icon {
+  width: 24px;
+  height: 24px;
+}
+</style>
