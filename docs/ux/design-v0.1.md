@@ -76,35 +76,35 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 
 V1 uses **Chinese chrome with English personal copy**. The site `<html>` element declares `lang="zh-CN"`. Personal copy (display name, tagline, About subtitle, About bio) stays English as a deliberate brand choice — the author's handle and self-description are presented as a continuous identity surface, not as bilingual UI strings. Everything else the visitor reads as system-level affordance (nav, button labels, empty states, error pages, accessibility labels, page titles) is Chinese.
 
-| Surface                                                 | Locked text (V1)                                                                      |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `<html lang>`                                           | `zh-CN`                                                                               |
-| Display name (rendered as the only English in the hero) | `Lo`                                                                                  |
-| Hero greeting                                           | `Hi, I'm Lo.`                                                                         |
-| Home tagline                                            | `A developer`                                                                         |
-| About subtitle                                          | `Lo · Developer`                                                                      |
-| About bio (single paragraph, final)                     | `A person.`                                                                           |
-| Nav · Home link                                         | `首页`                                                                                |
-| Nav · About link                                        | `关于`                                                                                |
-| Nav · Blog list link                                    | `文章` (note: the third nav slot uses `文章`, not `博客`; the URL path stays `/blog`) |
-| Blog list page title (display 4xl)                      | `文章`                                                                                |
-| Blog detail back crumb                                  | `← 文章`                                                                              |
-| Blog list empty state heading (display 2xl)             | `还没有文章。`                                                                        |
-| Blog list empty state explanation                       | `第一篇文章准备好后会出现在这里。订阅暂未开放，V1 阶段偶尔来看就行。`                 |
-| 404 heading                                             | `未找到。`                                                                            |
-| 404 subtitle                                            | `这个页面不在。首页还在。`                                                            |
-| 404 button                                              | `回到首页`                                                                            |
-| Theme toggle aria-label, switching to dark              | `切换到暗色模式`                                                                      |
-| Theme toggle aria-label, switching to light             | `切换到亮色模式`                                                                      |
-| Resume contact icon aria-label                          | `简历 PDF`                                                                            |
-| GitHub / X / RSS contact icon aria-label                | `GitHub` / `X` / `RSS` (brand names, not translated)                                  |
-| Email contact icon aria-label                           | `邮箱`                                                                                |
-| Footer                                                  | `© 2026 Lo · MIT 许可证`                                                              |
-| `<title>` Home                                          | `ayingott.me`                                                                         |
-| `<title>` About                                         | `关于 · ayingott.me`                                                                  |
-| `<title>` Blog list                                     | `文章 · ayingott.me`                                                                  |
-| `<title>` Blog detail                                   | `<post title> · ayingott.me`                                                          |
-| `<title>` 404                                           | `未找到 · ayingott.me`                                                                |
+| Surface                                     | Locked text (V1)                                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `<html lang>`                               | `zh-CN`                                                                               |
+| Display name                                | `Lo`                                                                                  |
+| Hero greeting                               | `Hi, I'm Lo.`                                                                         |
+| Home tagline                                | `A developer`                                                                         |
+| About subtitle                              | `Lo · Developer`                                                                      |
+| About bio (single paragraph, final)         | `A person.`                                                                           |
+| Nav · Home link                             | `首页`                                                                                |
+| Nav · About link                            | `关于`                                                                                |
+| Nav · Blog list link                        | `文章` (note: the third nav slot uses `文章`, not `博客`; the URL path stays `/blog`) |
+| Blog list page title (display 4xl)          | `文章`                                                                                |
+| Blog detail back crumb                      | `← 文章`                                                                              |
+| Blog list empty state heading (display 2xl) | `还没有文章。`                                                                        |
+| Blog list empty state explanation           | `第一篇文章准备好后会出现在这里。订阅暂未开放，V1 阶段偶尔来看就行。`                 |
+| 404 heading                                 | `未找到。`                                                                            |
+| 404 subtitle                                | `这个页面不在。首页还在。`                                                            |
+| 404 button                                  | `回到首页`                                                                            |
+| Theme toggle aria-label, switching to dark  | `切换到暗色模式`                                                                      |
+| Theme toggle aria-label, switching to light | `切换到亮色模式`                                                                      |
+| Resume contact icon aria-label              | `简历 PDF`                                                                            |
+| GitHub / X / RSS contact icon aria-label    | `GitHub` / `X` / `RSS` (brand names, not translated)                                  |
+| Email contact icon aria-label               | `邮箱`                                                                                |
+| Footer                                      | `© 2026 Lo · MIT 许可证`                                                              |
+| `<title>` Home                              | `ayingott.me`                                                                         |
+| `<title>` About                             | `关于 · ayingott.me`                                                                  |
+| `<title>` Blog list                         | `文章 · ayingott.me`                                                                  |
+| `<title>` Blog detail                       | `<post title> · ayingott.me`                                                          |
+| `<title>` 404                               | `未找到 · ayingott.me`                                                                |
 
 The URL path stays `/blog` and `/blog/[slug]` for technical reasons — see §3.4 routing rules. Display label and URL surface are intentionally decoupled: the visitor reads `文章` in the nav and the address bar shows `/blog/`.
 
@@ -182,7 +182,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                                     │
 │  Signature block                                    │
 │  ┌─────────────────────────────────────────────┐    │
-│  │ "Hi, I'm 龙."  (display, 5xl)               │    │
+│  │ "Hi, I'm Lo."  (display, 5xl)               │    │
 │  │ tagline (body, lg, --text-secondary)        │    │
 │  └─────────────────────────────────────────────┘    │
 │                                                     │
@@ -209,7 +209,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 - Signature display copy uses `var(--font-display)` weight 700 at `var(--text-5xl)` with paired line-height. Letter-spacing `var(--tracking-tight)`.
 - Tagline uses `var(--font-sans)` at `var(--text-lg)`, color `var(--text-secondary)`.
 - Interests chips: `var(--surface-subtle)` background, `var(--text-primary)` text, 1px `var(--border-subtle)` border, `var(--radius-full)` corners, `var(--spacing-2)` block padding, `var(--spacing-3)` inline padding, `var(--font-mono)` at `var(--text-xs)` with `var(--tracking-wide)`.
-- Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="Resume PDF"` on the resume icon).
+- Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="简历 PDF"` on the resume icon).
 - Footer text: `var(--text-muted)` at `var(--text-xs)`.
 
 **Behavior**:
@@ -240,7 +240,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                             │
 │  Page title block                           │
 │  ┌──────────────────────────────────────┐   │
-│  │ "About"  (display, 4xl)              │   │
+│  │ "关于"  (display, 4xl)               │   │
 │  │ subtitle (mono, sm, --text-muted)    │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
