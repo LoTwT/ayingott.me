@@ -15,6 +15,14 @@ export default defineNuxtConfig({
 
   css: ["~/assets/main.css"],
 
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "zh-CN",
+      },
+    },
+  },
+
   colorMode: {
     classSuffix: "",
     storage: "cookie",
@@ -24,6 +32,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: "https://ayingott.me",
+      nowText: "",
+      resumePdfUrl: "",
     },
   },
 

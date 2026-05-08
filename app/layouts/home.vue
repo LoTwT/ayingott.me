@@ -1,9 +1,20 @@
+<script setup lang="ts">
+import AppFooter from "~/components/site/AppFooter.vue"
+import AppHeader from "~/components/site/AppHeader.vue"
+</script>
+
 <template>
-  <header class="flex items-center justify-between px-4 py-2">
-    <Signature class="h-12" />
-    <ThemeToggle />
-  </header>
-  <main class="flex flex-1 items-center justify-center">
+  <AppHeader />
+  <main class="site-main">
     <slot />
   </main>
+  <AppFooter />
 </template>
+
+<style scoped>
+.site-main {
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-16) var(--layout-page-gutter) var(--spacing-8);
+}
+</style>

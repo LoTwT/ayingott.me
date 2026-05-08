@@ -11,9 +11,9 @@ Read these before changing product scope:
 
 ## Current Phase
 
-S1 is a technical stack migration. It must preserve the existing one-page signature UI while moving the app to Tailwind CSS v4 and `@ayingott/theme`.
+S2 implements the locked `design-v0.1` page system on top of `@ayingott/theme@0.0.1`.
 
-Do not implement the S2 redesign, blog IA, new page shells, `@nuxt/content`, resume conditional rendering, RSS, or new site features in S1.
+In scope: home, about, blog list empty state, blog detail route template, 404, `.dark` mode, contact-strip resume affordance, and removal of the S1 `--ayingott-*` compatibility shim. Out of scope: `@nuxt/content` ingestion, RSS generation, real resume PDF publishing, comments, search, analytics, and expanded biography copy.
 
 ## Stack
 
@@ -45,7 +45,7 @@ Prefer `@ayingott/theme` semantic variables for new UI:
 - `--border-subtle`
 - `--focus-ring-color`
 
-S1 keeps the old signature-page colors as local compatibility variables so the visual baseline does not change. Remove or revise those only in S2.
+Do not reintroduce the S1 `--ayingott-*` compatibility variables. New UI should consume the V0 semantic variables directly.
 
 ## Dark Mode
 
