@@ -87,7 +87,7 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 | `/feed.xml`    | RSS / Atom  | Optional, deferred until first post ships                                                                                   |
 | catch-all      | 404         | `app/error.vue` (Nuxt error page convention)                                                                                |
 
-`/now`, `/uses`, and resume PDF download are explicitly deferred to V1.x. The home page may carry a one-line "now" entry or a single-button resume entry when AY-D-08 conditions are met.
+`/now` and `/uses` are explicitly deferred to V1.x. The home page may carry a one-line "now" entry, and a resume PDF link rendered as a peer icon inside the home contact strip when AY-D-08 conditions are met (see §4.1).
 
 ### 3.2 Navigation
 
@@ -153,10 +153,9 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                                     │
 │  Optional: now entry (one line, --text-muted)       │
 │                                                     │
-│  Optional: resume entry (single button)             │
-│                                                     │
-│  Contact strip (4 inline icons + labels)            │
-│  GitHub  ·  X  ·  Email  ·  RSS (when blog posts)   │
+│  Contact strip (inline icons, conditional members)  │
+│  GitHub · X · Email · Resume (if PDF) · RSS (if     │
+│                       blog posts)                   │
 │                                                     │
 │  Footer (copyright · license · identity)            │
 └─────────────────────────────────────────────────────┘
@@ -170,7 +169,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 - Signature display copy uses `var(--font-display)` weight 700 at `var(--text-5xl)` with paired line-height. Letter-spacing `var(--tracking-tight)`.
 - Tagline uses `var(--font-sans)` at `var(--text-lg)`, color `var(--text-secondary)`.
 - Interests chips: `var(--surface-subtle)` background, `var(--text-primary)` text, 1px `var(--border-subtle)` border, `var(--radius-full)` corners, `var(--spacing-2)` block padding, `var(--spacing-3)` inline padding, `var(--font-mono)` at `var(--text-xs)` with `var(--tracking-wide)`.
-- Contact strip icons sit at 24×24, inline SVG, `currentColor`. The strip uses `var(--spacing-4)` between items.
+- Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="Resume PDF"` on the resume icon).
 - Footer text: `var(--text-muted)` at `var(--text-xs)`.
 
 **Behavior**:
@@ -185,7 +184,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Conditional rendering**:
 
-- Resume entry renders only when `siteConfig.public.resumePdfUrl` is truthy (AY-D-08).
+- Resume icon renders only when `siteConfig.public.resumePdfUrl` is truthy (AY-D-08). When rendered, it sits as a peer in the contact strip alongside GitHub / X / Email — not as a separate primary button. This treatment is a deliberate brand choice tied to AY-D-01 (ayingott.me is a personal garden, **not** a recruiter-facing portfolio); a primary CTA-style resume button reads as "click to apply" and would clash with that framing. Routing target: a `target="_blank" rel="noopener noreferrer"` link to the configured PDF URL.
 - RSS contact icon renders only when at least one blog post is published.
 - Now entry renders only when `siteConfig.public.nowText` is truthy.
 
@@ -505,13 +504,15 @@ Page composition (top to bottom):
    chips. Pill-shaped, mono labels, low contrast.
 4. Optional now line: one short sentence about what the author is
    currently working on. Muted text.
-5. Optional resume button: single primary button, lavender background
-   (V0 `--accent-primary`), deep-lavender near-black text (V0
-   `--accent-contrast`). White text on lavender fails contrast in V0
-   and must not be used. Only renders when a PDF link is configured.
-6. Contact strip: four inline icons (GitHub, X, email, RSS), 24×24,
-   monoline, currentColor.
-7. Footer: copyright, license line, site identity. Mono, xs, muted.
+5. Contact strip: a single horizontal row of inline 24×24 monoline
+   icons in currentColor — GitHub, X, email, optional resume PDF
+   (renders only when a PDF link is configured), and optional RSS
+   (renders only when at least one blog post is published). The
+   resume PDF is a peer icon in this strip, not a separate primary
+   button, because ayingott.me is intentionally not a recruiter-
+   facing portfolio. Each icon has a 44×44 touch-area target around
+   it.
+6. Footer: copyright, license line, site identity. Mono, xs, muted.
 
 Constraints:
 - No gradients, no images, no patterns, no textures.
