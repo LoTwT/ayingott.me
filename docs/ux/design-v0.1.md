@@ -4,7 +4,7 @@
 - Owner: @UX
 - Drafted: 2026-05-07
 - Stage: DD-005 S2 (design language reconstruction + UI spec)
-- Inputs: `docs/product/needs-v0.1.md` v0.1 + AY-D-01~19 + `@ayingott/theme` V0 (LoTwT/design-system pinned to `f8c1d8e`) + `skills/ayingott-design-system/SKILL.md` (LoTwT/design-system)
+- Inputs: `docs/product/needs-v0.1.md` v0.1 + AY-D-01~19 + `@ayingott/theme@0.0.1` + `skills/ayingott-design-system/SKILL.md` (LoTwT/design-system)
 
 ## How to read this document
 
@@ -721,7 +721,7 @@ When any of the above triggers, file an RFC under `docs/product/decisions/` (ayi
 
 | Need                 | Source                                                       |
 | -------------------- | ------------------------------------------------------------ |
-| Token names and hex  | `@ayingott/theme` `packages/theme/src/` (pinned `f8c1d8e`)   |
+| Token names and hex  | `@ayingott/theme@0.0.1` `packages/theme/src/`                |
 | Token usage rules    | `skills/ayingott-design-system/SKILL.md`                     |
 | Voice and tone       | `skills/ayingott-design-system/references/voice-examples.md` |
 | Live token reference | https://design.ayingott.me                                   |

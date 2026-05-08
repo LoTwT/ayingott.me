@@ -19,7 +19,7 @@ Do not implement the S2 redesign, blog IA, new page shells, `@nuxt/content`, res
 
 - Nuxt 4 + Vue 3
 - Tailwind CSS v4 through `@tailwindcss/vite`
-- `@ayingott/theme` pinned to design-system V0 commit `f8c1d8e`
+- `@ayingott/theme@0.0.1` from npm
 - `@nuxtjs/color-mode` with `.dark` class output
 - Static generation for Cloudflare deployment
 

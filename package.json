@@ -16,7 +16,7 @@
     "nuxt": "nuxt"
   },
   "dependencies": {
-    "@ayingott/theme": "github:LoTwT/design-system#f8c1d8e&path:packages/theme",
+    "@ayingott/theme": "0.0.1",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
