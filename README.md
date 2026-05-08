@@ -11,17 +11,17 @@ Product requirements and decisions live in:
 
 - Nuxt 4 + Vue 3
 - Tailwind CSS v4
-- `@ayingott/theme` from `LoTwT/design-system`
+- `@ayingott/theme@0.0.1` from npm
 - `@nuxtjs/color-mode` with a `.dark` class
 - Static generation for Cloudflare deployment
 
 Use Node 22.12.0 or newer. The repository pins this in `.node-version` to match the Nuxt 4 engine requirement and Cloudflare build target.
 
-The design-system package is pinned to the V0 closure commit:
+The design-system package is pinned to the first npm technical release:
 
 ```json
 {
-  "@ayingott/theme": "github:LoTwT/design-system#f8c1d8e&path:packages/theme"
+  "@ayingott/theme": "0.0.1"
 }
 ```
 
