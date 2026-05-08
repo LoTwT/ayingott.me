@@ -72,6 +72,46 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 - Do not import a body webfont. System-ui plus the V0 CJK fallback chain is the contract.
 - Do not import an icon library. Icons in V1 are inline SVGs hand-drawn at the consumption site, using `currentColor` so they inherit page text color.
 
+### 2.1 Rendered text language conventions (V1, locked 2026-05-09)
+
+V1 uses **Chinese chrome with English personal copy**. The site `<html>` element declares `lang="zh-CN"`. Personal copy (display name, tagline, About subtitle, About bio) stays English as a deliberate brand choice — the author's handle and self-description are presented as a continuous identity surface, not as bilingual UI strings. Everything else the visitor reads as system-level affordance (nav, button labels, empty states, error pages, accessibility labels, page titles) is Chinese.
+
+| Surface                                     | Locked text (V1)                                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `<html lang>`                               | `zh-CN`                                                                               |
+| Display name                                | `Lo`                                                                                  |
+| Hero greeting                               | `Hi, I'm Lo.`                                                                         |
+| Home tagline                                | `A developer`                                                                         |
+| About subtitle                              | `Lo · Developer`                                                                      |
+| About bio (single paragraph, final)         | `A person.`                                                                           |
+| Nav · Home link                             | `首页`                                                                                |
+| Nav · About link                            | `关于`                                                                                |
+| Nav · Blog list link                        | `文章` (note: the third nav slot uses `文章`, not `博客`; the URL path stays `/blog`) |
+| Blog list page title (display 4xl)          | `文章`                                                                                |
+| Blog detail back crumb                      | `← 文章`                                                                              |
+| Blog list empty state heading (display 2xl) | `还没有文章。`                                                                        |
+| Blog list empty state explanation           | `第一篇文章准备好后会出现在这里。订阅暂未开放，V1 阶段偶尔来看就行。`                 |
+| 404 heading                                 | `未找到。`                                                                            |
+| 404 subtitle                                | `这个页面不在。首页还在。`                                                            |
+| 404 button                                  | `回到首页`                                                                            |
+| Theme toggle aria-label, switching to dark  | `切换到暗色模式`                                                                      |
+| Theme toggle aria-label, switching to light | `切换到亮色模式`                                                                      |
+| Resume contact icon aria-label              | `简历 PDF`                                                                            |
+| GitHub / X / RSS contact icon aria-label    | `GitHub` / `X` / `RSS` (brand names, not translated)                                  |
+| Email contact icon aria-label               | `邮箱`                                                                                |
+| Footer                                      | `© 2026 Lo · MIT 许可证`                                                              |
+| `<title>` Home                              | `ayingott.me`                                                                         |
+| `<title>` About                             | `关于 · ayingott.me`                                                                  |
+| `<title>` Blog list                         | `文章 · ayingott.me`                                                                  |
+| `<title>` Blog detail                       | `<post title> · ayingott.me`                                                          |
+| `<title>` 404                               | `未找到 · ayingott.me`                                                                |
+
+The URL path stays `/blog` and `/blog/[slug]` for technical reasons — see §3.4 routing rules. Display label and URL surface are intentionally decoupled: the visitor reads `文章` in the nav and the address bar shows `/blog/`.
+
+Blog post bodies (S3 scope, rendered through `@nuxt/content`) default to Chinese; per-post `lang` frontmatter allows individual posts to ship in English when the topic warrants it. V1 chrome decisions do not constrain post content language.
+
+This table is the canonical source for any rendered Chinese chrome string. Wireframes and prompts elsewhere in this document still use English structural names (e.g. "Blog list" as a section name in §4.3) for clarity inside the UX doc; the **rendered** value is whatever this table specifies.
+
 ---
 
 ## 3. Information architecture
@@ -91,7 +131,7 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 
 ### 3.2 Navigation
 
-- **Primary nav**: lives in the `home` layout header. Three links: `Home / About / Blog`. Plus a theme toggle.
+- **Primary nav**: lives in the `home` layout header. Three links: `首页 / 关于 / 文章` (rendered Chinese values per §2.1). The URL targets are `/`, `/about`, `/blog`. Plus a theme toggle.
 - **Secondary nav**: none. No footer link farm. The footer carries copyright, license, and a one-line site identity.
 - **Active state**: the current route's link uses `var(--text-accent)`; siblings use `var(--text-primary)` with hover lifting to `var(--accent-primary-hover)`.
 - **Mobile**: nav links collapse to a horizontal strip below the title block, not a hamburger. Three labels fit horizontally on a 360px viewport.
@@ -100,7 +140,7 @@ Layouts and components below assume the `home` Nuxt layout from S1 stays as the 
 
 Every page sets:
 
-- `<title>` → page-specific. Home: `ayingott.me`. About: `About · ayingott.me`. Blog list: `Blog · ayingott.me`. Blog post: `<post title> · ayingott.me`. 404: `Not found · ayingott.me`.
+- `<title>` → page-specific. Home: `ayingott.me`. About: `关于 · ayingott.me`. Blog list: `文章 · ayingott.me`. Blog post: `<post title> · ayingott.me`. 404: `未找到 · ayingott.me`. (See §2.1 for the canonical rendered-text table.)
 - `<meta name="description">` → page-specific. 70–160 character range, third-person, no marketing language. See §7 voice rules.
 - `<meta property="og:title">` → mirrors `<title>` minus the trailing site name.
 - `<meta property="og:image">` → `https://ayingott.me/lo.svg` (V1 default; bespoke per-post images deferred).
@@ -142,7 +182,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                                     │
 │  Signature block                                    │
 │  ┌─────────────────────────────────────────────┐    │
-│  │ "Hi, I'm 龙."  (display, 5xl)               │    │
+│  │ "Hi, I'm Lo."  (display, 5xl)               │    │
 │  │ tagline (body, lg, --text-secondary)        │    │
 │  └─────────────────────────────────────────────┘    │
 │                                                     │
@@ -169,7 +209,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 - Signature display copy uses `var(--font-display)` weight 700 at `var(--text-5xl)` with paired line-height. Letter-spacing `var(--tracking-tight)`.
 - Tagline uses `var(--font-sans)` at `var(--text-lg)`, color `var(--text-secondary)`.
 - Interests chips: `var(--surface-subtle)` background, `var(--text-primary)` text, 1px `var(--border-subtle)` border, `var(--radius-full)` corners, `var(--spacing-2)` block padding, `var(--spacing-3)` inline padding, `var(--font-mono)` at `var(--text-xs)` with `var(--tracking-wide)`.
-- Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="Resume PDF"` on the resume icon).
+- Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="简历 PDF"` on the resume icon).
 - Footer text: `var(--text-muted)` at `var(--text-xs)`.
 
 **Behavior**:
@@ -200,7 +240,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                             │
 │  Page title block                           │
 │  ┌──────────────────────────────────────┐   │
-│  │ "About"  (display, 4xl)              │   │
+│  │ "关于"  (display, 4xl)               │   │
 │  │ subtitle (mono, sm, --text-muted)    │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
@@ -244,7 +284,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                             │
 │  Page title block                           │
 │  ┌──────────────────────────────────────┐   │
-│  │ "Blog"  (display, 4xl)               │   │
+│  │ "文章"  (display, 4xl)               │   │
 │  │ subtitle (mono, sm)                  │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
@@ -273,11 +313,9 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │                                             │
 │  Empty state                                │
 │  ┌──────────────────────────────────────┐   │
-│  │ "No posts yet."                      │   │
-│  │ "First entry will land here when it  │   │
-│  │  is ready. Subscribe is not yet live │   │
-│  │  — checking back occasionally is the │   │
-│  │  flow for V1."                       │   │
+│  │ "还没有文章。"                       │   │
+│  │ "第一篇文章准备好后会出现在这里。订   │   │
+│  │  阅暂未开放，V1 阶段偶尔来看就行。"   │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
 │  Footer                                     │
@@ -368,10 +406,10 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 │  Centered block                             │
 │  ┌──────────────────────────────────────┐   │
 │  │ "404"  (display, 7xl, accent)        │   │
-│  │ "Not found." (display, 2xl)          │   │
+│  │ "未找到。" (display, 2xl)            │   │
 │  │ subtitle (sans, base, --text-muted)  │   │
 │  │ ┌────────────────────────┐           │   │
-│  │ │ Back to home (button)  │           │   │
+│  │ │ 回到首页 (button)      │           │   │
 │  │ └────────────────────────┘           │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
@@ -382,7 +420,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 **Token references**:
 
 - "404" digit uses `var(--font-display)` weight 700 at `var(--text-7xl)`, color `var(--accent-primary)`, `letter-spacing: var(--tracking-tighter)`.
-- Subtitle copy: a single sentence, sentence case, no apology language. Example: "The page is not there. The home page is."
+- Subtitle copy: a single sentence, sentence case, no apology language. V1 rendered text: `这个页面不在。首页还在。` (the canonical text lives in §2.1; this English example shows the brand's no-apology register: "The page is not there. The home page is.").
 - Button: primary surface, `var(--accent-primary)` background, `var(--accent-contrast)` text (deep-lavender near-black, AA-verified at 5.50:1 light / 8.56:1 dark), `var(--radius-control)`, `var(--font-display)` weight 500, `--transition-interactive`. Min-height `--touch-target-min` (44px). White / `--text-inverse` is **not** an option on `--accent-primary` in V0 — that pair fails AA at 2.86:1.
 - Vertical centering uses CSS grid; the centered block sits at roughly 30% from the top, leaving headroom for the header.
 
@@ -475,6 +513,8 @@ The prompt format:
 4. Constraints — what the output must avoid.
 
 Run them in order. After each, paste the output into this thread; UX runs critique loop and converges to a TL-implementable mockup.
+
+**Historical note**: the prompts below were the V1 mockup-generation set, run once on 2026-05-08 and the resulting mockup was approved as the S2 implementation baseline. They render nav and chrome as English (`Home / About / Blog / Not found. / Back to home / etc.`) because that was the working assumption at prompt-generation time. The locked rendered values for V1 are Chinese per §2.1; the implementation uses §2.1 as the authoritative source, not these prompts. Re-running these prompts to regenerate mockups would require updating each prompt's nav and chrome strings to the §2.1 Chinese values.
 
 ### 7.1 Prompt 1 · Home page
 
