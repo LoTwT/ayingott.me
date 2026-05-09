@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import DecorativePrimitive from "~/components/site/DecorativePrimitive.vue"
-
 defineProps<{
   error: {
     statusCode?: number
@@ -25,7 +23,6 @@ function goHome() {
   <NuxtLayout>
     <section class="error-page" aria-labelledby="error-title">
       <div class="error-page__mark">404</div>
-      <DecorativePrimitive class="error-page__line" kind="line" />
 
       <h1 id="error-title" class="error-page__title">未找到。</h1>
       <p class="error-page__copy">这个页面不在。首页还在。</p>
@@ -61,12 +58,8 @@ function goHome() {
   letter-spacing: var(--tracking-tighter);
 }
 
-.error-page__line {
-  margin-block: var(--spacing-6);
-}
-
 .error-page__title {
-  margin: 0;
+  margin: var(--spacing-6) 0 0;
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: var(--text-3xl);

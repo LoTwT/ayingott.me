@@ -48,13 +48,16 @@ useSiteSeo({
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   gap: var(--spacing-8);
+  padding-block: clamp(var(--spacing-16), 18svh, 11rem) var(--spacing-12);
+  text-align: center;
 }
 
 .home-page__copy {
-  position: relative;
   max-width: 640px;
+  margin-inline: auto;
 }
 
 .home-page__eyebrow {
@@ -78,7 +81,7 @@ useSiteSeo({
 
 .home-page__tagline {
   max-width: 28rem;
-  margin: var(--spacing-6) 0 0;
+  margin: var(--spacing-6) auto 0;
   color: var(--text-secondary);
   font-size: var(--text-xl);
   line-height: var(--text-xl--line-height);
@@ -89,6 +92,7 @@ useSiteSeo({
   padding: 0;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-3);
   list-style: none;
 }

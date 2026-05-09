@@ -17,7 +17,6 @@ useSiteSeo({
       heading-id="about-title"
       title="关于"
       :subtitle="identity.aboutSubtitle"
-      decoration="circle"
     />
 
     <div class="about-page__prose">

@@ -16,7 +16,7 @@ function isActive(to: string) {
 <template>
   <header class="site-header">
     <div class="site-header__inner">
-      <span class="site-header__mark" aria-label="Lo">Lo</span>
+      <span class="site-header__mark">ayingott.me</span>
 
       <div class="site-header__actions">
         <nav class="site-header__nav" aria-label="主导航">
