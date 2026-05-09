@@ -220,7 +220,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Decoration**:
 
-- Place 1 dot (8px) and 1 line (40×2) primitive at the top-right of the signature block. Color `var(--accent-primary)`. See §5.
+- The Home page renders **without a decoration primitive**. The signature block (`Hi, I'm Lo.` + tagline) is the page's strongest visual anchor on its own; in production the original spec's "dot + line at the top-right of the signature block" recipe ended up reading as a detached ornament rather than a section accent and was removed in PR #10 (`f83caae`). The lesson is captured in §5: decoration belongs in chrome that has a clear anchor (a heading the visitor reads as a "page title"); the home hero is not that anchor.
 
 **Conditional rendering**:
 
@@ -436,15 +436,17 @@ The four geometric primitives from `@ayingott/theme` spec §5.3 (8×8 dot, 40×2
 
 **Where to place**:
 
-- Top-right margin of page title blocks (Home signature, About title, Blog list title). One primitive, never two.
+- Top-right margin of **page title blocks that read as section titles** — About title, Blog list title. The home signature block is **excluded** from this rule (PR #10 finding): without a section-title anchor the dot + line floated as an orphan and read as ornament rather than rhythm. One primitive per anchored block, never two.
+- Adjacent to a single primary mark — under the 404 digit (line), inside the blog list empty state (square next to the heading). The decoration is acting as a quiet visual punctuation for the primary mark, not as ornament added afterward.
 - Visual rhythm between long lists (every Nth row, where N ≥ 3). Centered horizontally, dot or line only.
-- 404 page under the digit, line only.
+- 404 page under the digit, line only (already covered by the "primary mark" rule above; listed explicitly because it is the most identity-carrying use of the line primitive).
 
 **Where not to place**:
 
 - Inside body prose. Decoration belongs to layout chrome, not reading flow.
 - Inside cards. Cards have their own visual weight from shadow and border; adding decoration overloads them.
 - Full-bleed pattern fills. The motif is sparse seasoning, never pattern.
+- **The home hero / signature block.** The Home page (§4.1) reads correctly without decoration; adding a primitive that does not visually attach to the H1 (`Hi, I'm Lo.`) ends up as floating ornament. Documented in PR #10 visual escape; restored only if the home gains a clear anchored section title in a later iteration.
 
 **Color and inheritance**:
 
