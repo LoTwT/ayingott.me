@@ -33,6 +33,8 @@ useSiteSeo({
   margin-inline: auto;
   display: grid;
   gap: var(--spacing-12);
+  justify-items: center;
+  text-align: center;
 }
 
 .about-page__prose {
