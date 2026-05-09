@@ -1,6 +1,18 @@
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    animated?: boolean
+  }>(),
+  {
+    animated: true,
+  },
+)
+</script>
+
 <template>
   <svg
     class="lo-signature-mark"
+    :class="{ 'lo-signature-mark--static': !animated }"
     viewBox="0 0 15 10"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +72,19 @@
   .lo-signature-mark__path {
     animation: none;
     fill-opacity: 1;
+    stroke: none;
+    stroke-dasharray: none;
     stroke-dashoffset: 0;
+    stroke-width: 0;
   }
+}
+
+.lo-signature-mark--static .lo-signature-mark__path {
+  animation: none;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  stroke-width: 0;
 }
 </style>

@@ -27,7 +27,7 @@ function isActive(to: string) {
         class="site-header__mark"
         aria-label="Lo"
       >
-        <LoSignatureMark />
+        <LoSignatureMark :animated="false" />
       </NuxtLink>
 
       <div class="site-header__actions">

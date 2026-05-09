@@ -78,10 +78,10 @@ useSiteSeo({
 
 .home-page__signature {
   display: inline-flex;
-  margin-inline: 0.04em 0.01em;
-  vertical-align: -0.42em;
-  --lo-signature-width: 4.65rem;
-  --lo-signature-height: 3.1rem;
+  margin-inline: 0.05em 0;
+  vertical-align: -0.28em;
+  --lo-signature-width: 4.35rem;
+  --lo-signature-height: 2.9rem;
   --lo-signature-stroke-width: 0.36;
 }
 
@@ -147,8 +147,8 @@ useSiteSeo({
   }
 
   .home-page__signature {
-    --lo-signature-width: 3.75rem;
-    --lo-signature-height: 2.5rem;
+    --lo-signature-width: 3.45rem;
+    --lo-signature-height: 2.3rem;
     --lo-signature-stroke-width: 0.34;
   }
 }
