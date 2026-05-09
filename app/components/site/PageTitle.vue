@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import DecorativePrimitive from "~/components/site/DecorativePrimitive.vue"
-
-withDefaults(
-  defineProps<{
-    title: string
-    headingId?: string
-    subtitle?: string
-    decoration?: "circle" | "square" | "none"
-  }>(),
-  {
-    decoration: "circle",
-  },
-)
+defineProps<{
+  title: string
+  headingId?: string
+  subtitle?: string
+}>()
 </script>
 
 <template>
@@ -20,12 +12,6 @@ withDefaults(
       <h1 :id="headingId" class="page-title__heading">{{ title }}</h1>
       <p v-if="subtitle" class="page-title__subtitle">{{ subtitle }}</p>
     </div>
-
-    <DecorativePrimitive
-      v-if="decoration !== 'none'"
-      class="page-title__decoration"
-      :kind="decoration"
-    />
   </header>
 </template>
 
@@ -51,11 +37,5 @@ withDefaults(
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   line-height: var(--text-sm--line-height);
-}
-
-.page-title__decoration {
-  position: absolute;
-  top: var(--spacing-1);
-  right: 0;
 }
 </style>

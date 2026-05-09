@@ -17,7 +17,6 @@ useSiteSeo({
       heading-id="about-title"
       title="关于"
       :subtitle="identity.aboutSubtitle"
-      decoration="circle"
     />
 
     <div class="about-page__prose">
@@ -34,6 +33,8 @@ useSiteSeo({
   margin-inline: auto;
   display: grid;
   gap: var(--spacing-12);
+  justify-items: center;
+  text-align: center;
 }
 
 .about-page__prose {

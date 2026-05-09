@@ -16,6 +16,7 @@ const year = new Date().getFullYear()
 
 <style scoped>
 .site-footer {
+  border-top: 1px solid var(--border-subtle);
   padding: var(--spacing-8) var(--layout-page-gutter);
 }
 

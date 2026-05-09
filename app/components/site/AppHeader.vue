@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import LoSignatureMark from "~/components/site/LoSignatureMark.vue"
 import ThemeToggle from "~/components/theme/toggle.vue"
 
 const route = useRoute()
 const { navItems } = useSiteContent()
+const showHeaderMark = computed(() => route.path !== "/")
 
 function isActive(to: string) {
   if (to === "/") {
@@ -15,8 +17,18 @@ function isActive(to: string) {
 
 <template>
   <header class="site-header">
-    <div class="site-header__inner">
-      <span class="site-header__mark" aria-label="Lo">Lo</span>
+    <div
+      class="site-header__inner"
+      :class="{ 'site-header__inner--markless': !showHeaderMark }"
+    >
+      <NuxtLink
+        v-if="showHeaderMark"
+        to="/"
+        class="site-header__mark"
+        aria-label="Lo"
+      >
+        <LoSignatureMark :animated="false" />
+      </NuxtLink>
 
       <div class="site-header__actions">
         <nav class="site-header__nav" aria-label="主导航">
@@ -40,7 +52,12 @@ function isActive(to: string) {
 
 <style scoped>
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
   min-height: 64px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-canvas);
   padding-inline: var(--layout-page-gutter);
 }
 
@@ -54,13 +71,25 @@ function isActive(to: string) {
   gap: var(--spacing-4);
 }
 
+.site-header__inner--markless {
+  justify-content: flex-end;
+}
+
 .site-header__mark {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  line-height: var(--text-xl--line-height);
-  font-weight: var(--font-weight-medium);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
   color: var(--text-primary);
-  cursor: default;
+  text-decoration: none;
+  transition: var(--transition-interactive);
+  --lo-signature-width: 54px;
+  --lo-signature-height: 36px;
+  --lo-signature-stroke-width: 0.32;
+}
+
+.site-header__mark:hover {
+  color: var(--text-accent);
 }
 
 .site-header__actions {
@@ -83,8 +112,8 @@ function isActive(to: string) {
   border-radius: var(--radius-control);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  line-height: var(--text-xs--line-height);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
   text-decoration: none;
   transition: var(--transition-interactive);
 }

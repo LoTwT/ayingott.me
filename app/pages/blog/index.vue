@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DecorativePrimitive from "~/components/site/DecorativePrimitive.vue"
 import PageTitle from "~/components/site/PageTitle.vue"
 
 const { posts } = useSiteContent()
@@ -14,12 +13,7 @@ useSiteSeo({
 
 <template>
   <section class="blog-page" aria-labelledby="blog-title">
-    <PageTitle
-      heading-id="blog-title"
-      title="文章"
-      subtitle="笔记 · 归档"
-      decoration="square"
-    />
+    <PageTitle heading-id="blog-title" title="文章" subtitle="笔记 · 归档" />
 
     <div v-if="posts.length" class="blog-page__list" aria-label="文章">
       <article v-for="post in posts" :key="post.slug" class="blog-card">
@@ -34,7 +28,6 @@ useSiteSeo({
     </div>
 
     <div v-else class="blog-empty" role="status">
-      <DecorativePrimitive class="blog-empty__decoration" kind="square" />
       <h2 class="blog-empty__title">还没有文章。</h2>
       <p class="blog-empty__copy">
         第一篇文章准备好后会出现在这里。订阅暂未开放，V1 阶段偶尔来看就行。
@@ -49,10 +42,13 @@ useSiteSeo({
   margin-inline: auto;
   display: grid;
   gap: var(--spacing-12);
+  justify-items: center;
+  text-align: center;
 }
 
 .blog-page__list {
   max-width: var(--container-reading);
+  width: 100%;
   display: grid;
   gap: var(--spacing-4);
 }
@@ -107,22 +103,18 @@ useSiteSeo({
 
 .blog-empty {
   position: relative;
+  width: min(100%, var(--container-reading));
   max-width: var(--container-reading);
   min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   border: 1px dashed var(--border-subtle);
   border-radius: var(--radius-card);
   padding: var(--spacing-10);
   background: var(--surface-elevated);
   box-shadow: var(--shadow-card);
-}
-
-.blog-empty__decoration {
-  position: absolute;
-  top: var(--spacing-8);
-  right: var(--spacing-8);
 }
 
 .blog-empty__title {

@@ -159,6 +159,50 @@ Blog posts additionally publish (Open Graph article properties; use `property=`,
 - Canonical paths are lowercase with trailing slash dropped. `/blog/post-slug`, not `/Blog/Post-Slug/`.
 - 404 catches everything not enumerated above. There is no 410 / gone handling for V1.
 
+### 3.5 Header behavior (Q3 hybrid signature mark)
+
+The site header is sticky and behaves differently between **home** and **inner pages** (about / blog list / blog detail / 404). This is the Q3=B "hybrid header" outcome from design loop v2 (lo-user msg `b06a1f40`).
+
+**Sticky chrome (all pages)**:
+
+- `position: sticky; top: 0; z-index: var(--z-header);`.
+- `min-height: 64px`. `border-bottom: 1px solid var(--border-subtle)`.
+- `background: var(--surface-canvas)` so content scrolls beneath without bleeding through.
+- Padding: `var(--layout-page-gutter)`.
+
+**Left-side mark (route-conditional)**:
+
+- **Home (`/`)**: header has **no left-side mark**. The hero already carries the animated Lo signature; placing a second mark in the header would double-anchor identity in the same viewport. The header inner row uses `justify-content: flex-end` so the nav cluster sits flush right.
+- **Inner pages (about / blog / 404 / etc.)**: header carries a **static cursive Lo signature mark** as a brand anchor and home-link target.
+  - Component: `<LoSignatureMark :animated="false" />` (static variant, see §4.7 contract).
+  - Size: `--lo-signature-width: 54px; --lo-signature-height: 36px; --lo-signature-stroke-width: 0.32;`.
+  - Wrapper: `<NuxtLink to="/" aria-label="Lo">` with `min-width / min-height: var(--touch-target-min)` (44px) so the visible 54×36 mark sits in a ≥ 44×44 hit area.
+  - Hover: color shifts to `var(--text-accent)`.
+- **Right cluster (all pages)**: nav links + theme toggle. Nav links are `var(--font-mono)` at **`var(--text-sm)` (14px)**, `padding-block: var(--spacing-2)`, `padding-inline: var(--spacing-3)`, `border-radius: var(--radius-control)`, `transition: var(--transition-interactive)`. Each nav link has a ≥ 44×44 hit area via the V0 `touch-target` utility. The active link uses `var(--text-accent)`; siblings use `var(--text-primary)`.
+
+**Why a static (not animated) mark on inner pages**: the animated 12s cycle in the chrome region pulls attention from the page content. Inner pages are reading surfaces; the brand anchor should be present but quiet. The static cursive Lo (filled glyph, no stroke animation) preserves brand recognition without competing with content.
+
+**Reduced-motion**: the static variant is already animation-free, so `prefers-reduced-motion: reduce` is a no-op for the header mark.
+
+### 3.6 Favicon (theme-reactive)
+
+The favicon mirrors the active color scheme:
+
+- Light mode → `/lo.svg?v=light`.
+- Dark mode → `/lo-white.svg?v=dark`.
+
+The `?v=light` / `?v=dark` query string is a deliberate cache-bust marker — browsers cache favicons aggressively and would otherwise hold a stale icon across theme switches.
+
+Implementation lives in `app/composables/useSiteFavicon.ts`. The composable:
+
+1. Reads `useAppliedColorMode().isDark` (S1 composable).
+2. Computes `faviconHref` as a derived ref switching between the two URL+query pairs.
+3. Registers the link via `useHead` with a stable `id="site-favicon"` so SSR and CSR render the same element.
+4. On the client, watches the href ref and patches the existing `<link id="site-favicon">` in place (replacing the node with a fresh element when the href differs from current). Falls back to `document.querySelector('link[rel="icon"][type="image/svg+xml"]')` if the id is missing.
+5. Calls `onMounted(syncFaviconLink)` to cover the initial paint.
+
+Drift not allowed: do not add a third favicon variant for system theme; theme is user-controlled in V1 (manual toggle), and the favicon mirrors whatever the page reports.
+
 ---
 
 ## 4. Page wireframes
@@ -171,25 +215,21 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Purpose**: identity card. The visitor lands and within one screen knows who this is and where to go next.
 
-**Block layout (top to bottom)**:
+**Block layout (top to bottom, V1 design loop v2 contract)**:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Header                                             │
-│  ┌────────────────────────┐  ┌──────────────────┐   │
-│  │ Site title (text mark) │  │ Nav · Theme tog. │   │
-│  └────────────────────────┘  └──────────────────┘   │
+│  Header (sticky, no left mark on home)              │
+│  ┌──────────────────┐                               │
+│  │ Nav · Theme tog. │                               │
+│  └──────────────────┘                               │
 │                                                     │
-│  Signature block                                    │
+│  Hero signature block (centered)                    │
 │  ┌─────────────────────────────────────────────┐    │
-│  │ "Hi, I'm Lo."  (display, 5xl)               │    │
-│  │ tagline (body, lg, --text-secondary)        │    │
+│  │  Hi, I'm  ⟨cursive Lo SVG, animated⟩  .  👋  │    │
+│  │  (single H1, flex row, items center)        │    │
+│  │  tagline (body, lg, --text-secondary)       │    │
 │  └─────────────────────────────────────────────┘    │
-│                                                     │
-│  Interests strip (3–4 chips, single row)            │
-│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐                    │
-│  │chip │ │chip │ │chip │ │chip │                    │
-│  └─────┘ └─────┘ └─────┘ └─────┘                    │
 │                                                     │
 │  Optional: now entry (one line, --text-muted)       │
 │                                                     │
@@ -201,26 +241,35 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 └─────────────────────────────────────────────────────┘
 ```
 
+The interests chip strip from earlier drafts was dropped in design loop v2; the hero already carries identity, and chips read as portfolio-marketing under AY-D-01.
+
 **Token references**:
 
 - Page background → `var(--surface-canvas)`.
-- Header height: 64px. Padding: `var(--layout-page-gutter)`.
-- Site title font: `var(--font-display)`, weight 500, size `var(--text-xl)`. Cursor default; not a link.
-- Signature display copy uses `var(--font-display)` weight 700 at `var(--text-5xl)` with paired line-height. Letter-spacing `var(--tracking-tight)`.
-- Tagline uses `var(--font-sans)` at `var(--text-lg)`, color `var(--text-secondary)`.
-- Interests chips: `var(--surface-subtle)` background, `var(--text-primary)` text, 1px `var(--border-subtle)` border, `var(--radius-full)` corners, `var(--spacing-2)` block padding, `var(--spacing-3)` inline padding, `var(--font-mono)` at `var(--text-xs)` with `var(--tracking-wide)`.
+- Header height: 64px (sticky, see §3.5). Padding: `var(--layout-page-gutter)`.
+- **Home header has no left-side mark** (Q3 hybrid, see §3.5). Right cluster is `nav + theme toggle`.
+- H1 hero is a `display: flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 0` row with four flex children: text span (`Hi, I'm`) → `<LoSignatureMark>` (animated cursive SVG) → period span (`.`) → emoji span (`👋`).
+- H1 typography: `var(--font-display)` weight 700 at `var(--text-5xl)`, `letter-spacing: var(--tracking-tight)`, **`line-height: 1.5`** (line-height accommodates the larger SVG visual height; do not use `--text-5xl--line-height` here).
+- LoSignatureMark hero sizing (CSS vars consumed by component, see §4.7 for full contract):
+  - Desktop: `--lo-signature-width: 4.8rem; --lo-signature-height: 3.2rem; --lo-signature-stroke-width: 0.35;`
+  - Mobile (`@media (max-width: 720px)`): same width/height/stroke-width values.
+  - Wrapper `.home-page__signature` uses `display: inline-flex; flex: 0 0 auto; margin-inline: 0.5rem` (mobile `0.375rem`).
+- Period span `.home-page__signature-period`: `display: inline-block; flex: 0 0 auto; margin-inline-end: 0.25rem;`. Period is **plain text**, never animated, computed `animation-name: none, opacity: 1`. The period belongs to sentence punctuation, not to the signature stroke.
+- Emoji span `.home-page__emoji`: `display: inline-block; flex: 0 0 auto; margin-inline-start: 0`. Wave animation: `home-emoji-wave 2.8s ease-in-out infinite` rotating ±14° / -8° / 12° / -4° / 6° within 30% of the cycle, then resting. Reduced-motion: animation none.
+- Tagline uses `var(--font-sans)` at `var(--text-xl)`, color `var(--text-secondary)`, max-width `28rem`, centered (`margin: var(--spacing-6) auto 0`).
 - Contact strip icons sit at 24×24, inline SVG, `currentColor`, monoline 1.5px stroke. The strip uses `var(--spacing-4)` between items. Each icon uses the V0 `touch-target` utility so the 24×24 visual is wrapped in a 44×44 hit area without changing layout. Each icon ships an `aria-label` matching the channel name (e.g. `aria-label="简历 PDF"` on the resume icon).
-- Footer text: `var(--text-muted)` at `var(--text-xs)`.
+- Footer text: `var(--text-muted)` at `var(--text-xs)`. Footer carries `border-top: 1px solid var(--border-subtle)`.
+- `.home-page` container uses `display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: var(--spacing-8); padding-block: clamp(var(--spacing-16), 18svh, 11rem) var(--spacing-12); text-align: center;`.
 
 **Behavior**:
 
-- Hover on chip: `transform: translateY(-1px)`, `box-shadow: var(--shadow-md)`. No color change.
+- The H1 hero animates per §4.7 (12-second 5-phase cycle). The signature is decorative; the H1's accessible name is set via `aria-label="Hi, I'm Lo."` and the SVG / period / emoji children are all `aria-hidden="true"`.
 - Hover on contact icon: `transform: scale(1.1)`, color shifts to `var(--text-accent)`. Transition uses `var(--transition-interactive)`.
 - Nav theme toggle uses the existing component from S1, retokenized to V0 semantic vars.
 
 **Decoration**:
 
-- Place 1 dot (8px) and 1 line (40×2) primitive at the top-right of the signature block. Color `var(--accent-primary)`. See §5.
+- **None.** The geometric-primitive decoration (dot / line) at the top-right of the signature block was deprecated during design loop v2 (see §5). The hero signature SVG itself is the visual anchor; layering an additional primitive on top of an animated cursive mark reads as visual noise.
 
 **Conditional rendering**:
 
@@ -270,7 +319,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Decoration**:
 
-- Place 1 outlined-circle primitive (24×24, 1.5px stroke, `currentColor` → `var(--accent-primary)`) in the top-right margin of the page title block. No other decoration on this page; the bio prose stays clean.
+- **None.** The outlined-circle primitive at the top-right of the page title block was deprecated during design loop v2 (see §5). The about page is intentionally minimal: page title + subtitle + bio prose, centered. The header carries the inner-page Lo signature mark (Q3 hybrid, see §3.5) which serves the brand-identity role on inner pages.
 
 ### 4.3 Blog list (`/blog`)
 
@@ -331,8 +380,7 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Decoration**:
 
-- Place 1 dot primitive between post rows as a visual rhythm anchor (centered horizontally, `--spacing-4` block padding, `var(--accent-primary)` color). Skip if total post count is less than three; the empty state has its own decoration.
-- Empty state: place 1 rotated-square primitive in the top-right of the empty state block.
+- **None.** The inter-row dot primitive (with-posts state) and the empty-state rotated-square primitive were deprecated during design loop v2 (see §5). The post list reads as cards on canvas; visual rhythm comes from card spacing and shadow, not from injected ornaments. The empty-state container retains its dashed border + soft shadow; the missing primitive is not replaced by anything.
 
 ### 4.4 Blog detail (`/blog/[slug]`)
 
@@ -426,38 +474,112 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Decoration**:
 
-- Place 1 line primitive (40×2) directly under the "404" digit, color `var(--accent-primary)`. No other decoration.
+- **None.** The 40×2 line primitive directly under the "404" digit was deprecated during design loop v2 (see §5). The page is centered (block-level `align-items: center; text-align: center`) with `404` digit + heading + subtitle + button — the digit's `text-7xl` weight + accent color is sufficient visual focus.
+
+### 4.6 Layout containers and centering
+
+All five page templates use **centered** content blocks under the V1 design loop v2 outcome. Per-page CSS uses:
+
+- `.home-page` / `.about-page` / `.blog-page` / `.error-page`: `display: flex|grid; align-items: center; justify-items: center; text-align: center;` (precise property mix varies by page).
+- `.home-page__copy` / `.about-page__prose`: `margin-inline: auto`.
+- `.blog-page__list`: `width: 100%; max-width: var(--container-reading)`.
+- `.blog-empty`: `width: min(100%, var(--container-reading)); align-items: center;`.
+- `.about-page` / `.blog-page` use `justify-items: center; text-align: center` on the grid container.
+
+Containers do not need additional decoration to feel "designed"; centered type + the signature mark + sticky-header chrome carry the visual weight. Earlier drafts used left-aligned content with primitives in negative space; design loop v2 replaced that with center-aligned content.
+
+### 4.7 Hero signature animation contract
+
+The home hero animates a cursive **Lo** signature inside the H1. This is the brand's only motion-as-identity element in V1.
+
+**Component**: `app/components/site/LoSignatureMark.vue`. Single component with two render variants controlled by an `animated?: boolean` prop (default `true`):
+
+- `animated=true` (used in home hero) — runs the 12-second 5-phase loop below.
+- `animated=false` (used in inner-page header per §3.5) — renders the same path data as a static filled cursive Lo (`fill-opacity: 1; stroke: none; animation: none`).
+
+**SVG markup**:
+
+- `<svg viewBox="0 0 15 10" fill="none" xmlns="..." aria-hidden="true" focusable="false">` with a single `<path>` carrying the cursive Lo glyph outline.
+- `pathLength="1"` is required so `stroke-dasharray` / `stroke-dashoffset` keyframes can use normalized 0–1 values without measuring path length at runtime.
+- `vector-effect="non-scaling-stroke"` so stroke weight stays consistent across container sizes.
+- The `<path>` uses `fill: currentColor; stroke: currentColor` and inherits color from the parent. Width / height / stroke-width are CSS variables set by the consumer.
+
+**CSS variables consumed by the component** (set by parent):
+
+- `--lo-signature-width` (default `54px`)
+- `--lo-signature-height` (default `36px`)
+- `--lo-signature-stroke-width` (default `0.32`)
+
+**12s 5-phase cycle (animated variant only)**:
+
+| Phase  | Range (% of 12s)    | Duration | Behavior                                                                                                                   | Key state                                                          | Easing      |
+| ------ | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------- |
+| 1      | 0% → 16.7%          | 2s       | Stroke draws in (full-glyph outline)                                                                                       | `stroke-dashoffset: 1 → 0`, `fill-opacity: 0`, `stroke-opacity: 1` | ease-in-out |
+| 2      | 16.7% → 25%         | 1s       | Fill fades in                                                                                                              | `fill-opacity: 0 → 1`, `stroke-opacity: 1`, `stroke-dashoffset: 0` | ease-out    |
+| 3      | 25% → 75%           | **6s**   | Filled hold (readable Lo)                                                                                                  | `fill-opacity: 1`, `stroke-opacity: 1`, `stroke-dashoffset: 0`     | linear      |
+| 4      | 75% → 83.3%         | 1s       | Fill fades out                                                                                                             | `fill-opacity: 1 → 0`, `stroke-opacity: 1`                         | ease-out    |
+| 5      | 83.3% → 100%        | 2s       | Stroke erases (mirror of Phase 1, reverse)                                                                                 | `stroke-dashoffset: 0 → 1`, `fill-opacity: 0`, `stroke-opacity: 1` | ease-in-out |
+| → loop | 100% → 0% (instant) | —        | Loop boundary; Phase 5 end == Phase 1 start (both at `stroke-dashoffset: 1`). Phase 1 immediately begins drawing in again. | momentary stroke=0 acceptable (not a sustained phase)              | linear      |
+
+Total cycle: **12 seconds**. There is **no Phase 6 blank breathing** — Phase 5 → Phase 1 is direct (lo-user msg `9533eb58`: "立刻接新的描边动画"). At any non-loop-boundary instant the path satisfies `stroke-opacity > 0 OR fill-opacity > 0`; only the exact 12s/0s seam has a momentary `stroke-dashoffset = 1` state.
+
+**Symmetry constraints** (both required):
+
+- Phase 1 and Phase 5 are equal in duration (both 2s).
+- Phase 1 and Phase 5 use the **same mechanism** (stroke-dashoffset endpoints `1↔0`, just inverted). Phase 5 must not fade via `stroke-opacity` — that produces an asymmetric "draw in / fade out" mismatch lo-user explicitly flagged.
+
+**Consumer sizing**:
+
+- Hero (home): `--lo-signature-width: 4.8rem; --lo-signature-height: 3.2rem; --lo-signature-stroke-width: 0.35;` desktop and mobile.
+- Header (inner pages): `--lo-signature-width: 54px; --lo-signature-height: 36px; --lo-signature-stroke-width: 0.32;` (smaller stroke for legibility at small size).
+
+**Reduced-motion fallback** (`prefers-reduced-motion: reduce`):
+
+- `animation: none; fill-opacity: 1; stroke: none; stroke-opacity: 0; stroke-dasharray: none; stroke-dashoffset: 0; stroke-width: 0;`.
+- The signature renders as a static filled cursive Lo with no stroke and no animation — equivalent to the static variant at all sizes.
+
+**A11y on the H1 (consumer responsibility)**:
+
+- The home `<h1>` declares `aria-label="Hi, I'm Lo."` so screen readers receive a clean single-string accessible name.
+- The four flex children (`Hi, I'm` text span / `<LoSignatureMark>` / period span / emoji span) are all `aria-hidden="true"` to avoid double-announcement.
+- The SVG itself is also `aria-hidden="true"` and `focusable="false"` at the component level.
+
+**Performance**:
+
+- The animation runs entirely on `fill-opacity`, `stroke-opacity`, and `stroke-dashoffset` — all GPU-friendly properties. No layout reflow inside the cycle.
+- One SVG `<path>` element. No filters, no masks, no gradients.
+
+**Drift not allowed**:
+
+- Do not add Phase 6 blank breathing back without lo-user re-spec.
+- Do not change Phase 5 to opacity-fade; the mechanism must mirror Phase 1.
+- Do not introduce a 10% residual stroke at the loop boundary (the v12 (c) variant). lo-user msg `9533eb58` confirmed full draw-out → full draw-in is the intended flow.
+- Do not split the path into multiple sub-paths or change drawing order without UX sign-off; the path data is the brand's hand-traced cursive Lo and is part of the visual contract.
 
 ---
 
-## 5. Decoration placement rules
+## 5. Decoration placement rules (DEPRECATED for V1)
 
-The four geometric primitives from `@ayingott/theme` spec §5.3 (8×8 dot, 40×2 line, 24×24 outlined circle, 16×16 rotated square within 20×20 viewBox) are the brand's only "iconography substitute". V0 does not ship them as files; ayingott.me reproduces them inline as needed.
+> **Status (2026-05-09)**: V1 ships **without** geometric-primitive decoration. The dot / line / outlined-circle / rotated-square primitives previously placed at the top-right of page-title blocks (home signature / about / blog list / 404 line) were removed during the **design loop v2** initiated by lo-user feedback ("中间一个不明所以的小点和横线" / "关于和文章里有不明所以的图案"). After PR #10 (home decoration removal), iterations PR #11 (deferred §5 patch) and PR #12 (v13 cohesive ship) closed out the visual escape entirely.
+>
+> The brand's V1 visual identity is now carried by:
+>
+> - The **Lo signature mark** (animated cursive SVG in hero / static cursive SVG in inner-page header — see §4.7 + §3.5).
+> - The **emoji wave** in hero (👋, see §4.1 token references).
+> - **Centered, minimal page composition** with type-scale and color contrast as the only "ornament".
+>
+> The four-primitive motif from `@ayingott/theme` spec §5.3 remains a valid design-system primitive set for _other consumers_ of the design system, but ayingott.me V1 explicitly opts out. Re-introducing primitives requires a Product/UX RFC that demonstrates a real composition need not already covered by the signature + emoji + type-scale toolkit.
 
-**Where to place**:
+The historical placement rules (preserved for V1.x reference; do not implement in V1):
 
-- Top-right margin of page title blocks (Home signature, About title, Blog list title). One primitive, never two.
-- Visual rhythm between long lists (every Nth row, where N ≥ 3). Centered horizontally, dot or line only.
-- 404 page under the digit, line only.
+> - Top-right margin of page title blocks (home signature, about title, blog list title). One primitive, never two.
+> - Visual rhythm between long lists (every Nth row, where N ≥ 3). Centered horizontally, dot or line only.
+> - 404 page under the digit, line only.
+> - Never inside body prose, never inside cards, never as pattern fill.
+> - `currentColor` SVG inheriting from parent `color: var(--accent-primary)` on light or `var(--text-accent)` on dark; never hardcode lavender hex.
+> - V1 ships static decoration only — `float-gentle` recipe deferred.
 
-**Where not to place**:
-
-- Inside body prose. Decoration belongs to layout chrome, not reading flow.
-- Inside cards. Cards have their own visual weight from shadow and border; adding decoration overloads them.
-- Full-bleed pattern fills. The motif is sparse seasoning, never pattern.
-
-**Color and inheritance**:
-
-- Use `currentColor` on the SVG. Set the parent's `color` property to `var(--accent-primary)` on light surfaces or `var(--text-accent)` on dark.
-- Never hardcode `#9c8fd9` or any lavender hex inside the SVG markup.
-
-**Density rule of thumb**:
-
-- One primitive per page section. If you find yourself placing more than three across the visible viewport, the design has lost focus.
-
-**Animation**:
-
-- V1 ships static decoration only. No floating, fading, or rotating motion. The skill explicitly defers the "float-gentle" recipe to consumer responsibility, and ayingott.me opts out for V1.
+If a future V1.x iteration brings a primitive back, treat the rule set above as the floor (sparse seasoning, never pattern) and re-evaluate against the in-place signature mark to avoid double-anchoring identity.
 
 ---
 
@@ -494,10 +616,33 @@ QA evidence: dark-mode pass of 6.1 and 6.2.
 
 ### 6.4 Touch target size
 
-- All interactive elements have a hit area of at least 44×44 CSS px on touch devices. Use the V0 `touch-target` utility for compact icons (contact strip, theme toggle, decoration triggers) so the target inflates without changing visual size.
+- All interactive elements have a hit area of at least 44×44 CSS px on touch devices. Use the V0 `touch-target` utility for compact icons (contact strip, theme toggle, header signature mark) so the target inflates without changing visual size.
 - Inline links inside prose are exempt (per WCAG 2.5.5 inline-text exception), but standalone link icons are not.
 
 QA evidence: device emulation at 360px width, manual hit-test on all standalone interactive elements.
+
+### 6.5 Decorative-image H1 pattern (hero)
+
+The home hero H1 mixes plain text, a decorative SVG signature, and an emoji as inline siblings. The accessibility contract is:
+
+- The `<h1>` element carries `aria-label="Hi, I'm Lo."` — this is the screen-reader announcement.
+- All inner spans (`Hi, I'm` text span / `<LoSignatureMark>` / period `.` / emoji `👋`) are `aria-hidden="true"`.
+- The SVG component itself is `aria-hidden="true"` and `focusable="false"`.
+
+Why: screen readers should hear a clean, single-string sentence — `Hi, I'm Lo.` — not "Hi I'm" + "graphic" + "period" + "wave hand". The visual cursive Lo is a brand decoration, not a textual token; the period is sentence punctuation but not necessary for SR comprehension; the emoji wave is decorative motion the SR user does not need.
+
+The H1 still represents `displayName = "Lo"` semantically. If `useSiteContent().identity.displayName` ever changes, both the visible signature SVG asset (path data + interpretation) and the `aria-label` need to update together.
+
+### 6.6 Reduced-motion fallback
+
+Per WCAG 2.3.3 and `prefers-reduced-motion: reduce`, every motion element on the site provides a static-equivalent fallback:
+
+- **Lo signature** (hero animated variant): `animation: none; fill-opacity: 1; stroke: none`. Cursive Lo renders as a static filled glyph (visually identical to Phase 3 of the cycle).
+- **Lo signature** (header static variant): no-op (already animation-free).
+- **Hero emoji wave** (`home-emoji-wave`): `animation: none`. Emoji renders without rotation.
+- **Period and tagline / contact icons**: never animated.
+
+QA evidence: enable Chrome DevTools "Emulate CSS media: prefers-reduced-motion: reduce" and verify the home hero shows a static filled cursive Lo + static 👋 with no transform or opacity transitions running.
 
 ---
 
@@ -514,7 +659,15 @@ The prompt format:
 
 Run them in order. After each, paste the output into this thread; UX runs critique loop and converges to a TL-implementable mockup.
 
-**Historical note**: the prompts below were the V1 mockup-generation set, run once on 2026-05-08 and the resulting mockup was approved as the S2 implementation baseline. They render nav and chrome as English (`Home / About / Blog / Not found. / Back to home / etc.`) because that was the working assumption at prompt-generation time. The locked rendered values for V1 are Chinese per §2.1; the implementation uses §2.1 as the authoritative source, not these prompts. Re-running these prompts to regenerate mockups would require updating each prompt's nav and chrome strings to the §2.1 Chinese values.
+**Historical note (2026-05-09 update)**: the prompts below were the V1 mockup-generation set, run once on 2026-05-08, and the resulting mockup was approved as the S2 implementation baseline. **They have since been superseded by the design loop v2 outcome (PR #12, v13)** — running them again would not produce the V1 ship spec. Specifically:
+
+- They render nav and chrome as English (`Home / About / Blog / Not found. / Back to home / etc.`) because that was the working assumption at prompt-generation time. The locked rendered values for V1 are Chinese per §2.1.
+- They specify a **text** site title mark in the header. V1 uses an animated cursive **Lo signature SVG** in hero + a static cursive Lo SVG in inner-page headers (Q3 hybrid, see §3.5). The home header has **no** left-side mark.
+- They specify "**No emoji**" as a brand constraint. V1 includes a single emoji `👋` in the home hero as a hand-wave punctuation glyph paired with the signature; this is the only emoji on the site and is `aria-hidden`. Voice rules elsewhere (about prose, blog post bodies, error messages, nav labels, button copy) still ban emoji per the design-system skill.
+- They specify "**No animation**" generally (404 prompt) and place static **geometric primitive decorations** (dot / line / outlined-circle / rotated-square) at top-right of page-title blocks. V1 ships **no decoration primitives** (see §5 deprecation) and ships **one motion element** — the 12s hero signature cycle (see §4.7). 404 stays static.
+- They specify left-aligned content with negative-space ornament. V1 uses **centered** content (see §4.6).
+
+The locked rendered values, layouts, and animation contract for V1 are §2.1 + §3 + §4 + §6, **not** these prompts. The prompts are preserved verbatim for V1.x reference — when re-running for a future iteration that wants to revisit decoration / typography / layout from scratch, treat them as a brand-anchor reference and update the chrome / decoration / animation / layout sections to the design loop v2 outcome before submitting.
 
 ### 7.1 Prompt 1 · Home page
 
@@ -722,10 +875,15 @@ UX runs this checklist before requesting TL implementation review.
 
 - [ ] Every token referenced in this document is a real V0 token. Verify by grepping `packages/theme/src/` in the design-system repo.
 - [ ] No `--text-tertiary`, no `--bg-accent-soft`, no `--font-serif`, no `--color-syntax-punctuation`, no other tokens flagged as V1.x candidates in `@ayingott/theme` spec §A Future. If a need surfaces, file a `@ayingott/theme` RFC instead.
-- [ ] Decoration usage stays within §5 limits (one primitive per page section, never inside prose, never as pattern fill).
-- [ ] Voice rules from `skills/ayingott-design-system/references/voice-examples.md` are reflected in copy examples (no emoji, no exclamation, sentence case headings, third person).
+- [ ] **No geometric-primitive decoration on any V1 page** (§5 deprecated). The only motion element is the hero Lo signature animation per §4.7.
+- [ ] Voice rules from `skills/ayingott-design-system/references/voice-examples.md` are reflected in copy examples (no emoji except the hero `👋` per §4.1 + §6.5, no exclamation, sentence case headings, third person).
 - [ ] Five page wireframes accounted for (Home, About, Blog list with two states, Blog detail, 404).
-- [ ] Six prompts in §7 are self-contained — none requires reading another prompt to make sense.
+- [ ] Header Q3 hybrid behavior is implemented (home empty / inner pages static Lo mark per §3.5).
+- [ ] Hero signature animation matches §4.7 contract (12s 5-phase cycle, Phase 1 + 5 symmetric `dashoffset 1↔0` × 2s, Phase 3 hold ≥ 4s, no Phase 6 blank).
+- [ ] H1 a11y pattern matches §6.5 (`aria-label="Hi, I'm Lo."`, all decorative children `aria-hidden`).
+- [ ] Reduced-motion fallback per §6.6 (animated signature → static filled, emoji wave → no rotation).
+- [ ] Favicon composable per §3.6 swaps `/lo.svg?v=light` ↔ `/lo-white.svg?v=dark` on theme change.
+- [ ] Six prompts in §7 are tagged **superseded by design loop v2** at the section header; do not re-implement from prompts.
 - [ ] §6 a11y checklist is testable by QA without needing UX in the loop.
 
 ---
