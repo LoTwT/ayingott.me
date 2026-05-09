@@ -1,7 +1,7 @@
 <template>
   <svg
     class="lo-signature-mark"
-    viewBox="0 0 96 42"
+    viewBox="0 0 15 10"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
@@ -11,23 +11,24 @@
       class="lo-signature-mark__path"
       pathLength="1"
       vector-effect="non-scaling-stroke"
-      d="M 24 6 C 14 10 10 21 12 30 C 14 41 31 39 45 31 C 53 26 58 19 61 14 C 65 7 76 10 78 18 C 81 29 68 38 58 32 C 48 26 55 14 68 15 C 82 16 91 26 86 35 C 82 43 69 42 58 34"
+      d="M2.184 9.312C1.656 9.312 1.28 9.164 1.056 8.868C0.832 8.564 0.72 8.116 0.72 7.524C0.72 6.924 0.972 5.232 1.476 2.448L0.84 1.164C1.744 0.58 2.568 0.288 3.312 0.288C3.928 0.288 4.236 0.664 4.236 1.416C4.236 1.64 4.08 2.576 3.768 4.224C3.464 5.872 3.312 6.92 3.312 7.368H4.608C5.216 7.28 5.828 7.124 6.444 6.9C6.492 7.044 6.516 7.24 6.516 7.488C6.516 7.96 6.376 8.38 6.096 8.748C5.824 9.116 5.444 9.3 4.956 9.3C4.628 9.3 4.06 9.212 3.252 9.036C2.916 9.22 2.56 9.312 2.184 9.312ZM13.0419 2.712C13.4899 2.712 13.8739 2.892 14.1939 3.252C14.5219 3.612 14.6859 4.136 14.6859 4.824C14.6859 5.504 14.5659 6.136 14.3259 6.72C14.0859 7.296 13.7699 7.768 13.3779 8.136C12.9859 8.504 12.5419 8.792 12.0459 9C11.5499 9.2 11.0419 9.3 10.5219 9.3C9.47394 9.3 8.64594 9.012 8.03794 8.436C7.42994 7.86 7.12594 7.096 7.12594 6.144C7.12594 4.856 7.53794 3.812 8.36194 3.012C9.19394 2.204 10.2499 1.8 11.5299 1.8C11.8179 1.8 12.1059 1.832 12.3939 1.896C12.4819 2.16 12.5299 2.46 12.5379 2.796C12.7059 2.74 12.8739 2.712 13.0419 2.712ZM11.5659 4.38C11.5659 4.156 11.6179 3.904 11.7219 3.624C11.8339 3.344 12.0099 3.12 12.2499 2.952C11.1939 3.176 10.4659 3.604 10.0659 4.236C9.72194 4.78 9.54994 5.34 9.54994 5.916C9.54994 6.492 9.66594 6.956 9.89794 7.308C10.1379 7.652 10.4419 7.824 10.8099 7.824C11.6259 7.824 12.2019 7.292 12.5379 6.228C11.8899 5.828 11.5659 5.212 11.5659 4.38Z"
     />
   </svg>
 </template>
 
 <style scoped>
 .lo-signature-mark {
-  width: var(--lo-signature-width, 54px);
-  height: var(--lo-signature-height, 36px);
+  width: 54px;
+  height: 36px;
   display: block;
   overflow: visible;
 }
 
 .lo-signature-mark__path {
-  opacity: 0;
+  fill: currentColor;
+  fill-opacity: 0;
   stroke: currentColor;
-  stroke-width: var(--lo-signature-stroke-width, 2.35);
+  stroke-width: 0.32;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -37,29 +38,20 @@
 
 @keyframes lo-signature-loop {
   0%,
-  1% {
-    opacity: 0;
+  15% {
+    fill-opacity: 0;
     stroke-dashoffset: 1;
   }
 
-  2% {
-    opacity: 1;
-  }
-
-  30%,
-  82% {
-    opacity: 1;
+  35%,
+  75% {
+    fill-opacity: 1;
     stroke-dashoffset: 0;
   }
 
-  95% {
-    opacity: 0;
-    stroke-dashoffset: 0;
-  }
-
-  96%,
+  90%,
   100% {
-    opacity: 0;
+    fill-opacity: 0;
     stroke-dashoffset: 1;
   }
 }
@@ -67,7 +59,7 @@
 @media (prefers-reduced-motion: reduce) {
   .lo-signature-mark__path {
     animation: none;
-    opacity: 1;
+    fill-opacity: 1;
     stroke-dashoffset: 0;
   }
 }
