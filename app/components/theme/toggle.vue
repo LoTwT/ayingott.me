@@ -13,7 +13,7 @@ function toggleDark() {
 <template>
   <button
     type="button"
-    class="theme-toggle touch-target focus-ring"
+    class="theme-toggle touch-target"
     :aria-label="toggleLabel"
     :aria-pressed="isDark"
     :title="toggleLabel"

@@ -32,7 +32,7 @@ function goHome() {
 
       <button
         type="button"
-        class="error-page__button touch-target focus-ring"
+        class="error-page__button touch-target"
         @click="goHome"
       >
         回到首页

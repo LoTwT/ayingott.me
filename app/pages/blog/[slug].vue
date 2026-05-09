@@ -24,9 +24,7 @@ useSiteSeo({
 
 <template>
   <article class="blog-detail">
-    <NuxtLink class="blog-detail__back focus-ring" to="/blog">
-      ← 文章
-    </NuxtLink>
+    <NuxtLink class="blog-detail__back" to="/blog">← 文章</NuxtLink>
 
     <header class="blog-detail__header">
       <p class="blog-detail__meta">{{ post.date }} · {{ post.readingTime }}</p>

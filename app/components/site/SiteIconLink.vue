@@ -13,7 +13,7 @@ defineProps<{
   <NuxtLink
     :to="href"
     :aria-label="label"
-    class="site-icon-link touch-target focus-ring"
+    class="site-icon-link touch-target"
     :target="external ? '_blank' : undefined"
     :rel="external ? 'noopener noreferrer' : undefined"
   >

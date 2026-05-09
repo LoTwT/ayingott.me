@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ContactStrip from "~/components/site/ContactStrip.vue"
-import DecorativePrimitive from "~/components/site/DecorativePrimitive.vue"
 
 definePageMeta({
   layout: "home",
@@ -19,11 +18,6 @@ useSiteSeo({
 <template>
   <section class="home-page" aria-labelledby="home-title">
     <div class="home-page__copy">
-      <div class="home-page__decoration">
-        <DecorativePrimitive kind="dot" />
-        <DecorativePrimitive kind="line" />
-      </div>
-
       <p class="home-page__eyebrow">ayingott.me</p>
       <h1 id="home-title" class="home-page__title">
         Hi, I'm {{ identity.displayName }}.
@@ -49,7 +43,7 @@ useSiteSeo({
 
 <style scoped>
 .home-page {
-  width: min(100%, var(--container-wide));
+  width: min(100%, var(--container-reading));
   min-height: calc(100svh - 160px);
   margin-inline: auto;
   display: flex;
@@ -61,15 +55,6 @@ useSiteSeo({
 .home-page__copy {
   position: relative;
   max-width: 640px;
-}
-
-.home-page__decoration {
-  position: absolute;
-  top: var(--spacing-2);
-  right: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
 }
 
 .home-page__eyebrow {
@@ -131,11 +116,6 @@ useSiteSeo({
   .home-page {
     min-height: auto;
     padding-block: var(--spacing-8);
-  }
-
-  .home-page__decoration {
-    position: static;
-    margin-bottom: var(--spacing-6);
   }
 
   .home-page__title {
