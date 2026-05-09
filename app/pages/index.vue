@@ -18,9 +18,9 @@ useSiteSeo({
 <template>
   <section class="home-page" aria-labelledby="home-title">
     <div class="home-page__copy">
-      <p class="home-page__eyebrow">ayingott.me</p>
       <h1 id="home-title" class="home-page__title">
         Hi, I'm {{ identity.displayName }}.
+        <span class="home-page__emoji" aria-hidden="true">👋</span>
       </h1>
       <p class="home-page__tagline">{{ identity.homeTagline }}</p>
     </div>
@@ -60,16 +60,8 @@ useSiteSeo({
   margin-inline: auto;
 }
 
-.home-page__eyebrow {
-  margin: 0 0 var(--spacing-5);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
-}
-
 .home-page__title {
-  max-width: 12ch;
+  max-width: 14ch;
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -77,6 +69,11 @@ useSiteSeo({
   line-height: var(--text-5xl--line-height);
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-tight);
+}
+
+.home-page__emoji {
+  display: inline-block;
+  margin-inline-start: 0.12em;
 }
 
 .home-page__tagline {
@@ -123,7 +120,7 @@ useSiteSeo({
   }
 
   .home-page__title {
-    max-width: 10ch;
+    max-width: 12ch;
     font-size: var(--text-4xl);
     line-height: var(--text-4xl--line-height);
   }

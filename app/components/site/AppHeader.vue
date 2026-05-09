@@ -40,7 +40,12 @@ function isActive(to: string) {
 
 <style scoped>
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
   min-height: 64px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-canvas);
   padding-inline: var(--layout-page-gutter);
 }
 
