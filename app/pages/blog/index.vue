@@ -23,7 +23,7 @@ useSiteSeo({
 
     <div v-if="posts.length" class="blog-page__list" aria-label="文章">
       <article v-for="post in posts" :key="post.slug" class="blog-card">
-        <NuxtLink class="blog-card__link focus-ring" :to="`/blog/${post.slug}`">
+        <NuxtLink class="blog-card__link" :to="`/blog/${post.slug}`">
           <span class="blog-card__meta">
             {{ post.date }} · {{ post.readingTime }}
           </span>

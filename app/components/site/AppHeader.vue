@@ -24,7 +24,7 @@ function isActive(to: string) {
             v-for="item in navItems"
             :key="item.to"
             :to="item.to"
-            class="site-header__link focus-ring"
+            class="site-header__link"
             :class="{ 'site-header__link--active': isActive(item.to) }"
             :aria-current="isActive(item.to) ? 'page' : undefined"
           >
