@@ -53,7 +53,7 @@ withDefaults(
   0% {
     fill-opacity: 0;
     stroke-opacity: 1;
-    stroke-dashoffset: 1;
+    stroke-dashoffset: 0.9;
     animation-timing-function: ease-in-out;
   }
 
@@ -71,38 +71,25 @@ withDefaults(
     animation-timing-function: linear;
   }
 
-  62.5% {
+  75% {
     fill-opacity: 1;
     stroke-opacity: 1;
     stroke-dashoffset: 0;
     animation-timing-function: ease-out;
   }
 
-  70.8% {
+  83.3% {
     fill-opacity: 0;
     stroke-dashoffset: 0;
     stroke-opacity: 1;
     animation-timing-function: ease-in-out;
   }
 
-  87.49% {
-    fill-opacity: 0;
-    stroke-dashoffset: 1;
-    stroke-opacity: 1;
-    animation-timing-function: linear;
-  }
-
-  87.5% {
-    fill-opacity: 0;
-    stroke-dashoffset: 1;
-    stroke-opacity: 0;
-    animation-timing-function: linear;
-  }
-
   100% {
     fill-opacity: 0;
-    stroke-opacity: 0;
-    stroke-dashoffset: 1;
+    stroke-opacity: 1;
+    stroke-dashoffset: 0.9;
+    animation-timing-function: linear;
   }
 }
 
