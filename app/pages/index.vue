@@ -20,7 +20,7 @@ useSiteSeo({
   <section class="home-page" aria-labelledby="home-title">
     <div class="home-page__copy">
       <h1 id="home-title" class="home-page__title" aria-label="Hi, I'm Lo.">
-        <span class="home-page__title-text">Hi, I'm</span>
+        <span class="home-page__title-text" aria-hidden="true">Hi, I'm</span>
         <span class="home-page__signature" aria-hidden="true"
           ><LoSignatureMark /></span
         ><span class="home-page__signature-period" aria-hidden="true">.</span>
