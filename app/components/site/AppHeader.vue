@@ -96,8 +96,8 @@ function isActive(to: string) {
   border-radius: var(--radius-control);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  line-height: var(--text-xs--line-height);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
   text-decoration: none;
   transition: var(--transition-interactive);
 }

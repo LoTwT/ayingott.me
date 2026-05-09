@@ -74,6 +74,8 @@ useSiteSeo({
 .home-page__emoji {
   display: inline-block;
   margin-inline-start: 0.12em;
+  transform-origin: 70% 70%;
+  animation: home-emoji-wave 2.8s ease-in-out infinite;
 }
 
 .home-page__tagline {
@@ -123,6 +125,40 @@ useSiteSeo({
     max-width: 12ch;
     font-size: var(--text-4xl);
     line-height: var(--text-4xl--line-height);
+  }
+}
+
+@keyframes home-emoji-wave {
+  0%,
+  42%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  6% {
+    transform: rotate(14deg);
+  }
+
+  12% {
+    transform: rotate(-8deg);
+  }
+
+  18% {
+    transform: rotate(12deg);
+  }
+
+  24% {
+    transform: rotate(-4deg);
+  }
+
+  30% {
+    transform: rotate(6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page__emoji {
+    animation: none;
   }
 }
 </style>

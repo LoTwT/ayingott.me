@@ -33,30 +33,26 @@
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation:
-    lo-signature-draw 1400ms cubic-bezier(0.22, 1, 0.36, 1) 160ms forwards,
-    lo-signature-fill 520ms ease-out 920ms forwards;
+  animation: lo-signature-loop 8s linear infinite;
 }
 
-@keyframes lo-signature-draw {
-  0% {
-    opacity: 0;
+@keyframes lo-signature-loop {
+  0%,
+  15% {
+    fill-opacity: 0;
     stroke-dashoffset: 1;
   }
 
-  18% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 1;
+  35%,
+  75% {
+    fill-opacity: 1;
     stroke-dashoffset: 0;
   }
-}
 
-@keyframes lo-signature-fill {
+  90%,
   100% {
-    fill-opacity: 1;
+    fill-opacity: 0;
+    stroke-dashoffset: 1;
   }
 }
 
