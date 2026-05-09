@@ -92,7 +92,7 @@ useSiteSeo({
 .home-page__signature-period {
   display: inline-block;
   flex: 0 0 auto;
-  margin-inline-end: 0;
+  margin-inline-end: 0.25rem;
 }
 
 .home-page__emoji {

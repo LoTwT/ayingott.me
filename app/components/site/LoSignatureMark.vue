@@ -53,7 +53,7 @@ withDefaults(
   0% {
     fill-opacity: 0;
     stroke-opacity: 1;
-    stroke-dashoffset: 0.9;
+    stroke-dashoffset: 1;
     animation-timing-function: ease-in-out;
   }
 
@@ -88,7 +88,7 @@ withDefaults(
   100% {
     fill-opacity: 0;
     stroke-opacity: 1;
-    stroke-dashoffset: 0.9;
+    stroke-dashoffset: 1;
     animation-timing-function: linear;
   }
 }
