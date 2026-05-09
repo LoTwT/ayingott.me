@@ -78,16 +78,15 @@ useSiteSeo({
 
 .home-page__signature {
   display: inline-flex;
-  margin-inline: 0.05em 0;
-  vertical-align: -0.28em;
-  --lo-signature-width: 4.35rem;
-  --lo-signature-height: 2.9rem;
-  --lo-signature-stroke-width: 0.36;
+  margin-inline: 0.025em 0;
+  vertical-align: -0.1em;
+  --lo-signature-width: 3.4rem;
+  --lo-signature-height: 2.27rem;
+  --lo-signature-stroke-width: 0.24;
 }
 
 .home-page__signature-period {
-  display: inline-block;
-  animation: home-signature-period 8s linear infinite;
+  display: inline;
 }
 
 .home-page__emoji {
@@ -147,26 +146,9 @@ useSiteSeo({
   }
 
   .home-page__signature {
-    --lo-signature-width: 3.45rem;
-    --lo-signature-height: 2.3rem;
-    --lo-signature-stroke-width: 0.34;
-  }
-}
-
-@keyframes home-signature-period {
-  0%,
-  28% {
-    opacity: 0;
-  }
-
-  32%,
-  82% {
-    opacity: 1;
-  }
-
-  95%,
-  100% {
-    opacity: 0;
+    --lo-signature-width: 2.95rem;
+    --lo-signature-height: 1.97rem;
+    --lo-signature-stroke-width: 0.24;
   }
 }
 
@@ -199,13 +181,8 @@ useSiteSeo({
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-page__signature-period,
   .home-page__emoji {
     animation: none;
-  }
-
-  .home-page__signature-period {
-    opacity: 1;
   }
 }
 </style>

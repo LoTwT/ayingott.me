@@ -40,6 +40,7 @@ withDefaults(
   fill: currentColor;
   fill-opacity: 0;
   stroke: currentColor;
+  stroke-opacity: 0;
   stroke-width: var(--lo-signature-stroke-width, 0.32);
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -49,21 +50,47 @@ withDefaults(
 }
 
 @keyframes lo-signature-loop {
-  0%,
-  15% {
+  0% {
     fill-opacity: 0;
+    stroke-opacity: 0;
     stroke-dashoffset: 1;
   }
 
-  35%,
-  75% {
+  5% {
+    fill-opacity: 0;
+    stroke-opacity: 0.35;
+    stroke-dashoffset: 0.85;
+  }
+
+  14% {
+    fill-opacity: 0;
+    stroke-opacity: 0.45;
+    stroke-dashoffset: 0.35;
+  }
+
+  20% {
     fill-opacity: 1;
+    stroke-opacity: 0.18;
+    stroke-dashoffset: 0;
+  }
+
+  24%,
+  82% {
+    fill-opacity: 1;
+    stroke-opacity: 0;
     stroke-dashoffset: 0;
   }
 
   90%,
+  99.9% {
+    fill-opacity: 0;
+    stroke-opacity: 0;
+    stroke-dashoffset: 0;
+  }
+
   100% {
     fill-opacity: 0;
+    stroke-opacity: 0;
     stroke-dashoffset: 1;
   }
 }
@@ -73,6 +100,7 @@ withDefaults(
     animation: none;
     fill-opacity: 1;
     stroke: none;
+    stroke-opacity: 0;
     stroke-dasharray: none;
     stroke-dashoffset: 0;
     stroke-width: 0;
@@ -83,6 +111,7 @@ withDefaults(
   animation: none;
   fill-opacity: 1;
   stroke: none;
+  stroke-opacity: 0;
   stroke-dasharray: none;
   stroke-dashoffset: 0;
   stroke-width: 0;
