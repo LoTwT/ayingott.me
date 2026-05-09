@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ContactStrip from "~/components/site/ContactStrip.vue"
+import LoSignatureMark from "~/components/site/LoSignatureMark.vue"
 
 definePageMeta({
   layout: "home",
@@ -18,8 +19,11 @@ useSiteSeo({
 <template>
   <section class="home-page" aria-labelledby="home-title">
     <div class="home-page__copy">
-      <h1 id="home-title" class="home-page__title">
-        Hi, I'm {{ identity.displayName }}.
+      <h1 id="home-title" class="home-page__title" aria-label="Hi, I'm Lo.">
+        Hi, I'm
+        <span class="home-page__signature" aria-hidden="true"
+          ><LoSignatureMark /></span
+        ><span class="home-page__signature-period" aria-hidden="true">.</span>
         <span class="home-page__emoji" aria-hidden="true">👋</span>
       </h1>
       <p class="home-page__tagline">{{ identity.homeTagline }}</p>
@@ -61,14 +65,29 @@ useSiteSeo({
 }
 
 .home-page__title {
-  max-width: 14ch;
+  max-width: 18ch;
   margin: 0;
+  display: inline-block;
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: var(--text-5xl);
   line-height: var(--text-5xl--line-height);
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-tight);
+}
+
+.home-page__signature {
+  display: inline-flex;
+  margin-inline: 0.04em 0.01em;
+  vertical-align: -0.42em;
+  --lo-signature-width: 4.65rem;
+  --lo-signature-height: 3.1rem;
+  --lo-signature-stroke-width: 0.36;
+}
+
+.home-page__signature-period {
+  display: inline-block;
+  animation: home-signature-period 8s linear infinite;
 }
 
 .home-page__emoji {
@@ -122,9 +141,32 @@ useSiteSeo({
   }
 
   .home-page__title {
-    max-width: 12ch;
+    max-width: 16ch;
     font-size: var(--text-4xl);
     line-height: var(--text-4xl--line-height);
+  }
+
+  .home-page__signature {
+    --lo-signature-width: 3.75rem;
+    --lo-signature-height: 2.5rem;
+    --lo-signature-stroke-width: 0.34;
+  }
+}
+
+@keyframes home-signature-period {
+  0%,
+  28% {
+    opacity: 0;
+  }
+
+  32%,
+  82% {
+    opacity: 1;
+  }
+
+  95%,
+  100% {
+    opacity: 0;
   }
 }
 
@@ -157,8 +199,13 @@ useSiteSeo({
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-page__signature-period,
   .home-page__emoji {
     animation: none;
+  }
+
+  .home-page__signature-period {
+    opacity: 1;
   }
 }
 </style>

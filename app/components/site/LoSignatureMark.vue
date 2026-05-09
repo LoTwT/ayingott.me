@@ -18,8 +18,8 @@
 
 <style scoped>
 .lo-signature-mark {
-  width: 54px;
-  height: 36px;
+  width: var(--lo-signature-width, 54px);
+  height: var(--lo-signature-height, 36px);
   display: block;
   overflow: visible;
 }
@@ -28,7 +28,7 @@
   fill: currentColor;
   fill-opacity: 0;
   stroke: currentColor;
-  stroke-width: 0.32;
+  stroke-width: var(--lo-signature-stroke-width, 0.32);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
