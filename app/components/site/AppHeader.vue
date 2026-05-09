@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoSignatureMark from "~/components/site/LoSignatureMark.vue"
 import ThemeToggle from "~/components/theme/toggle.vue"
 
 const route = useRoute()
@@ -16,7 +17,9 @@ function isActive(to: string) {
 <template>
   <header class="site-header">
     <div class="site-header__inner">
-      <span class="site-header__mark">ayingott.me</span>
+      <NuxtLink to="/" class="site-header__mark" aria-label="Lo">
+        <LoSignatureMark />
+      </NuxtLink>
 
       <div class="site-header__actions">
         <nav class="site-header__nav" aria-label="主导航">
@@ -60,12 +63,17 @@ function isActive(to: string) {
 }
 
 .site-header__mark {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  line-height: var(--text-xl--line-height);
-  font-weight: var(--font-weight-medium);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
   color: var(--text-primary);
-  cursor: default;
+  text-decoration: none;
+  transition: var(--transition-interactive);
+}
+
+.site-header__mark:hover {
+  color: var(--text-accent);
 }
 
 .site-header__actions {
