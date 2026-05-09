@@ -159,9 +159,9 @@ Blog posts additionally publish (Open Graph article properties; use `property=`,
 - Canonical paths are lowercase with trailing slash dropped. `/blog/post-slug`, not `/Blog/Post-Slug/`.
 - 404 catches everything not enumerated above. There is no 410 / gone handling for V1.
 
-### 3.5 Header behavior (Q3 hybrid signature mark)
+### 3.5 Header behavior (uniform static signature mark, all pages)
 
-The site header is sticky and behaves differently between **home** and **inner pages** (about / blog list / blog detail / 404). This is the Q3=B "hybrid header" outcome from design loop v2 (lo-user msg `b06a1f40`).
+The site header is sticky and **carries the same static cursive Lo signature mark across all pages** (home / about / blog list / blog detail / 404). This is the v14 update of the original Q3 hybrid (lo-user msg `74f99bc1`, 2026-05-10): home was previously markless, but lo-user requested the home header carry the mark too — to provide a consistent chrome-level brand anchor on every page.
 
 **Sticky chrome (all pages)**:
 
@@ -170,17 +170,19 @@ The site header is sticky and behaves differently between **home** and **inner p
 - `background: var(--surface-canvas)` so content scrolls beneath without bleeding through.
 - Padding: `var(--layout-page-gutter)`.
 
-**Left-side mark (route-conditional)**:
+**Left-side mark (uniform, all pages)**:
 
-- **Home (`/`)**: header has **no left-side mark**. The hero already carries the animated Lo signature; placing a second mark in the header would double-anchor identity in the same viewport. The header inner row uses `justify-content: flex-end` so the nav cluster sits flush right.
-- **Inner pages (about / blog / 404 / etc.)**: header carries a **static cursive Lo signature mark** as a brand anchor and home-link target.
-  - Component: `<LoSignatureMark :animated="false" />` (static variant, see §4.7 contract).
-  - Size: `--lo-signature-width: 54px; --lo-signature-height: 36px; --lo-signature-stroke-width: 0.32;`.
-  - Wrapper: `<NuxtLink to="/" aria-label="Lo">` with `min-width / min-height: var(--touch-target-min)` (44px) so the visible 54×36 mark sits in a ≥ 44×44 hit area.
-  - Hover: color shifts to `var(--text-accent)`.
-- **Right cluster (all pages)**: nav links + theme toggle. Nav links are `var(--font-mono)` at **`var(--text-sm)` (14px)**, `padding-block: var(--spacing-2)`, `padding-inline: var(--spacing-3)`, `border-radius: var(--radius-control)`, `transition: var(--transition-interactive)`. Each nav link has a ≥ 44×44 hit area via the V0 `touch-target` utility. The active link uses `var(--text-accent)`; siblings use `var(--text-primary)`.
+- All pages render a **static cursive Lo signature mark** as a brand anchor and home-link target.
+- Component: `<LoSignatureMark :animated="false" />` (static variant, see §4.7 contract).
+- Size: `--lo-signature-width: 54px; --lo-signature-height: 36px; --lo-signature-stroke-width: 0.32;`.
+- Wrapper: `<NuxtLink to="/" aria-label="Lo">` with `min-width / min-height: var(--touch-target-min)` (44px) so the visible 54×36 mark sits in a ≥ 44×44 hit area.
+- Hover: color shifts to `var(--text-accent)`.
 
-**Why a static (not animated) mark on inner pages**: the animated 12s cycle in the chrome region pulls attention from the page content. Inner pages are reading surfaces; the brand anchor should be present but quiet. The static cursive Lo (filled glyph, no stroke animation) preserves brand recognition without competing with content.
+**Right cluster (all pages)**: nav links + theme toggle. Nav links are `var(--font-mono)` at **`var(--text-sm)` (14px)**, `padding-block: var(--spacing-2)`, `padding-inline: var(--spacing-3)`, `border-radius: var(--radius-control)`, `transition: var(--transition-interactive)`. Each nav link has a ≥ 44×44 hit area via the V0 `touch-target` utility. The active link uses `var(--text-accent)`; siblings use `var(--text-primary)`.
+
+**Home double-mark visual relationship**: home renders both a **small static mark in the header (54×36)** and a **large animated signature in the hero (~76×51)** — these are intentionally not the same visual weight. The chrome mark is a quiet brand anchor; the hero signature is the page's primary identity moment. The cursive Lo path data is shared, so the two marks read as consistent siblings rather than duplicate elements (small printed stamp + large hand signature).
+
+**Why a static (not animated) mark on chrome**: the animated 12s cycle in the chrome region would pull attention from page content on every page. Static filled cursive Lo preserves brand recognition without competing for attention. Hero animation is reserved for the home identity moment only.
 
 **Reduced-motion**: the static variant is already animation-free, so `prefers-reduced-motion: reduce` is a no-op for the header mark.
 
@@ -215,14 +217,14 @@ Each block lists its semantic vars, spacing, and accessibility role. Anything no
 
 **Purpose**: identity card. The visitor lands and within one screen knows who this is and where to go next.
 
-**Block layout (top to bottom, V1 design loop v2 contract)**:
+**Block layout (top to bottom, v14 update — home now also carries chrome mark)**:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Header (sticky, no left mark on home)              │
-│  ┌──────────────────┐                               │
-│  │ Nav · Theme tog. │                               │
-│  └──────────────────┘                               │
+│  Header (sticky, static Lo mark left + nav right)   │
+│  ┌────────┐                  ┌──────────────────┐   │
+│  │ Lo mark│                  │ Nav · Theme tog. │   │
+│  └────────┘                  └──────────────────┘   │
 │                                                     │
 │  Hero signature block (centered)                    │
 │  ┌─────────────────────────────────────────────┐    │
