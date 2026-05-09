@@ -4,6 +4,7 @@ import ThemeToggle from "~/components/theme/toggle.vue"
 
 const route = useRoute()
 const { navItems } = useSiteContent()
+const showHeaderMark = computed(() => route.path !== "/")
 
 function isActive(to: string) {
   if (to === "/") {
@@ -16,8 +17,16 @@ function isActive(to: string) {
 
 <template>
   <header class="site-header">
-    <div class="site-header__inner">
-      <NuxtLink to="/" class="site-header__mark" aria-label="Lo">
+    <div
+      class="site-header__inner"
+      :class="{ 'site-header__inner--markless': !showHeaderMark }"
+    >
+      <NuxtLink
+        v-if="showHeaderMark"
+        to="/"
+        class="site-header__mark"
+        aria-label="Lo"
+      >
         <LoSignatureMark />
       </NuxtLink>
 
@@ -62,6 +71,10 @@ function isActive(to: string) {
   gap: var(--spacing-4);
 }
 
+.site-header__inner--markless {
+  justify-content: flex-end;
+}
+
 .site-header__mark {
   min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
@@ -70,6 +83,9 @@ function isActive(to: string) {
   color: var(--text-primary);
   text-decoration: none;
   transition: var(--transition-interactive);
+  --lo-signature-width: 54px;
+  --lo-signature-height: 36px;
+  --lo-signature-stroke-width: 2.35;
 }
 
 .site-header__mark:hover {
