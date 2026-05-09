@@ -71,18 +71,18 @@ useSiteSeo({
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: var(--text-5xl);
-  line-height: var(--text-5xl--line-height);
+  line-height: 1.5;
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-tight);
 }
 
 .home-page__signature {
   display: inline-flex;
-  margin-inline: 0.025em 0;
-  vertical-align: -0.1em;
-  --lo-signature-width: 3.4rem;
-  --lo-signature-height: 2.27rem;
-  --lo-signature-stroke-width: 0.24;
+  margin-inline: 0.04em 0;
+  vertical-align: middle;
+  --lo-signature-width: 4.2rem;
+  --lo-signature-height: 2.8rem;
+  --lo-signature-stroke-width: 0.3;
 }
 
 .home-page__signature-period {
@@ -142,13 +142,13 @@ useSiteSeo({
   .home-page__title {
     max-width: 16ch;
     font-size: var(--text-4xl);
-    line-height: var(--text-4xl--line-height);
+    line-height: 1.5;
   }
 
   .home-page__signature {
-    --lo-signature-width: 2.95rem;
-    --lo-signature-height: 1.97rem;
-    --lo-signature-stroke-width: 0.24;
+    --lo-signature-width: 4.2rem;
+    --lo-signature-height: 2.8rem;
+    --lo-signature-stroke-width: 0.3;
   }
 }
 

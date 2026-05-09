@@ -46,46 +46,50 @@ withDefaults(
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: lo-signature-loop 8s linear infinite;
+  animation: lo-signature-loop 12s linear infinite;
 }
 
 @keyframes lo-signature-loop {
   0% {
     fill-opacity: 0;
-    stroke-opacity: 0;
+    stroke-opacity: 1;
     stroke-dashoffset: 1;
+    animation-timing-function: ease-in-out;
   }
 
-  5% {
+  16.7% {
     fill-opacity: 0;
-    stroke-opacity: 0.35;
-    stroke-dashoffset: 0.85;
+    stroke-opacity: 1;
+    stroke-dashoffset: 0;
+    animation-timing-function: ease-out;
   }
 
-  14% {
-    fill-opacity: 0;
-    stroke-opacity: 0.45;
-    stroke-dashoffset: 0.35;
-  }
-
-  20% {
+  25% {
     fill-opacity: 1;
-    stroke-opacity: 0.18;
+    stroke-opacity: 1;
     stroke-dashoffset: 0;
+    animation-timing-function: linear;
   }
 
-  24%,
-  82% {
+  62.5% {
     fill-opacity: 1;
-    stroke-opacity: 0;
+    stroke-opacity: 1;
     stroke-dashoffset: 0;
+    animation-timing-function: ease-out;
   }
 
-  90%,
-  99.9% {
+  70.8% {
     fill-opacity: 0;
-    stroke-opacity: 0;
     stroke-dashoffset: 0;
+    stroke-opacity: 1;
+    animation-timing-function: ease-in-out;
+  }
+
+  87.5% {
+    fill-opacity: 0;
+    stroke-dashoffset: 0;
+    stroke-opacity: 0;
+    animation-timing-function: linear;
   }
 
   100% {
