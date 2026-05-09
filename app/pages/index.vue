@@ -20,7 +20,7 @@ useSiteSeo({
   <section class="home-page" aria-labelledby="home-title">
     <div class="home-page__copy">
       <h1 id="home-title" class="home-page__title" aria-label="Hi, I'm Lo.">
-        Hi, I'm
+        <span class="home-page__title-text">Hi, I'm</span>
         <span class="home-page__signature" aria-hidden="true"
           ><LoSignatureMark /></span
         ><span class="home-page__signature-period" aria-hidden="true">.</span>
@@ -67,7 +67,11 @@ useSiteSeo({
 .home-page__title {
   max-width: 18ch;
   margin: 0;
-  display: inline-block;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: var(--text-5xl);
@@ -78,22 +82,28 @@ useSiteSeo({
 
 .home-page__signature {
   display: inline-flex;
-  margin-inline: 0.04em 0;
-  vertical-align: middle;
-  --lo-signature-width: 4.2rem;
-  --lo-signature-height: 2.8rem;
-  --lo-signature-stroke-width: 0.3;
+  flex: 0 0 auto;
+  margin-inline: 0.5rem;
+  --lo-signature-width: 4.8rem;
+  --lo-signature-height: 3.2rem;
+  --lo-signature-stroke-width: 0.35;
 }
 
 .home-page__signature-period {
-  display: inline;
+  display: inline-block;
+  flex: 0 0 auto;
 }
 
 .home-page__emoji {
   display: inline-block;
+  flex: 0 0 auto;
   margin-inline-start: 0.12em;
   transform-origin: 70% 70%;
   animation: home-emoji-wave 2.8s ease-in-out infinite;
+}
+
+.home-page__title-text {
+  flex: 0 0 auto;
 }
 
 .home-page__tagline {
@@ -140,15 +150,16 @@ useSiteSeo({
   }
 
   .home-page__title {
-    max-width: 16ch;
+    max-width: 100%;
     font-size: var(--text-4xl);
     line-height: 1.5;
   }
 
   .home-page__signature {
-    --lo-signature-width: 4.2rem;
-    --lo-signature-height: 2.8rem;
-    --lo-signature-stroke-width: 0.3;
+    margin-inline: 0.375rem;
+    --lo-signature-width: 4.8rem;
+    --lo-signature-height: 3.2rem;
+    --lo-signature-stroke-width: 0.35;
   }
 }
 

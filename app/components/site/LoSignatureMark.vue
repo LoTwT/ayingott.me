@@ -85,9 +85,16 @@ withDefaults(
     animation-timing-function: ease-in-out;
   }
 
+  87.49% {
+    fill-opacity: 0;
+    stroke-dashoffset: 1;
+    stroke-opacity: 1;
+    animation-timing-function: linear;
+  }
+
   87.5% {
     fill-opacity: 0;
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 1;
     stroke-opacity: 0;
     animation-timing-function: linear;
   }
