@@ -516,7 +516,7 @@ The prompt format:
 
 Run them in order. After each, paste the output into this thread; UX runs critique loop and converges to a TL-implementable mockup.
 
-**Historical note**: the prompts below were the V1 mockup-generation set, run once on 2026-05-08 and the resulting mockup was approved as the S2 implementation baseline. They render nav and chrome as English (`Home / About / Blog / Not found. / Back to home / etc.`) because that was the working assumption at prompt-generation time. The locked rendered values for V1 are Chinese per §2.1; the implementation uses §2.1 as the authoritative source, not these prompts. Re-running these prompts to regenerate mockups would require updating each prompt's nav and chrome strings to the §2.1 Chinese values.
+**Historical note**: the prompts below were the V1 mockup-generation set, run once on 2026-05-08 and the resulting mockup was approved as the S2 implementation baseline. They render nav and chrome as English (`Home / About / Blog / Not found. / Back to home / etc.`) because that was the working assumption at prompt-generation time. The locked rendered values for V1 are Chinese per §2.1; the implementation uses §2.1 as the authoritative source, not these prompts. Re-running these prompts to regenerate mockups would require updating each prompt's nav and chrome strings to the §2.1 Chinese values. Home decoration follows §4.1 / §5: no primitive on the home hero.
 
 ### 7.1 Prompt 1 · Home page
 
@@ -560,8 +560,8 @@ Constraints:
 - No gradients, no images, no patterns, no textures.
 - No icon fonts; icons are inline SVGs in monoline 1.5px stroke style.
 - No exclamation points. No "Welcome!" copy.
-- Place exactly one dot + line decoration combo in the top-right margin
-  of the signature block. Lavender, sparse.
+- Do not place a decoration primitive on the home hero / signature block.
+  The signature block carries the page on its own; keep it quiet.
 - Provide both light and dark variants. Dark canvas is purple-tinged
   near-black (#121019), not neutral grey.
 ```
