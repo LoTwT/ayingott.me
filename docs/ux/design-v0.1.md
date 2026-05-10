@@ -205,6 +205,89 @@ Implementation lives in `app/composables/useSiteFavicon.ts`. The composable:
 
 Drift not allowed: do not add a third favicon variant for system theme; theme is user-controlled in V1 (manual toggle), and the favicon mirrors whatever the page reports.
 
+### 3.7 Theme toggle transition (circular reveal)
+
+When the visitor clicks the right-side theme toggle (light↔dark), the new theme paints in via a **circular reveal anchored at the toggle's click position**. This is the only chrome-level transition animation in V1; static toggles felt abrupt for what is otherwise a calm site.
+
+**Source of truth**: lo-user msg `74f99bc1` requested a fullscreen theme transition; UX default candidate (a) accepted in lo-user msg `63d7b9ef` 2026-05-10.
+
+**Visual model**:
+
+- Origin: the click event's `clientX` / `clientY` — i.e. exactly where the user pressed the toggle button.
+- Shape: `clip-path: circle(<radius> at <x> <y>)`, animating radius from `0` to the viewport diagonal distance from origin (so the circle sweeps through every pixel).
+- Direction: only the **incoming** theme animates in (`::view-transition-new(root)`). The outgoing theme stays as the static under-layer; the circle reveals the new theme on top of it.
+- Duration: **600ms**. Slow enough to perceive the reveal as a deliberate transition; fast enough not to block subsequent interaction.
+- Easing: `ease-out` — fast at the origin, decelerating as it expands. Reads as "light expanding outward and naturally settling."
+
+**Implementation**:
+
+The transition uses the **CSS View Transitions API** (`document.startViewTransition`). The toggle handler reads click coordinates, computes the end radius (`Math.hypot` of the larger horizontal and vertical distances to viewport edges), and animates `clip-path` on the `::view-transition-new(root)` pseudo-element.
+
+Reference shape:
+
+```ts
+function toggleTheme(event: MouseEvent) {
+  const x = event.clientX
+  const y = event.clientY
+  const endRadius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y),
+  )
+
+  if (
+    !document.startViewTransition ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    setColorMode()
+    return
+  }
+
+  const transition = document.startViewTransition(() => setColorMode())
+  transition.ready.then(() => {
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0 at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration: 600,
+        easing: "ease-out",
+        pseudoElement: "::view-transition-new(root)",
+      },
+    )
+  })
+}
+```
+
+`setColorMode()` is whatever existing color-mode mutation the S1 toggle runs (Nuxt color-mode `.dark` class swap on `<html>`). The View Transitions API takes a synchronous DOM mutation callback and handles the snapshot + cross-fade scaffolding; we override only the `new(root)` keyframe so the default cross-fade is replaced with the circle reveal.
+
+**Browser support and fallback**:
+
+- **Supported**: Chromium (Chrome 111+ / Edge 111+) + WebKit (Safari 18+).
+- **Unsupported**: Firefox (no `startViewTransition` as of this spec); older Safari/Chrome. In those browsers `document.startViewTransition` is `undefined` and the early return runs `setColorMode()` synchronously — the theme swaps instantly with no animation. No JS error, no console warning.
+- **Reduced motion**: same code path as unsupported — `prefers-reduced-motion: reduce` matches → `setColorMode()` synchronously, instant swap.
+
+**Accessibility**:
+
+- The toggle's `aria-pressed` state is updated by `setColorMode()` and is observed by screen readers immediately, regardless of animation timing — visual transition runs in parallel, not in series.
+- The transition is purely decorative: no information is conveyed only through the animation.
+- Reduced-motion users get instant swap (already covered above).
+- Focus behavior is unaffected — the toggle button keeps keyboard focus through the transition.
+
+**SSR / hydration**:
+
+- View Transitions API is client-only. `document.startViewTransition` access is gated by feature detection inside the click handler (which only fires after hydration), so SSR is safe.
+- The first paint (before any toggle click) shows whatever theme `useColorMode` resolves to and never animates — matches existing S1 behavior; no flash.
+
+**Drift not allowed**:
+
+- Do not change the duration to a fixed `300ms` "snap" or `1200ms` "drama" — 600ms ease-out is the brand-tuned default. If a future iteration wants a different feel, it goes through Product/UX rather than ad-hoc tuning.
+- Do not animate the **outgoing** theme's `::view-transition-old(root)` — that produces a competing fade and breaks the "single light wave from origin" mental model.
+- Do not clamp the end radius below the diagonal — the circle must reach all four corners.
+- Do not gate the transition behind a feature flag or user preference toggle in V1 — `prefers-reduced-motion` is the single opt-out.
+
 ---
 
 ## 4. Page wireframes
