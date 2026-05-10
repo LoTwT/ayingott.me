@@ -242,7 +242,10 @@ function toggleTheme(event: MouseEvent) {
     return
   }
 
-  const transition = document.startViewTransition(() => setColorMode())
+  const transition = document.startViewTransition(async () => {
+    setColorMode()
+    await nextTick()
+  })
   transition.ready.then(() => {
     document.documentElement.animate(
       {
@@ -261,7 +264,22 @@ function toggleTheme(event: MouseEvent) {
 }
 ```
 
-`setColorMode()` is whatever existing color-mode mutation the S1 toggle runs (Nuxt color-mode `.dark` class swap on `<html>`). The View Transitions API takes a synchronous DOM mutation callback and handles the snapshot + cross-fade scaffolding; we override only the `new(root)` keyframe so the default cross-fade is replaced with the circle reveal.
+`setColorMode()` is whatever existing color-mode mutation the S1 toggle runs (Nuxt color-mode `.dark` class swap on `<html>`). The View Transitions API takes a DOM mutation callback and handles the snapshot + cross-fade scaffolding; we override only the `new(root)` keyframe so the default cross-fade is replaced with the circle reveal.
+
+**Two implementation bridges required for the spec's stated visual**:
+
+1. **`await nextTick()` inside the View Transition callback** — Nuxt color-mode mutates `.dark` on `<html>` reactively, which Vue applies on a microtask. A synchronous callback returns before the class change actually paints, so the View Transitions API would snapshot the _old_ theme as `new(root)`. The async callback + `await nextTick()` blocks until Vue has flushed the reactivity, ensuring the new theme is the snapshot source for the reveal.
+2. **Suppress the default UA cross-fade on both pseudo-elements** — by default browsers fade-out `::view-transition-old(root)` and fade-in `::view-transition-new(root)` simultaneously, which competes with the circle reveal on `new(root)` and breaks the "outgoing theme stays as static under-layer" model. Add a global CSS rule (`app/assets/main.css` alongside the other global resets, since the View Transitions pseudo-elements are global, not toggle-scoped):
+
+```css
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+```
+
+Both bridges are required — without them the spec's "outgoing under-layer + circular incoming reveal" mental model is silently broken at runtime.
 
 **Browser support and fallback**:
 
