@@ -4,9 +4,68 @@ const toggleLabel = computed(() =>
   isDark.value ? "切换到亮色模式" : "切换到暗色模式",
 )
 
-function toggleDark() {
-  const payload = isDark.value ? "light" : "dark"
-  colorMode.preference = payload
+// design-v0.1 §3.7 — circular reveal theme toggle transition.
+// Origin: click coordinates; radius: viewport diagonal; duration: 600ms ease-out.
+// Falls back to instant swap when View Transitions API is missing or
+// `prefers-reduced-motion: reduce` matches.
+async function toggleDark(event: MouseEvent) {
+  function applyPreference() {
+    colorMode.preference = isDark.value ? "light" : "dark"
+  }
+
+  // SSR-safe: every API used below is window/document; this handler only
+  // fires post-hydration, but guard the matchMedia call anyway.
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+  if (
+    typeof document === "undefined" ||
+    typeof document.startViewTransition !== "function" ||
+    reducedMotion
+  ) {
+    applyPreference()
+    return
+  }
+
+  const x = event.clientX
+  const y = event.clientY
+  const endRadius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y),
+  )
+
+  const transition = document.startViewTransition(async () => {
+    applyPreference()
+    // Wait one tick so Vue's reactive `.dark` class swap on <html> lands
+    // before the View Transitions API captures the new snapshot. Without
+    // this the snapshot is captured pre-flush and the new theme never
+    // reaches the post-transition raster.
+    await nextTick()
+  })
+
+  try {
+    await transition.ready
+  } catch {
+    // `transition.ready` rejects when the browser bails out of the
+    // transition for any reason (e.g. concurrent transition); the theme
+    // mutation has already happened inside the callback, so just stop here.
+    return
+  }
+
+  document.documentElement.animate(
+    {
+      clipPath: [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ],
+    },
+    {
+      duration: 600,
+      easing: "ease-out",
+      pseudoElement: "::view-transition-new(root)",
+    },
+  )
 }
 </script>
 
