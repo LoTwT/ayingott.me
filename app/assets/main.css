@@ -29,3 +29,18 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+/*
+ * Theme toggle view transition (design-v0.1 §3.7).
+ *
+ * Suppresses the user-agent's default cross-fade between the old and new
+ * theme snapshots. The toggle handler animates a circular clip-path on
+ * ::view-transition-new(root) instead, so only the incoming theme reveals
+ * outward from the click position; the outgoing theme stays as the static
+ * under-layer (per §3.7 "Drift not allowed").
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
