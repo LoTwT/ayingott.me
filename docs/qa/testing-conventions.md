@@ -1,6 +1,6 @@
 # QA Testing Conventions
 
-Production smoke testing methodology for ayingott.me. Maintained by QA.
+Production smoke testing methodology for ayingott.me. Owned by @QA and @QAClaude.
 
 ---
 
