@@ -171,6 +171,12 @@ const tags = computed(() => props.post.tags ?? [])
   box-shadow: var(--focus-ring-shadow);
 }
 
+.blog-article__prose :deep(h2 a),
+.blog-article__prose :deep(h3 a) {
+  color: inherit;
+  text-decoration: none;
+}
+
 .blog-article__prose :deep(strong) {
   font-weight: var(--font-weight-semibold);
 }
