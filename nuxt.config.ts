@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@vueuse/nuxt", "@nuxtjs/color-mode"],
+  modules: ["@vueuse/nuxt", "@nuxtjs/color-mode", "@nuxt/content"],
 
   css: ["~/assets/main.css"],
 
@@ -29,11 +29,28 @@ export default defineNuxtConfig({
     storageKey: "ayin-theme",
   },
 
+  content: {
+    build: {
+      markdown: {
+        highlight: false,
+      },
+    },
+    experimental: {
+      sqliteConnector: "native",
+    },
+  },
+
   runtimeConfig: {
     public: {
       siteUrl: "https://ayingott.me",
       nowText: "",
       resumePdfUrl: "",
+    },
+  },
+
+  nitro: {
+    prerender: {
+      routes: ["/feed.xml", "/sitemap.xml"],
     },
   },
 
