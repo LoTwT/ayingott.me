@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { computed } from "vue"
+import BlogPostCard from "~/components/blog/BlogPostCard.vue"
 import PageTitle from "~/components/site/PageTitle.vue"
 
-const { posts } = useSiteContent()
+async function queryPublishedPosts() {
+  return queryCollection("blog")
+    .where("draft", "<>", true)
+    .order("date", "DESC")
+    .all()
+}
+
+const { data } = await useAsyncData("blog-posts", queryPublishedPosts)
+
+const posts = computed(() => data.value ?? [])
 
 useSiteSeo({
   title: "文章 · ayingott.me",
@@ -9,22 +20,28 @@ useSiteSeo({
   description: "Lo 的笔记。",
   path: "/blog",
 })
+
+useHead({
+  link: [
+    {
+      rel: "alternate",
+      type: "application/rss+xml",
+      title: "ayingott.me 文章",
+      href: "/feed.xml",
+    },
+  ],
+})
 </script>
 
 <template>
   <section class="blog-page" aria-labelledby="blog-title">
     <PageTitle heading-id="blog-title" title="文章" subtitle="笔记 · 归档" />
+    <a v-if="posts.length" class="blog-page__feed" href="/feed.xml">
+      RSS 订阅
+    </a>
 
     <div v-if="posts.length" class="blog-page__list" aria-label="文章">
-      <article v-for="post in posts" :key="post.slug" class="blog-card">
-        <NuxtLink class="blog-card__link" :to="`/blog/${post.slug}`">
-          <span class="blog-card__meta">
-            {{ post.date }} · {{ post.readingTime }}
-          </span>
-          <h2 class="blog-card__title">{{ post.title }}</h2>
-          <p class="blog-card__excerpt">{{ post.excerpt }}</p>
-        </NuxtLink>
-      </article>
+      <BlogPostCard v-for="post in posts" :key="post.path" :post="post" />
     </div>
 
     <div v-else class="blog-empty" role="status">
@@ -53,52 +70,27 @@ useSiteSeo({
   gap: var(--spacing-4);
 }
 
-.blog-card {
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-card);
-  background: var(--surface-elevated);
-  box-shadow: var(--shadow-card);
+.blog-page__feed {
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-control);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  text-decoration: none;
   transition: var(--transition-interactive);
 }
 
-.blog-card__link {
-  display: block;
-  padding: var(--spacing-6);
-  color: inherit;
-  text-decoration: none;
-}
-
-.blog-card__meta {
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  line-height: var(--text-xs--line-height);
-}
-
-.blog-card__title {
-  margin: var(--spacing-3) 0 0;
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  line-height: var(--text-2xl--line-height);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: var(--tracking-normal);
-}
-
-.blog-card__excerpt {
-  margin: var(--spacing-3) 0 0;
-  color: var(--text-muted);
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
-}
-
-.blog-card__link:hover .blog-card__title {
+.blog-page__feed:hover {
   color: var(--text-accent);
 }
 
-.blog-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
+.blog-page__feed:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring-shadow);
 }
 
 .blog-empty {

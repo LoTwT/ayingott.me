@@ -11,17 +11,18 @@ Product requirements and decisions live in:
 
 - Nuxt 4 + Vue 3
 - Tailwind CSS v4
-- `@ayingott/theme@0.0.1` from npm
+- `@ayingott/theme@0.0.2` from npm
+- `@nuxt/content` v3 for Markdown articles
 - `@nuxtjs/color-mode` with a `.dark` class
 - Static generation for Cloudflare deployment
 
 Use Node 22.12.0 or newer. The repository pins this in `.node-version` to match the Nuxt 4 engine requirement and Cloudflare build target.
 
-The design-system package is pinned to the first npm technical release:
+The design-system package is pinned to the active npm technical release:
 
 ```json
 {
-  "@ayingott/theme": "0.0.1"
+  "@ayingott/theme": "0.0.2"
 }
 ```
 
@@ -46,6 +47,8 @@ pnpm lint
 pnpm generate
 ```
 
+Add posts in `content/blog/`. The writing template lives in `docs/content/blog-post-template.md`; keep drafts as `*.draft.md` with `draft: true`, and use `NUXT_INCLUDE_DRAFTS=1 pnpm dev` for local draft preview. Published posts appear in `/blog`, `/feed.xml`, and `/sitemap.xml`.
+
 ## Styling
 
 The app CSS entry is `app/assets/main.css`.
@@ -58,7 +61,7 @@ The app CSS entry is `app/assets/main.css`.
 
 `@ayingott/theme` provides Tailwind v4 tokens, semantic CSS variables, focus/touch utilities, base styles, and opt-in Space Grotesk / Space Mono webfonts.
 
-S2 implements the locked `design-v0.1` page system: home, about, blog list, blog detail route, 404, `.dark` mode, and the contact-strip resume affordance. Blog content ingestion with `@nuxt/content`, RSS, and real resume PDF configuration remain follow-up work.
+S2 implements the locked `design-v0.1` page system: home, about, blog list, blog detail route, 404, `.dark` mode, and the contact-strip resume affordance. Phase A wires blog content ingestion with `@nuxt/content`, quiet article prose, RSS, and sitemap output. Real resume PDF configuration remains follow-up work.
 
 ## Deployment
 
