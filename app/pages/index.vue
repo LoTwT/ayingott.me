@@ -67,6 +67,7 @@ useSiteSeo({
   min-height: calc(100svh - 160px);
   margin-inline: auto;
   display: grid;
+  align-content: start;
   gap: clamp(var(--spacing-12), 9vw, var(--spacing-20));
   padding-block: clamp(var(--spacing-14), 14svh, 9rem) var(--spacing-12);
 }
