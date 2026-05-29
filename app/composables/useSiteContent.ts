@@ -40,8 +40,12 @@ export function useSiteContent() {
     displayName: "Lo",
     homeTagline: "A developer",
     aboutSubtitle: "Lo · Developer",
-    aboutParagraphs: ["A person."],
-    interests: [] as string[],
+    aboutParagraphs: [
+      "这是 Lo 的个人站。一处安静的自留地，用来放文章、项目和一些慢慢成形的记录。",
+      "我喜欢把工具做得克制、可读、可维护。比起热闹的展示页，这里更接近一本持续更新的小册子。",
+      "更具体的经历和项目会继续被替换和补全；现在这个版本先把阅读、作品入口和写作管线整理清楚。",
+    ],
+    interests: ["阅读", "语言", "ZZZ", "小工具"],
   }
 
   const nowText = computed(() =>
