@@ -16,6 +16,16 @@ export interface BlogPostSummary {
   excerpt: string
 }
 
+export interface FeaturedWork {
+  key: string
+  title: string
+  href: string
+  year: string
+  description: string
+  tags: string[]
+  external?: boolean
+}
+
 const emailUser = "hi"
 const emailHost = "ayingott.me"
 
@@ -48,6 +58,26 @@ export function useSiteContent() {
   ]
 
   const posts = [] as BlogPostSummary[]
+  const featuredWorks: FeaturedWork[] = [
+    {
+      key: "miru",
+      title: "miru",
+      href: "https://miru.ayingott.me",
+      year: "2026",
+      description: "一个安静的 Markdown 阅读器,把排版和阅读状态放在第一位。",
+      tags: ["reading", "pwa"],
+      external: true,
+    },
+    {
+      key: "yomu",
+      title: "yomu",
+      href: "https://yomu.ayingott.me",
+      year: "2026",
+      description: "每日发声阅读练习,用文章、领读和对照翻译建立语言节奏。",
+      tags: ["read aloud", "language"],
+      external: true,
+    },
+  ]
 
   const contactLinks = computed<ContactLink[]>(() => {
     const email = decodeEmail()
@@ -101,6 +131,7 @@ export function useSiteContent() {
     navItems,
     nowText,
     contactLinks,
+    featuredWorks,
     posts,
   }
 }

@@ -80,7 +80,7 @@ function getBlogPrerenderRoutes() {
       return slug ? [`/blog/${slug}`] : []
     })
 
-  return Array.from(new Set(["/blog", ...routes])).sort()
+  return Array.from(new Set(["/", "/blog", ...routes])).sort()
 }
 
 export default defineNuxtConfig({
