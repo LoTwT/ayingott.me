@@ -4,7 +4,7 @@ import { getBlogPostHref } from "~/utils/blog"
 import { escapeXml } from "~/utils/xml"
 
 const trailingSlashPattern = /\/+$/
-const staticRoutes = ["/", "/about", "/blog"]
+const staticRoutes = ["/", "/about", "/blog", "/works"]
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)

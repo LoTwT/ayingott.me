@@ -3,8 +3,8 @@ import { computed } from "vue"
 import HomeContactList from "~/components/home/HomeContactList.vue"
 import HomeHero from "~/components/home/HomeHero.vue"
 import HomeSection from "~/components/home/HomeSection.vue"
-import HomeWorkList from "~/components/home/HomeWorkList.vue"
 import HomeWritingList from "~/components/home/HomeWritingList.vue"
+import WorksProjectList from "~/components/works/WorksProjectList.vue"
 
 definePageMeta({
   layout: "home",
@@ -50,8 +50,10 @@ useSiteSeo({
         section-id="works-preview"
         label="在做的 · Works"
         title="在做的"
+        action-label="全部作品"
+        action-to="/works"
       >
-        <HomeWorkList :items="highlightedWorks" />
+        <WorksProjectList :items="highlightedWorks" />
       </HomeSection>
 
       <HomeSection section-id="elsewhere" label="联系 · Elsewhere" title="联系">
