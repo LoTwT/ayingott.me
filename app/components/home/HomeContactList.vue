@@ -8,5 +8,5 @@ defineProps<{
 </script>
 
 <template>
-  <ContactLinkList :links="links" variant="stacked" />
+  <ContactLinkList :links="links" />
 </template>
