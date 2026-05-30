@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ContactLinkList from "~/components/site/ContactLinkList.vue"
+
 const { identity, nowText, contactLinks } = useSiteContent()
 
 const currentFocus = computed(
@@ -57,19 +59,7 @@ useSiteSeo({
 
         <div class="about-page__meta-group">
           <h2 class="about-page__meta-title">联系</h2>
-          <nav class="about-page__links" aria-label="联系方式">
-            <NuxtLink
-              v-for="link in contactLinks"
-              :key="link.key"
-              class="about-page__link"
-              :to="link.href"
-              :external="link.external"
-              :target="link.external ? '_blank' : undefined"
-              :rel="link.external ? 'noopener noreferrer' : undefined"
-            >
-              {{ link.label }}
-            </NuxtLink>
-          </nav>
+          <ContactLinkList :links="contactLinks" />
         </div>
       </aside>
     </div>
@@ -185,41 +175,6 @@ useSiteSeo({
   color: var(--text-primary);
   font-size: var(--text-sm);
   line-height: var(--text-sm--line-height);
-}
-
-.about-page__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-3) var(--spacing-5);
-}
-
-.about-page__link {
-  min-height: var(--touch-target-min);
-  display: inline-flex;
-  align-items: center;
-  border-radius: var(--radius-control);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
-  text-decoration-color: color-mix(
-    in srgb,
-    var(--text-accent) 45%,
-    transparent
-  );
-  text-underline-offset: 0.28em;
-  transition: var(--transition-interactive);
-}
-
-.about-page__link:hover {
-  color: var(--text-accent);
-  text-decoration-color: var(--text-accent);
-}
-
-.about-page__link:focus-visible {
-  outline: 2px solid var(--focus-ring-color);
-  outline-offset: 2px;
-  box-shadow: var(--focus-ring-shadow);
 }
 
 @media (max-width: 720px) {
