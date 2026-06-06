@@ -4,7 +4,7 @@ import ContactLinkList from "~/components/site/ContactLinkList.vue"
 const { identity, nowText, contactLinks } = useSiteContent()
 
 const currentFocus = computed(
-  () => nowText.value || "打磨 miru / yomu / ayingott.me",
+  () => nowText.value || "打磨 miru / design system / ayingott.me",
 )
 
 const colophonGroups = computed(() => [

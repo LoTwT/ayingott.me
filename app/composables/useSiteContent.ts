@@ -20,7 +20,6 @@ export interface FeaturedWork {
   key: string
   title: string
   href: string
-  year: string
   status: "active" | "published"
   description: string
   tags: string[]
@@ -69,42 +68,18 @@ export function useSiteContent() {
       key: "miru",
       title: "miru",
       href: "https://miru.ayingott.me",
-      year: "2026",
       status: "active",
-      description: "一个安静的 Markdown 阅读器，把排版和阅读状态放在第一位。",
-      tags: ["reading", "pwa"],
-      external: true,
-    },
-    {
-      key: "yomu",
-      title: "yomu",
-      href: "https://yomu.ayingott.me",
-      year: "2026",
-      status: "active",
-      description: "每日发声阅读练习，用文章、领读和对照翻译建立语言节奏。",
-      tags: ["read aloud", "language"],
+      description: "A quiet, reading-first reader.",
+      tags: ["Reading"],
       external: true,
     },
     {
       key: "ayingott-theme",
-      title: "@ayingott/theme",
+      title: "Design system",
       href: "https://design.ayingott.me",
-      year: "2026",
       status: "published",
-      description:
-        "一套偏阅读体验的设计系统，把颜色、排版和交互 token 收束成可复用的基础。",
-      tags: ["design system", "tokens"],
-      external: true,
-    },
-    {
-      key: "fairy",
-      title: "fairy",
-      href: "https://github.com/LoTwT/fairy",
-      year: "2025",
-      status: "published",
-      description:
-        "ZZZ 伤害计算器与 AI plugin 实验，把角色面板、计算和验证流程整理成工具。",
-      tags: ["zzz", "calculator"],
+      description: "The design system this very site runs on.",
+      tags: ["Design · Tokens"],
       external: true,
     },
   ]
