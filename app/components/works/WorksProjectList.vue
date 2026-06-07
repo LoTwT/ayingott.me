@@ -28,7 +28,6 @@ defineProps<{
       </span>
 
       <span class="works-project-row__side">
-        <span class="works-project-row__year">{{ item.year }}</span>
         <span class="works-project-row__tags" aria-label="标签">
           <span
             v-for="tag in item.tags"
@@ -100,14 +99,7 @@ defineProps<{
 .works-project-row__side {
   display: grid;
   justify-items: end;
-  gap: var(--spacing-3);
-}
-
-.works-project-row__year {
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  line-height: var(--text-xs--line-height);
+  gap: var(--spacing-2);
 }
 
 .works-project-row__tags {
