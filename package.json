@@ -13,7 +13,8 @@
     "up": "taze latest -I -f",
     "prettier": "prettier --write .",
     "lint": "eslint .",
-    "nuxt": "nuxt"
+    "nuxt": "nuxt",
+    "verify:blog-date-timezone": "node scripts/verify-blog-date-timezone.mjs"
   },
   "dependencies": {
     "@ayingott/theme": "0.0.2",

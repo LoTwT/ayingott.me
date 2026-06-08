@@ -13,6 +13,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   year: "numeric",
   month: "2-digit",
   day: "2-digit",
+  timeZone: "Asia/Shanghai",
 })
 const whitespacePattern = /\s+/g
 const cjkPattern = /[\u4E00-\u9FFF]/g
