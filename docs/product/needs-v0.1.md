@@ -118,7 +118,7 @@
   @import "@ayingott/theme";
   ```
 - 保持静态生成与 Cloudflare 部署路径
-- ESLint / TS config 跟进
+- Oxlint / Oxfmt / TS config 跟进
 - 验收：现有签名页面在新栈下视觉与功能完全一致
 
 ### S2：设计语言重构 + UI（独立 PR · 不加新功能）

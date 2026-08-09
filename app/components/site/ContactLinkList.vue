@@ -18,7 +18,10 @@ withDefaults(
 <template>
   <nav
     class="contact-link-list"
-    :class="`contact-link-list--${variant}`"
+    :class="{
+      'contact-link-list--inline': variant === 'inline',
+      'contact-link-list--stacked': variant === 'stacked',
+    }"
     :aria-label="ariaLabel"
   >
     <template v-for="(link, index) in links" :key="link.key">

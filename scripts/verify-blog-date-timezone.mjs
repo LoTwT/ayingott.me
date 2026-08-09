@@ -27,5 +27,5 @@ for (const zone of zones) {
     )
   }
 
-  console.log(`TZ=${zone} ${output}`)
+  process.stdout.write(`TZ=${zone} ${output}\n`)
 }

@@ -1,7 +1,8 @@
 {
-  "eslint.experimental.useFlatConfig": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll.oxc": "explicit",
+    "source.organizeImports": "never"
   }
 }
