@@ -14,9 +14,10 @@ Product requirements and decisions live in:
 - `@ayingott/theme@0.0.2` from npm
 - `@nuxt/content` v3 for Markdown articles
 - `@nuxtjs/color-mode` with a `.dark` class
+- Oxlint + Oxfmt for linting and formatting
 - Static generation for Cloudflare deployment
 
-Use Node 22.16.0 or newer. The repository pins this in `.node-version` so Cloudflare Pages can use Nuxt Content's native SQLite connector during static generation.
+Use Node 24 LTS. The repository currently pins Node 24.19.0 in `.node-version` so local and Cloudflare Pages builds use the same runtime for Nuxt Content's native SQLite connector during static generation.
 
 The design-system package is pinned to the active npm technical release:
 
@@ -44,6 +45,7 @@ Run checks:
 
 ```bash
 pnpm lint
+pnpm typecheck
 pnpm generate
 ```
 

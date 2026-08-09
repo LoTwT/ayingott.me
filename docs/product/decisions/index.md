@@ -32,9 +32,9 @@
 
 ## AY-D-05 技术栈
 
-**决策**：保留 Nuxt + Vue 生态，V1 升级到最新版。S1 迁移到 **Tailwind CSS v4 + `@ayingott/theme@0.0.1`**；UnoCSS 从当前实现中移除。`@ayingott/theme` 以 npm 首发版本 `0.0.1` 作为消费基线。
+**决策**：保留 Nuxt + Vue 生态，V1 升级到最新版。S1 迁移到 **Tailwind CSS v4 + `@ayingott/theme@0.0.1`**；UnoCSS 从当前实现中移除。`@ayingott/theme` 当前消费基线为精确版本 `0.0.2`，包含 breaking change 的后续版本须单独评估。工程质量工具迁移到 Oxlint + Oxfmt，移除 ESLint + Prettier。构建运行时采用 Node 24 LTS，精确版本由 `.node-version` 固定。
 **可逆性**：中（迁移成本中等）
-**来源**：lo-user 17:02 答 "nuxt 和 vue 生态后续需要先升级到最新" + #design-system DS-D-02 锁定 Tailwind CSS v4 + lo-user 2026-05-06 23:39 触发 DD-005
+**来源**：lo-user 17:02 答 "nuxt 和 vue 生态后续需要先升级到最新" + #design-system DS-D-02 锁定 Tailwind CSS v4 + lo-user 2026-05-06 23:39 触发 DD-005 + lo-user 2026-08-09 指示迁移到 Oxlint / Oxfmt、升级到 Node 24，并暂缓包含 breaking change 的 theme 升级
 
 ## AY-D-06 部署
 

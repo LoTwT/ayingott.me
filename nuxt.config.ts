@@ -82,7 +82,7 @@ function getBlogPrerenderRoutes() {
 
   return Array.from(
     new Set(["/", "/about", "/blog", "/works", ...routes]),
-  ).sort()
+  ).toSorted()
 }
 
 export default defineNuxtConfig({

@@ -11,7 +11,7 @@ Read these before changing product scope:
 
 ## Current Phase
 
-S2 implements the locked `design-v0.1` page system on top of `@ayingott/theme@0.0.1`.
+S2 implements the locked `design-v0.1` page system on top of `@ayingott/theme@0.0.2`.
 
 In scope: home, about, blog list empty state, blog detail route template, 404, `.dark` mode, contact-strip resume affordance, and removal of the S1 `--ayingott-*` compatibility shim. Out of scope: `@nuxt/content` ingestion, RSS generation, real resume PDF publishing, comments, search, analytics, and expanded biography copy.
 
@@ -19,11 +19,14 @@ In scope: home, about, blog list empty state, blog detail route template, 404, `
 
 - Nuxt 4 + Vue 3
 - Tailwind CSS v4 through `@tailwindcss/vite`
-- `@ayingott/theme@0.0.1` from npm
+- `@ayingott/theme@0.0.2` from npm
 - `@nuxtjs/color-mode` with `.dark` class output
+- Oxlint + Oxfmt for linting and formatting
 - Static generation for Cloudflare deployment
 
-Use Node 22.12.0 or newer; `.node-version` pins the project runtime baseline for local work and Cloudflare builds.
+Use Node 24 LTS; `.node-version` pins the exact project runtime for local work and Cloudflare builds.
+
+Oxlint currently checks Vue `<script>` blocks only. Keep `pnpm typecheck` and `pnpm generate` as required gates for template coverage.
 
 ## Styling Rules
 
@@ -60,5 +63,6 @@ Keep README, this file, and `docs/product/decisions/index.md` in sync when chang
 ```bash
 pnpm install --frozen-lockfile
 pnpm lint
+pnpm typecheck
 pnpm generate
 ```
