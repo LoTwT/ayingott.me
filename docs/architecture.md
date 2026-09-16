@@ -19,7 +19,7 @@
 
 ## 渲染与部署边界
 
-`pnpm build` 与 `pnpm generate` 都执行静态生成，产物为 `.output/public`。配置中的 `ssr: true` 用于生成 HTML，不代表部署请求时运行的 Nuxt 服务端。
+`pnpm build` 与 `pnpm generate` 都执行静态生成。[nuxt.config.ts](../nuxt.config.ts) 显式使用 Nitro 的 `static` 预设，使本地与 Cloudflare Git 构建都输出到 `.output/public`，避免托管环境自动选择其他输出目录。配置中的 `ssr: true` 用于生成 HTML，不代表部署请求时运行的 Nuxt 服务端。
 
 Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 

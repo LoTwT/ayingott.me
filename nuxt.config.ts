@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     storageKey: "ayingott-color-mode",
   },
   nitro: {
+    preset: "static",
     prerender: {
       routes: ["/"],
       failOnError: true,

@@ -4,23 +4,23 @@
 
 ## 构建配置
 
-构建命令已于 2026-09-16 随验收流程简化更新，并通过 Cloudflare API 回读确认；其他构建设置、环境变量与域名保持不变。首轮配置迁移与验证结果见 [验收记录](verification/2026-09-14-foundation.md)。配置已面向新工程更新，下一次 Git 构建需使用新工程代码。
+构建命令已于 2026-09-16 随验收流程简化更新，并通过 Cloudflare API 回读确认。首轮配置迁移见 [工程验收记录](verification/2026-09-14-foundation.md)；首次 Git 构建暴露的问题与修复验证见 [Git 预览记录](verification/2026-09-16-git-preview.md)。
 
-| 设置                      | 值                                                                     |
-| ------------------------- | ---------------------------------------------------------------------- |
-| 构建根目录                | 仓库根目录                                                             |
-| 构建命令                  | `pnpm install --frozen-lockfile && pnpm check && pnpm build`           |
-| 输出目录                  | `.output/public`                                                       |
-| 构建环境                  | v3                                                                     |
-| `NODE_VERSION`            | `24.19.0`，与 [.node-version](../.node-version) 一致                   |
-| `PNPM_VERSION`            | `10.33.0`，与 [package.json](../package.json) 的 `packageManager` 一致 |
-| `SKIP_DEPENDENCY_INSTALL` | `1`，安装由上面的构建命令执行                                          |
-| 生产分支                  | `main`                                                                 |
-| 预览分支                  | 保留现有全部分支预览设置                                               |
+| 设置                      | 值                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| 构建根目录                | 仓库根目录                                                                              |
+| 构建命令                  | `pnpm install --frozen-lockfile && pnpm check && pnpm build`                            |
+| 输出目录                  | `.output/public`                                                                        |
+| 构建环境                  | v3                                                                                      |
+| Node 版本                 | 由 [.node-version](../.node-version) 固定                                               |
+| pnpm 版本                 | 由 [package.json](../package.json) 的 `packageManager` 固定                             |
+| `SKIP_DEPENDENCY_INSTALL` | 在 [wrangler.jsonc](../wrangler.jsonc) 的 `vars` 中设为 `"1"`，安装由上面的构建命令执行 |
+| 生产分支                  | `main`                                                                                  |
+| 预览分支                  | 保留现有全部分支预览设置                                                                |
 
-环境变量和构建环境需同时覆盖 Production 与 Preview。[wrangler.jsonc](../wrangler.jsonc) 固定 Pages 项目名、输出目录和兼容日期；该兼容日期控制 Pages Functions 运行时，不决定构建用的 Node 版本。
+构建环境需同时覆盖 Production 与 Preview。Pages 使用仓库中的版本文件选择 Node 与 pnpm；使用 Wrangler 配置后，构建所需的非敏感变量在其 `vars` 中维护，不能仅依赖控制台中的同名普通变量。[wrangler.jsonc](../wrangler.jsonc) 还固定 Pages 项目名、输出目录和兼容日期；该兼容日期控制 Pages Functions 运行时，不决定构建用的 Node 版本。
 
-升级 Node 或 pnpm 后，同步项目版本文件和这两套构建环境，不依赖控制台默认值。安装必须使用锁文件；不要把 `.output` 或本地 `node_modules` 提交到 Git。
+升级 Node 或 pnpm 后，更新对应版本文件并检查 Git 构建日志中实际使用的版本，不依赖控制台默认值。安装必须使用锁文件；不要把 `.output` 或本地 `node_modules` 提交到 Git。
 
 ## 发布前检查
 
