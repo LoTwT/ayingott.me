@@ -1,88 +1,18 @@
 <script setup lang="ts">
-import { computed } from "vue"
-import HomeContactList from "~/components/home/HomeContactList.vue"
-import HomeHero from "~/components/home/HomeHero.vue"
-import HomeSection from "~/components/home/HomeSection.vue"
-import HomeWritingList from "~/components/home/HomeWritingList.vue"
-import WorksProjectList from "~/components/works/WorksProjectList.vue"
+import { useHead } from "#imports"
 
-definePageMeta({
-  layout: "home",
-})
-
-async function queryRecentPosts() {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .order("date", "DESC")
-    .all()
-}
-
-const { data } = await useAsyncData("home-recent-posts", queryRecentPosts)
-const { identity, nowText, contactLinks, featuredWorks } = useSiteContent()
-
-const recentPosts = computed(() => (data.value ?? []).slice(0, 3))
-const highlightedWorks = computed(() => featuredWorks.slice(0, 2))
-
-useSiteSeo({
-  title: "ayingott.me",
-  ogTitle: "ayingott.me",
-  description: "Lo 是开发者。",
-  path: "/",
-})
+useHead({ link: [{ rel: "canonical", href: "https://ayingott.me/" }] })
 </script>
 
 <template>
-  <section class="home-page" aria-labelledby="home-title">
-    <HomeHero :tagline="identity.homeTagline" :now-text="nowText" />
-
-    <div class="home-page__sections">
-      <HomeSection
-        section-id="writing"
-        label="最近写的 · Writing"
-        title="最近写的"
-        action-label="全部文章"
-        action-to="/blog"
-      >
-        <HomeWritingList :posts="recentPosts" />
-      </HomeSection>
-
-      <HomeSection
-        section-id="works-preview"
-        label="在做的 · Works"
-        title="在做的"
-        action-label="全部作品"
-        action-to="/works"
-      >
-        <WorksProjectList :items="highlightedWorks" />
-      </HomeSection>
-
-      <HomeSection section-id="elsewhere" label="联系 · Elsewhere" title="联系">
-        <HomeContactList :links="contactLinks" />
-      </HomeSection>
+  <main id="main-content" class="flex flex-1 items-center py-20 sm:py-28">
+    <div class="space-y-5 pb-12">
+      <h1 class="font-display text-4xl leading-tight font-medium sm:text-5xl">
+        你好，我是 Lo。
+      </h1>
+      <p class="text-base leading-relaxed text-(--text-secondary)">
+        个人主页正在重新整理。
+      </p>
     </div>
-  </section>
+  </main>
 </template>
-
-<style scoped>
-.home-page {
-  width: min(100%, 52rem);
-  min-height: calc(100svh - 160px);
-  margin-inline: auto;
-  display: grid;
-  align-content: start;
-  gap: clamp(var(--spacing-12), 9vw, var(--spacing-20));
-  padding-block: clamp(var(--spacing-14), 14svh, 9rem) var(--spacing-12);
-}
-
-.home-page__sections {
-  display: grid;
-  gap: var(--spacing-12);
-}
-
-@media (max-width: 720px) {
-  .home-page {
-    min-height: auto;
-    padding-block: var(--spacing-8);
-  }
-}
-</style>

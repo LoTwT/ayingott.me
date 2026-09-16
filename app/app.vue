@@ -1,15 +1,9 @@
 <script setup lang="ts">
-useSiteFavicon()
-
-useHead({
-  htmlAttrs: {
-    lang: "zh-CN",
-  },
-})
+import SiteFrame from "~/components/site/SiteFrame.vue"
 </script>
 
 <template>
-  <NuxtLayout>
+  <SiteFrame>
     <NuxtPage />
-  </NuxtLayout>
+  </SiteFrame>
 </template>

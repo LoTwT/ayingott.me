@@ -1,40 +1,16 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "useTabs": false,
-  "tabWidth": 2,
   "printWidth": 80,
+  "tabWidth": 2,
   "singleQuote": false,
-  "trailingComma": "all",
   "semi": false,
+  "trailingComma": "all",
   "endOfLine": "lf",
-  "proseWrap": "preserve",
-  "bracketSpacing": true,
-  "quoteProps": "consistent",
-  "sortPackageJson": false,
-  "sortTailwindcss": {
-    "stylesheet": "./app/assets/main.css"
-  },
+  "sortTailwindcss": { "stylesheet": "./app/assets/main.css" },
   "ignorePatterns": [
     "pnpm-lock.yaml",
-    ".nuxt/**",
-    ".output/**",
-    ".data/**",
-    ".nitro/**",
-    ".cache/**",
-    "dist/**",
-    "coverage/**",
-    "temp/**",
-    ".temp/**",
-    ".vercel/**",
-    ".changeset/**",
-    ".vite-inspect/**",
-    "src-tauri/**",
-    "CHANGELOG*.md",
-    "*.min.*",
-    "LICENSE*",
-    "**/__snapshots__/**",
-    "**/auto-import?(s).d.ts",
-    "**/components.d.ts",
-    "**/typed-router.d.ts"
+    ".wrangler/**",
+    ".playwright-mcp/**",
+    ".playwright-cli/**"
   ]
 }
