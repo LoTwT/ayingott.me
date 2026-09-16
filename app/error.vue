@@ -17,7 +17,7 @@ useSeoMeta({
 
 <template>
   <SiteFrame>
-    <main id="main-content" class="flex flex-1 items-center py-20">
+    <main id="main-content" class="mb-24 flex flex-1 items-center py-20">
       <div class="space-y-5">
         <p class="font-mono text-sm text-(--text-muted)">
           {{ error.statusCode }}

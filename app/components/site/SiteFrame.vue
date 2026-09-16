@@ -4,7 +4,7 @@ import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
 
 <template>
   <div
-    class="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-6 pb-24 sm:px-10"
+    class="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-6 [--site-header-height:6rem] sm:px-10"
   >
     <a
       href="#main-content"
@@ -12,7 +12,9 @@ import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
     >
       跳到正文
     </a>
-    <header class="flex min-h-24 shrink-0 items-center justify-end">
+    <header
+      class="flex h-(--site-header-height) shrink-0 items-center justify-end"
+    >
       <ThemeSwitcher />
     </header>
     <slot />

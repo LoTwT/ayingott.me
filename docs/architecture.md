@@ -27,16 +27,20 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                           | 职责                                             |
-| -------------------------------------------------------------- | ------------------------------------------------ |
-| [app/app.vue](../app/app.vue)                                  | 组合站点框架与当前路由页面                       |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)          | Header、跳到正文入口与页面留白；默认插槽承载页面 |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue) | 主题偏好选择与持久化                             |
-| [pages/index.vue](../app/pages/index.vue)                      | 工程验证用的临时介绍页                           |
-| [error.vue](../app/error.vue)                                  | 404 与其他错误的展示、返回首页入口               |
-| [assets/main.css](../app/assets/main.css)                      | Tailwind、主题字体、主题样式和全局基础规则       |
+| 文件                                                                      | 职责                                           |
+| ------------------------------------------------------------------------- | ---------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                             | 组合站点框架与当前路由页面                     |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                     | Header、跳到正文入口与内容栏；默认插槽承载页面 |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)            | 主题偏好选择与持久化                           |
+| [pages/index.vue](../app/pages/index.vue)                                 | 组合首页介绍和示例内容，提供正文焦点入口       |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)       | 首屏介绍与视口高度布局                         |
+| [HomeContentExamples.vue](../app/components/home/HomeContentExamples.vue) | 作品与文章的静态布局示例                       |
+| [error.vue](../app/error.vue)                                             | 404 与其他错误的展示、返回首页入口             |
+| [assets/main.css](../app/assets/main.css)                                 | Tailwind、主题字体、主题样式和全局基础规则     |
 
 页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
+
+首页内容组件维护各区的最小视口高度，滚动使用文档原生行为。各页面自行安排底部留白，公共框架不额外延长末屏。滚动体验的试做约定见 [设计方向](specs/design.md)。
 
 ## 样式与主题
 
