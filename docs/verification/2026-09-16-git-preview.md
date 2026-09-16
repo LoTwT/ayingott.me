@@ -23,6 +23,16 @@
 - Wrangler 的 `pages functions build-env` 在 `preview`、`production` 环境下都导出正确的输出目录与跳过安装变量。
 - `git diff --check` 通过。此次通过配置对照、实际构建与部署日志验证，未新增长期验收脚本。
 
-## 待完成
+## 修复后的 Git 构建与验收
 
-修复后的 Cloudflare Git 构建与实际预览 HTTP、浏览器检查仍待验证；不能将上述本地结果视为云端部署通过。
+修复提交为 `99fa864f83dd286cd304f0c4ba634c75a4a17702`，已推送并通过远端回读确认。Cloudflare 通过 `github:push` 自动创建部署 `9952de43-2ec6-4dd9-99d8-798921232dab`，构建与发布均成功；[本次预览](https://9952de43.ayingott-me.pages.dev) 对应该提交。
+
+- 日志确认使用 Node 24.19.0、pnpm 10.33.0，跳过自动依赖安装，只执行构建命令中的 `pnpm install --frozen-lockfile`。
+- 云端 `pnpm check` 与 `pnpm build` 通过，静态产物输出到 `.output/public`，资产发布成功。
+- 使用发布文档中的 curl 方式验证：首页 `200`、未知嵌套路由 `404`、PDF `200` 且响应字节与原文件一致。
+- 浏览器验证通过：默认跟随系统，系统明暗变化可同步；按钮按跟随系统、浅色、深色循环；刷新保留偏好；Tab 可达且焦点可见，Enter 可切换主题。
+- 1280px 桌面与 390px 移动端截图已检查，移动端无横向溢出；中文字体 400/500 字重与西文字体均已加载，页面无可见简历链接。
+- 首页控制台无警告或错误。未知路由显示自定义 404 页面，Nuxt 错误状态确认为该路由的 `404`，点击“回到首页”正常返回。
+- 复核生产分支、正式域名与生产部署，均与首次构建前一致；本次验收对象为分支预览。
+
+验证过程中，Python urllib 的默认请求被 Cloudflare 以 `1010` 拒绝，curl 与浏览器访问均正常。[Cloudflare 文档](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/) 说明该状态表示按浏览器特征拒绝访问；未调整站点安全配置。
