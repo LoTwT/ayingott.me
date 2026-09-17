@@ -27,20 +27,21 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                | 职责                                           |
-| ------------------------------------------------------------------- | ---------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                     |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口与内容栏；默认插槽承载页面 |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                           |
-| [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                 |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局       |
-| [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互               |
-| [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口             |
-| [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则     |
+| 文件                                                                | 职责                                                     |
+| ------------------------------------------------------------------- | -------------------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                               |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口、内容栏与页脚组合；默认插槽承载页面 |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现                                           |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
+| [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
+| [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
+| [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
 
-页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
+页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
-首页介绍组件维护首屏的最小视口高度，联系方式与简历入口由介绍组件组合；内容超出视口时使用文档原生滚动。各页面自行安排底部留白，公共框架不额外延长页面。布局与滚动约定见 [设计方向](specs/design.md)。
+首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
 ## 样式与主题
 

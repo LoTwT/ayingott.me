@@ -21,8 +21,10 @@ import HomeLinks from "~/components/home/HomeLinks.vue"
 
 <style scoped>
 .home-introduction {
-  min-block-size: calc(100dvh - var(--site-header-height));
-  padding-block: 3rem calc(9rem + 8dvh);
+  min-block-size: calc(
+    100dvh - var(--site-header-height) - var(--site-footer-height)
+  );
+  padding-block: 3rem calc(9rem + 8dvh - var(--site-footer-height));
 }
 
 @media (max-height: 28rem) {
