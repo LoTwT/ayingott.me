@@ -19,10 +19,12 @@ useSeoMeta({
   <SiteFrame>
     <main id="main-content" class="mb-24 flex flex-1 items-center py-20">
       <div class="space-y-5">
-        <p class="font-mono text-sm text-(--text-muted)">
+        <p class="theme-color-transition font-mono text-sm text-(--text-muted)">
           {{ error.statusCode }}
         </p>
-        <h1 class="font-display text-3xl font-medium">{{ message }}</h1>
+        <h1 class="theme-color-transition font-display text-3xl font-medium">
+          {{ message }}
+        </h1>
         <a
           href="/"
           class="inline-flex min-h-11 items-center underline underline-offset-4"

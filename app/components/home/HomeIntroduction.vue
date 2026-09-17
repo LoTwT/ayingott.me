@@ -10,7 +10,7 @@ import HomeLinks from "~/components/home/HomeLinks.vue"
     <div>
       <h1
         id="introduction-title"
-        class="font-display text-4xl leading-tight font-medium sm:text-5xl"
+        class="theme-color-transition font-display text-4xl leading-tight font-medium sm:text-5xl"
       >
         你好，我是 Lo
       </h1>

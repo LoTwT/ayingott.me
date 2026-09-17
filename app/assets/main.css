@@ -13,6 +13,7 @@
   }
 
   body {
+    isolation: isolate;
     min-width: 320px;
   }
 }
