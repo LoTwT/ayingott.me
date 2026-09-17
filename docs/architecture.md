@@ -38,7 +38,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口             |
 | [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则     |
 
-页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
+页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，联系方式与简历入口由介绍组件组合；内容超出视口时使用文档原生滚动。各页面自行安排底部留白，公共框架不额外延长页面。布局与滚动约定见 [设计方向](specs/design.md)。
 
@@ -57,11 +57,11 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 视觉风格默认使用 `brutal`，由 [nuxt.config.ts](../nuxt.config.ts) 在 `<html>` 上设置 `brutal` 类。明暗模式默认跟随系统，系统偏好变化时同步更新；用户手动选择浅色或深色后保存偏好，重新选择“跟随系统”即可恢复自动切换。
 
-主题模块通过 `useColorMode()` 管理跟随系统、浅色和深色偏好；依赖浏览器偏好的界面使用 `ColorScheme` 包裹，处理预渲染与客户端状态的差异。保持 `classSuffix: ""`，使深色模式在同一 `<html>` 上同时保留 `brutal` 和 `dark` 类，与主题包和 Tailwind 的 dark variant 一致。
+主题模块通过 `useColorMode()` 管理跟随系统、浅色和深色偏好。主题按钮的三个图标均预渲染到 HTML，由 `<html>` 上的 `data-theme-preference` 选择显示。配置中的 `bodyOpen` 内联脚本在 color-mode 的 head 脚本之后、页面内容之前运行，复用 `window.__NUXT_COLOR_MODE__.preference` 初始化该属性，不重复读取存储；组件在 `colorMode.unknown` 结束后同步后续偏好变化，避免接管前用服务端默认值覆盖已保存的偏好。按钮在客户端确定状态后启用，无需替换图标占位。保持 `classSuffix: ""`，使深色模式在同一 `<html>` 上同时保留 `brutal` 和 `dark` 类，与主题包和 Tailwind 的 dark variant 一致。
 
 图标使用 Lucide 的官方 Vue 包 `@lucide/vue`，在使用处具名导入所需图标组件，随应用构建输出 SVG。图标颜色继承主题语义颜色；图标按钮提供可访问名称，装饰性 SVG 使用 `aria-hidden="true"`。主题按钮的行为约定见 [设计方向](specs/design.md)。
 
-GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg)，源文件与 MIT 许可保留在 [github.svg](../app/assets/icons/github.svg)。当前安装的 Lucide 包不提供该品牌图标，因此单独引入这个 SVG 资源，用 CSS 遮罩继承文字颜色，无需新增图标库依赖。
+GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg)，源文件与 MIT 许可保留在 [github.svg](../app/assets/icons/github.svg)。当前安装的 Lucide 包不提供该品牌图标，因此单独引入这个 SVG 资源，用 CSS 遮罩继承文字颜色，无需新增图标库依赖。通过 Vite 的 `?inline` 将图标编入页面中的 data URL，避免刷新时等待独立遮罩文件而出现闪烁；传入 CSS `url()` 时为资源地址保留引号。
 
 ## 公开资源
 

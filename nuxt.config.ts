@@ -13,6 +13,15 @@ export default defineNuxtConfig({
       title: "Lo · 个人主页",
       link: [{ rel: "icon", href: "data:," }],
       meta: [{ name: "description", content: "Lo 的个人主页。" }],
+      script: [
+        {
+          key: "theme-preference",
+          tagPosition: "bodyOpen",
+          // 复用 color-mode 在 head 中解析的偏好，先于页面内容绘制。
+          innerHTML:
+            'document.documentElement.dataset.themePreference = window.__NUXT_COLOR_MODE__?.preference || "system";',
+        },
+      ],
     },
   },
   colorMode: {

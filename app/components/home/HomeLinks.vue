@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { FileText, Mail } from "@lucide/vue"
-import githubMark from "~/assets/icons/github.svg?no-inline"
+import githubMarkUrl from "~/assets/icons/github.svg?inline"
+
+const githubMaskImage = `url("${githubMarkUrl}")`
 
 const links = [
   {
@@ -42,7 +44,7 @@ const links = [
             v-if="link.icon === 'github'"
             aria-hidden="true"
             class="size-5.5 bg-current mask-contain mask-center mask-no-repeat"
-            :style="{ maskImage: `url(${githubMark})` }"
+            :style="{ maskImage: githubMaskImage }"
           />
           <Mail
             v-else-if="link.icon === 'mail'"
