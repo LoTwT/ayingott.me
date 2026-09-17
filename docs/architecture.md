@@ -67,3 +67,19 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 ## 公开资源
 
 静态资源由 `public/` 输出到生成目录。简历文件的保留要求见 [重建要求](specs/requirements.md)，资源一致性校验见 [开发约定](development.md#检查)。
+
+## 站点标识与分享信息
+
+[nuxt.config.ts](../nuxt.config.ts) 注册全站图标和默认标题；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
+
+素材的视觉约定见 [设计方向](specs/design.md#站点标识与分享初版)。文件职责如下：
+
+| 文件                                                      | 用途                                          |
+| --------------------------------------------------------- | --------------------------------------------- |
+| [favicon.svg](../public/favicon.svg)                      | 浏览器图标的矢量源文件，含深浅配色            |
+| [favicon.png](../public/favicon.png)                      | 96 × 96px 的浅色图标，供 PNG 图标使用场景读取 |
+| [apple-touch-icon.png](../public/apple-touch-icon.png)    | 180 × 180px 的手机收藏图标                    |
+| [social-card.svg](../app/assets/identity/social-card.svg) | 分享卡片的矢量源文件                          |
+| [og-image.png](../public/og-image.png)                    | 1200 × 630px 的分享图片                       |
+
+Favicon 使用已选字体的轮廓，分享卡片使用 `@ayingott/theme` 0.3.0 中的 Bricolage Grotesque 与 LXGW WenKai 字形轮廓；配色取自该版本的 `brutal` 主题。SVG 和 PNG 均可独立显示，无需额外字体请求。SVG 是素材维护来源，修改后按表中尺寸重新导出 PNG；主题字体或配色更新时需同步检查这组静态素材。导出工具临时使用，不新增应用依赖或构建脚本。

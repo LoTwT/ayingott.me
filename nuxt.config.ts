@@ -10,9 +10,26 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: "zh-CN", class: "brutal" },
-      title: "Lo · 个人主页",
-      link: [{ rel: "icon", href: "data:," }],
-      meta: [{ name: "description", content: "Lo 的个人主页。" }],
+      title: "Lo",
+      link: [
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "96x96",
+          href: "/favicon.png",
+        },
+        {
+          rel: "icon",
+          type: "image/svg+xml",
+          sizes: "any",
+          href: "/favicon.svg",
+        },
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/apple-touch-icon.png",
+        },
+      ],
       script: [
         {
           key: "theme-preference",

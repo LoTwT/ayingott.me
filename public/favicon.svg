@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<title>Lo</title>
+<!-- Lo glyph outlines from Oleo Script Regular by Soytutype (SIL OFL 1.1).
+Source: https://github.com/google/fonts/tree/main/ofl/oleoscript
+Palette: @ayingott/theme 0.3.0 brutal. No font request. -->
+<style>
+.paper{fill:#fcf6ea}.mark{fill:#111111}
+@media(prefers-color-scheme:dark){.paper{fill:#191918}.mark{fill:#e8e6df}}
+</style>
+<rect class="paper" width="64" height="64" rx="12"/>
+<g class="mark" transform="translate(6.41026 49.71795) scale(0.05128 -0.05128)">
+<path transform="translate(0 0)" d="M480 48Q468 17 442.5 -1Q417 -19 382.5 -19Q348 -19 279.5 23Q211 65 170 77Q143 41 109 17Q75 -7 62 -7Q52 -7 22 36.5Q-8 80 -8 99Q-8 110 23.5 132Q55 154 90 162Q115 223 142 342.5Q169 462 184 589Q184 605 173.5 627.5Q163 650 152 664L142 678L145 693Q205 710 342 710Q355 688 355 643Q355 598 329 509Q303 420 257.5 295.5Q212 171 205 148Q209 147 230 141Q251 135 257.5 133.5Q264 132 283 127.5Q302 123 313 121.5Q324 120 342 118Q373 113 400.5 113Q428 113 440 127L468 179L501 171Q501 106 480 48Z"/>
+<path transform="translate(501 0)" d="M170 -12Q101 -12 62 36.5Q23 85 23 172Q23 283 82.5 363Q142 443 247 443L283 441Q300 450 321 450Q400 450 400 301Q441 303 483 312L499 316L505 277Q472 263 416 252L396 248Q377 143 319 65.5Q261 -12 170 -12ZM224 74Q266 74 299.5 128Q333 182 346 242Q239 242 239 322Q239 354 252 382L257 392Q253 394 247 394Q241 394 238 392Q213 376 191 317Q169 258 169 182Q169 74 224 74Z"/>
+</g>
+</svg>
