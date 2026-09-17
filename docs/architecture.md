@@ -27,20 +27,20 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                      | 职责                                           |
-| ------------------------------------------------------------------------- | ---------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                             | 组合站点框架与当前路由页面                     |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                     | Header、跳到正文入口与内容栏；默认插槽承载页面 |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)            | 主题偏好选择与持久化                           |
-| [pages/index.vue](../app/pages/index.vue)                                 | 组合首页介绍和示例内容，提供正文焦点入口       |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)       | 首屏介绍与视口高度布局                         |
-| [HomeContentExamples.vue](../app/components/home/HomeContentExamples.vue) | 作品与文章的静态布局示例                       |
-| [error.vue](../app/error.vue)                                             | 404 与其他错误的展示、返回首页入口             |
-| [assets/main.css](../app/assets/main.css)                                 | Tailwind、主题字体、主题样式和全局基础规则     |
+| 文件                                                                | 职责                                           |
+| ------------------------------------------------------------------- | ---------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                     |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口与内容栏；默认插槽承载页面 |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                           |
+| [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                 |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局       |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互               |
+| [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口             |
+| [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则     |
 
 页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
-首页内容组件维护各区的最小视口高度，滚动使用文档原生行为。各页面自行安排底部留白，公共框架不额外延长末屏。滚动体验的试做约定见 [设计方向](specs/design.md)。
+首页介绍组件维护首屏的最小视口高度，联系方式与简历入口由介绍组件组合；内容超出视口时使用文档原生滚动。各页面自行安排底部留白，公共框架不额外延长页面。布局与滚动约定见 [设计方向](specs/design.md)。
 
 ## 样式与主题
 
@@ -60,6 +60,8 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 主题模块通过 `useColorMode()` 管理跟随系统、浅色和深色偏好；依赖浏览器偏好的界面使用 `ColorScheme` 包裹，处理预渲染与客户端状态的差异。保持 `classSuffix: ""`，使深色模式在同一 `<html>` 上同时保留 `brutal` 和 `dark` 类，与主题包和 Tailwind 的 dark variant 一致。
 
 图标使用 Lucide 的官方 Vue 包 `@lucide/vue`，在使用处具名导入所需图标组件，随应用构建输出 SVG。图标颜色继承主题语义颜色；图标按钮提供可访问名称，装饰性 SVG 使用 `aria-hidden="true"`。主题按钮的行为约定见 [设计方向](specs/design.md)。
+
+GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg)，源文件与 MIT 许可保留在 [github.svg](../app/assets/icons/github.svg)。当前安装的 Lucide 包不提供该品牌图标，因此单独引入这个 SVG 资源，用 CSS 遮罩继承文字颜色，无需新增图标库依赖。
 
 ## 公开资源
 
