@@ -1,76 +1,24 @@
 # ayingott.me
 
-Personal site for Ayingott. V1 is a long-lived personal space for bio, writing, selected work, and contact paths. It is not a hiring page, link-in-bio aggregator, or commercial brand site.
+Lo 的个人主页，使用 Nuxt、Tailwind CSS 和 `@ayingott/theme`，静态生成后部署到 Cloudflare Pages。
 
-Product requirements and decisions live in:
+项目范围、开发约定、决策与部署说明统一从 [文档索引](docs/index.md) 进入。
 
-- `docs/product/needs-v0.1.md`
-- `docs/product/decisions/index.md`
+## 快速开始
 
-## Stack
-
-- Nuxt 4 + Vue 3
-- Tailwind CSS v4
-- `@ayingott/theme@0.0.2` from npm
-- `@nuxt/content` v3 for Markdown articles
-- `@nuxtjs/color-mode` with a `.dark` class
-- Oxlint + Oxfmt for linting and formatting
-- Static generation for Cloudflare deployment
-
-Use Node 24 LTS. The repository currently pins Node 24.19.0 in `.node-version` so local and Cloudflare Pages builds use the same runtime for Nuxt Content's native SQLite connector during static generation.
-
-The design-system package is pinned to the active npm technical release:
-
-```json
-{
-  "@ayingott/theme": "0.0.2"
-}
-```
-
-## Development
-
-Install dependencies:
+使用 Node 24 LTS，具体版本见 [.node-version](.node-version)；pnpm 版本见 [package.json](package.json) 的 `packageManager`。
 
 ```bash
 pnpm install --frozen-lockfile
-```
-
-Start the dev server:
-
-```bash
 pnpm dev
 ```
 
-Run checks:
+## 检查与预览
 
 ```bash
-pnpm lint
-pnpm typecheck
-pnpm generate
+pnpm check
+pnpm build
+pnpm preview
 ```
 
-Add posts in `content/blog/`. The writing template lives in `docs/content/blog-post-template.md`; keep drafts as `*.draft.md` with `draft: true`, and use `NUXT_INCLUDE_DRAFTS=1 pnpm dev` for local draft preview. Published posts appear in `/blog`, `/feed.xml`, and `/sitemap.xml`.
-
-## Styling
-
-The app CSS entry is `app/assets/main.css`.
-
-```css
-@import "tailwindcss";
-@import "@ayingott/theme/fonts.css";
-@import "@ayingott/theme";
-```
-
-`@ayingott/theme` provides Tailwind v4 tokens, semantic CSS variables, focus/touch utilities, base styles, and opt-in Space Grotesk / Space Mono webfonts.
-
-S2 implements the locked `design-v0.1` page system: home, about, blog list, blog detail route, 404, `.dark` mode, and the contact-strip resume affordance. Phase A wires blog content ingestion with `@nuxt/content`, quiet article prose, RSS, and sitemap output. Real resume PDF configuration remains follow-up work.
-
-## Deployment
-
-The current target is static output on Cloudflare:
-
-```bash
-pnpm generate
-```
-
-The generated site is written to `.output/public`.
+`build` 生成 `.output/public`，`preview` 使用 Wrangler 运行这份产物。修改源码后需要重新构建；完整验证步骤见文档索引中的部署说明。

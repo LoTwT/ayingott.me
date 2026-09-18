@@ -1,98 +1,37 @@
 <script setup lang="ts">
-defineProps<{
-  error: {
-    statusCode?: number
-    statusMessage?: string
-    message?: string
-  }
-}>()
+import type { NuxtError } from "#app"
+import { computed } from "vue"
+import { useSeoMeta } from "#imports"
+import SiteFrame from "~/components/site/SiteFrame.vue"
 
-useHead({
-  title: "未找到 · ayingott.me",
-  htmlAttrs: {
-    lang: "zh-CN",
-  },
+const props = defineProps<{ error: NuxtError }>()
+const message = computed(() =>
+  props.error.statusCode === 404 ? "这里还没有页面。" : "页面暂时无法打开。",
+)
+
+useSeoMeta({
+  title: () => `${message.value} · Lo`,
+  robots: "noindex, nofollow",
 })
-
-function goHome() {
-  clearError({ redirect: "/" })
-}
 </script>
 
 <template>
-  <NuxtLayout>
-    <section class="error-page" aria-labelledby="error-title">
-      <div class="error-page__mark">404</div>
-
-      <h1 id="error-title" class="error-page__title">未找到。</h1>
-      <p class="error-page__copy">这个页面不在。首页还在。</p>
-
-      <button
-        type="button"
-        class="error-page__button touch-target"
-        @click="goHome"
-      >
-        回到首页
-      </button>
-    </section>
-  </NuxtLayout>
+  <SiteFrame>
+    <main id="main-content" class="mb-24 flex flex-1 items-center py-20">
+      <div class="space-y-5">
+        <p class="theme-color-transition font-mono text-sm text-(--text-muted)">
+          {{ error.statusCode }}
+        </p>
+        <h1 class="theme-color-transition font-display text-3xl font-medium">
+          {{ message }}
+        </h1>
+        <a
+          href="/"
+          class="inline-flex min-h-11 items-center underline underline-offset-4"
+        >
+          回到首页
+        </a>
+      </div>
+    </main>
+  </SiteFrame>
 </template>
-
-<style scoped>
-.error-page {
-  width: min(100%, var(--container-reading));
-  min-height: calc(100svh - 240px);
-  margin-inline: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.error-page__mark {
-  color: var(--accent-primary);
-  font-family: var(--font-display);
-  font-size: var(--text-7xl);
-  line-height: var(--text-7xl--line-height);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-tighter);
-}
-
-.error-page__title {
-  margin: var(--spacing-6) 0 0;
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-  line-height: var(--text-3xl--line-height);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--tracking-normal);
-}
-
-.error-page__copy {
-  max-width: 28rem;
-  margin: var(--spacing-4) 0 0;
-  color: var(--text-muted);
-  font-size: var(--text-lg);
-  line-height: var(--text-lg--line-height);
-}
-
-.error-page__button {
-  margin-top: var(--spacing-8);
-  border: 0;
-  border-radius: var(--radius-control);
-  padding-inline: var(--spacing-5);
-  background: var(--accent-primary);
-  color: var(--accent-contrast);
-  font-family: var(--font-display);
-  font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: var(--transition-interactive);
-}
-
-.error-page__button:hover {
-  transform: translateY(-1px);
-}
-</style>
