@@ -54,7 +54,11 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 @import "@ayingott/theme/brutal.css";
 ```
 
-颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不复制主题或字体文件，不引入 `--ayingott-*` 兼容变量。
+颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不手动复制主题或完整字体文件，不引入 `--ayingott-*` 兼容变量。
+
+生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，从 `app/` 中的 Vue、TypeScript 和 JSON 源码提取汉字与中文标点，为主题包中的 LXGW WenKai 400、500 字重生成 WOFF2 子集。源码中的注释也会被收录，不需要额外维护字表；后续接入外部内容时，应把对应内容源纳入提取范围。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
+
+子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用。
 
 视觉风格默认使用 `brutal`，由 [nuxt.config.ts](../nuxt.config.ts) 在 `<html>` 上设置 `brutal` 类。明暗模式默认跟随系统，系统偏好变化时同步更新；用户手动选择浅色或深色后保存偏好，重新选择“跟随系统”即可恢复自动切换。
 
