@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead, useSeoMeta } from "#imports"
+import HomeAmbientLight from "~/components/home/HomeAmbientLight.vue"
 import HomeIntroduction from "~/components/home/HomeIntroduction.vue"
 
 const pageTitle = "Lo"
@@ -34,6 +35,7 @@ useSeoMeta({
 
 <template>
   <main id="main-content" tabindex="-1">
+    <HomeAmbientLight />
     <HomeIntroduction />
   </main>
 </template>

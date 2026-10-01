@@ -34,14 +34,18 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现                                           |
 | [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
 | [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
+| [HomeAmbientLight.vue](../app/components/home/HomeAmbientLight.vue) | 首页全视口装饰光影、主题强度与页面可见性处理             |
 | [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
 | [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
+| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)   | 图标磁吸的偏移计算、指针能力检查与清理                   |
 | [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
 | [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
 
 页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
+
+首页单独组合 `HomeAmbientLight`，其固定装饰层覆盖视口，位于正文下方和主题光幕上方。光影使用 CSS 变换动画，组件仅管理标签页可见性，不使用逐帧 JavaScript；错误页不挂载该背景。`HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度、主题衔接与降级行为见 [首页动效](specs/design.md#首页动效已选)。
 
 ## 样式与主题
 
@@ -55,6 +59,8 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 ```
 
 颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不手动复制主题或完整字体文件，不引入 `--ayingott-*` 兼容变量。
+
+装饰光影仅使用主题包的 neutral 基础色形成亮带与柔影，通过透明度区分明暗主题，不另建独立的基础色表。
 
 生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，从 `app/` 中的 Vue、TypeScript 和 JSON 源码提取汉字与中文标点，为主题包中的 LXGW WenKai 400、500 字重生成 WOFF2 子集。源码中的注释也会被收录，不需要额外维护字表；后续接入外部内容时，应把对应内容源纳入提取范围。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
 
