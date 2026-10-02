@@ -34,7 +34,6 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现                                           |
 | [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
 | [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
-| [HomeAmbientLight.vue](../app/components/home/HomeAmbientLight.vue) | 首页全视口装饰光影、主题强度与页面可见性处理             |
 | [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
 | [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
 | [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)   | 图标磁吸的偏移计算、指针能力检查与清理                   |
@@ -45,7 +44,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
-首页单独组合 `HomeAmbientLight`，其固定装饰层覆盖视口，位于正文下方和主题光幕上方。光影使用 CSS 变换动画，组件仅管理标签页可见性，不使用逐帧 JavaScript；错误页不挂载该背景。`HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度、主题衔接与降级行为见 [首页动效](specs/design.md#首页动效已选)。
+`HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度与降级行为见 [首页动效](specs/design.md#首页动效已选)。
 
 ## 样式与主题
 
@@ -59,9 +58,6 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 ```
 
 颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不手动复制主题或完整字体文件，不引入 `--ayingott-*` 兼容变量。
-
-装饰光影仅使用主题包的 neutral 基础色形成亮带与柔影，通过透明度区分明暗主题，不另建独立的基础色表。
-
 生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，从 `app/` 中的 Vue、TypeScript 和 JSON 源码提取汉字与中文标点，为主题包中的 LXGW WenKai 400、500 字重生成 WOFF2 子集。源码中的注释也会被收录，不需要额外维护字表；后续接入外部内容时，应把对应内容源纳入提取范围。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
 
 子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用。

@@ -240,7 +240,7 @@ async function cycleTheme() {
 <style scoped>
 .theme-curtain {
   position: fixed;
-  z-index: -2;
+  z-index: -1;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
