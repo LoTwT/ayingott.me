@@ -73,7 +73,11 @@ const fragmentShaderSource = `
     float blended = 0.5 + 0.5 * sin(q.x * 2.4 + 0.8 * cos(lane * 8.0) - time * 0.035);
     float cream = envelope * (0.52 + 0.48 * streak) * (0.84 + 0.16 * blended);
     float halo = exp(-pow((lane + width * 0.45) / (width * 2.0 + 0.05), 2.0));
-    float seamPosition = lane + width + 0.032 + 0.012 * sin(q.x * 5.2);
+    // Keep the outer seam at a steady gap: a wobbling gap made the band read thinner
+    // wherever the seam hugged it. Only the arch top (around q.x = -0.04) sits a little closer.
+    float archTopWeight = exp(-pow((q.x + 0.04) / 0.35, 2.0));
+    float seamGap = 0.032 - 0.0065 * archTopWeight;
+    float seamPosition = lane + width + seamGap;
     float seam = exp(-pow(seamPosition / (0.012 + feather * 0.32), 2.0));
     float foldedMilk = exp(-pow((lane - width - 0.030) / (0.034 + feather * 0.30), 2.0));
     float variation = 0.5 + 0.5 * sin(q.x * 3.4 + lane * 7.0 - time * 0.04);
