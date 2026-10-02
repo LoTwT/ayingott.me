@@ -16,6 +16,7 @@ const vertexShaderSource = `
 `
 
 const fragmentShaderSource = `
+  #extension GL_OES_standard_derivatives : enable
   precision highp float;
   uniform vec2 resolution;
   uniform float time;
@@ -54,8 +55,17 @@ const fragmentShaderSource = `
     float viewWidth = mix(0.95, 1.92, smoothstep(0.6, 2.2, aspect));
     vec2 p = vec2((uv.x - 0.5) * viewWidth, uv.y - 0.5);
     vec2 q = flow(p);
-    float lane = q.y - 0.135 + 0.065 * sin(q.x * 2.8 - 0.3);
-    float width = (0.075 + 0.037 * sin(q.x * 2.0 + 1.1) + 0.016 * sin(q.x * 4.6)) * milk;
+    float centerOffset = q.y - 0.135 + 0.065 * sin(q.x * 2.8 - 0.3);
+    // The curls and the aspect-dependent horizontal scale stretch the band unevenly.
+    // Dividing by the offset's screen gradient turns it into a distance in viewport
+    // heights, so the band keeps one thickness along its whole length.
+    #ifdef GL_OES_standard_derivatives
+    float offsetStretch = length(vec2(dFdx(centerOffset), dFdy(centerOffset))) * resolution.y;
+    float lane = centerOffset / max(offsetStretch, 0.25);
+    #else
+    float lane = centerOffset;
+    #endif
+    float width = (0.072 + 0.006 * sin(q.x * 4.6)) * milk;
     float feather = 0.024 * softness;
     float envelope = 1.0 - smoothstep(width, width + feather, abs(lane));
     float layerPhase = lane / (width + 0.055) * 9.0 + 1.1 * sin(q.x * 3.9 - time * 0.06);
@@ -177,6 +187,7 @@ function initializeRenderingContext(canvas: HTMLCanvasElement) {
     powerPreference: "low-power",
   })
   if (!context) throw new Error("WebGL unavailable")
+  context.getExtension("OES_standard_derivatives")
   const program = context.createProgram()
   if (!program) throw new Error("Program allocation failed")
   const vertexShader = createShader(
