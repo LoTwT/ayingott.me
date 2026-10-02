@@ -125,6 +125,9 @@ const milkAmount = 1
 const edgeSoftness = 1
 const initialElapsedSeconds = 7
 const throttledFrameInterval = 1000 / 30
+// Frame timestamps jitter around the display interval; without this slack,
+// two 60Hz frames (≈33.3ms) often miss the 30fps interval and draws drop to 20fps.
+const frameIntervalTolerance = 2
 const maximumFrameDeltaSeconds = 0.1
 const maximumRenderScale = 1.35
 const maximumBufferEdge = 1350
@@ -221,11 +224,12 @@ function initializeRenderingContext(canvas: HTMLCanvasElement) {
 // The theme switcher owns the transition timing. While its page curtain runs,
 // the veil is hidden and this background redraws the same soft edge.
 function readThemeCurtainFrame(
-  canvasBounds: DOMRect,
+  canvas: HTMLCanvasElement,
 ): ThemeCurtainFrame | "pending" | undefined {
   if (document.documentElement.dataset.themeTransition !== "page") return
   const curtain = document.querySelector<HTMLElement>(".theme-curtain")
   const veil = curtain?.querySelector<HTMLElement>(".theme-curtain-veil")
+  const canvasBounds = canvas.getBoundingClientRect()
   if (!curtain || !veil || !canvasBounds.width) return "pending"
 
   const veilBounds = veil.getBoundingClientRect()
@@ -290,7 +294,7 @@ function drawBackground(curtainFrame: ThemeCurtainFrame | undefined) {
 function drawCurrentFrame() {
   const canvas = backgroundCanvas.value
   if (!canvas) return
-  const curtainFrame = readThemeCurtainFrame(canvas.getBoundingClientRect())
+  const curtainFrame = readThemeCurtainFrame(canvas)
   if (curtainFrame === "pending") return
   drawBackground(curtainFrame)
 }
@@ -324,11 +328,13 @@ function renderFrame(now: number) {
   const motionAllowed = !reducedMotionPreference?.matches
   if (motionAllowed) elapsedSeconds += frameDeltaSeconds
 
-  const curtainFrame = readThemeCurtainFrame(canvas.getBoundingClientRect())
+  const curtainFrame = readThemeCurtainFrame(canvas)
   const isThemeTransitionRunning = curtainFrame !== undefined
+  const isThrottledFrameDue =
+    now - lastDrawTime >= throttledFrameInterval - frameIntervalTolerance
   if (
     curtainFrame !== "pending" &&
-    (isThemeTransitionRunning || now - lastDrawTime > throttledFrameInterval)
+    (isThemeTransitionRunning || isThrottledFrameDue)
   ) {
     drawBackground(curtainFrame)
     lastDrawTime = now
