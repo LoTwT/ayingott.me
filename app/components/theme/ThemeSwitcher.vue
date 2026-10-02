@@ -206,7 +206,6 @@ async function cycleTheme() {
     @pointermove.passive="moveMagneticIcon"
     @pointerleave="resetMagneticOffset"
     @pointercancel="resetMagneticOffset"
-    @pointerdown="resetMagneticOffset"
     @blur="resetMagneticOffset"
   >
     <span class="magnetic-visual grid" aria-hidden="true">
