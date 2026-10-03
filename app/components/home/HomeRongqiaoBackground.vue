@@ -30,6 +30,7 @@ const fragmentShaderSource = `
   uniform vec2 compositionAnchor;
   uniform float compositionZoom;
   uniform vec2 compositionOrigin;
+  uniform float compositionRotation;
 
   mat2 rotation(float a) {
     return mat2(cos(a), -sin(a), sin(a), cos(a));
@@ -53,20 +54,30 @@ const fragmentShaderSource = `
   void main() {
     vec2 uv = vec2(gl_FragCoord.x / resolution.x, 1.0 - gl_FragCoord.y / resolution.y);
     // Composition space is anchored to the introduction: its centre lands in the bay
-    // under the arch, measured in viewport heights and scaled by the zoom.
+    // under the arch, measured in short sides and scaled by the zoom.
     vec2 pixel = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
-    vec2 p = (pixel - compositionAnchor) * compositionZoom / resolution.y + compositionOrigin;
+    // Lengths are measured in short sides, so portrait screens keep landscape proportions;
+    // portrait layouts also turn the composition clockwise around the introduction.
+    float shortSide = min(resolution.x, resolution.y);
+    vec2 fromAnchor = pixel - compositionAnchor;
+    float rotationCosine = cos(compositionRotation);
+    float rotationSine = sin(compositionRotation);
+    fromAnchor = vec2(
+      rotationCosine * fromAnchor.x + rotationSine * fromAnchor.y,
+      -rotationSine * fromAnchor.x + rotationCosine * fromAnchor.y
+    );
+    vec2 p = fromAnchor * compositionZoom / shortSide + compositionOrigin;
     // Breathing: once every 20 seconds the Ω opens out around the introduction by 3%
     // and settles back. It only expands from rest, so the band never nears the text.
     float breath = 0.5 - 0.5 * cos(time * 6.2831853 / 20.0);
     vec2 breathingP = compositionOrigin + (p - compositionOrigin) / (1.0 + 0.03 * breath);
     vec2 q = flow(breathingP);
     float centerOffset = q.y - 0.135 + 0.065 * sin(q.x * 2.8 - 0.3);
-    // The curls and the aspect-dependent horizontal scale stretch the band unevenly.
-    // Dividing by the offset's screen gradient turns it into a distance in viewport
-    // heights, so the band keeps one thickness along its whole length.
+    // The curls stretch the band unevenly. Dividing by the offset's screen gradient
+    // turns it into a distance in short sides, so the band keeps one thickness along
+    // its whole length.
     #ifdef GL_OES_standard_derivatives
-    float offsetStretch = length(vec2(dFdx(centerOffset), dFdy(centerOffset))) * resolution.y;
+    float offsetStretch = length(vec2(dFdx(centerOffset), dFdy(centerOffset))) * shortSide;
     float lane = centerOffset / max(offsetStretch, 0.25);
     #else
     float lane = centerOffset;
@@ -133,6 +144,7 @@ const uniformNames = [
   "compositionAnchor",
   "compositionZoom",
   "compositionOrigin",
+  "compositionRotation",
 ] as const
 type UniformName = (typeof uniformNames)[number]
 
@@ -155,13 +167,52 @@ const maximumFrameDeltaSeconds = 0.1
 const maximumRenderScale = 1.35
 const maximumBufferEdge = 1350
 const themeBackdropAttribute = "webgl"
-// Where the introduction's centre sits in composition space: the bay under the arch.
-// With this origin and zoom the band, its outer seam included, keeps at least 1.3 times
-// its reach away from the introduction on landscape viewports 1024px wide and up.
-const bayOrigin = [0.1, -0.01] as const
-// Wider text relative to the viewport height enlarges the composition so the bay fits it.
-const bayTextWidthRatio = 0.36
-const minimumCompositionZoom = 0.7
+// How the composition sits around the introduction for each screen shape. The origin is
+// where the introduction's centre lands in composition space (the bay under the arch);
+// wider text relative to the short side enlarges the composition so the bay fits it.
+type CompositionLayout = {
+  rotationDegrees: number
+  origin: readonly [number, number]
+  textWidthRatio: number
+  minimumZoom: number
+  maximumZoom: number
+}
+
+// Landscape 1024px wide and up: the band, outer seam included, keeps at least 1.33 times
+// its reach from the introduction and stays inside the viewport at full breath.
+const landscapeComposition: CompositionLayout = {
+  rotationDegrees: 0,
+  origin: [0.1, -0.01],
+  textWidthRatio: 0.36,
+  minimumZoom: 0.7,
+  maximumZoom: 1,
+}
+// Portrait phones: a 65° turn runs the band down past the introduction's right side and
+// out at the lower right, away from the theme button and the footer.
+const phonePortraitComposition: CompositionLayout = {
+  rotationDegrees: 65,
+  origin: [0.08, 0.22],
+  textWidthRatio: 0.6,
+  minimumZoom: 0.6,
+  maximumZoom: 1,
+}
+// Portrait tablets: a 70° turn keeps at least 1.5 times the reach from the introduction.
+const tabletPortraitComposition: CompositionLayout = {
+  rotationDegrees: 70,
+  origin: [0.12, 0.38],
+  textWidthRatio: 0.6,
+  minimumZoom: 0.6,
+  maximumZoom: 1.4,
+}
+const phonePortraitMaximumAspect = 0.65
+
+function selectCompositionLayout(width: number, height: number) {
+  const aspect = width / height
+  if (aspect >= 1) return landscapeComposition
+  return aspect <= phonePortraitMaximumAspect
+    ? phonePortraitComposition
+    : tabletPortraitComposition
+}
 
 const backgroundCanvas = useTemplateRef<HTMLCanvasElement>("backgroundCanvas")
 const isBackgroundReady = shallowRef(false)
@@ -288,6 +339,7 @@ type CompositionFrame = {
   anchor: readonly [number, number]
   zoom: number
   origin: readonly [number, number]
+  rotation: number
 }
 
 function measureComposition(canvas: HTMLCanvasElement): CompositionFrame {
@@ -299,20 +351,27 @@ function measureComposition(canvas: HTMLCanvasElement): CompositionFrame {
       anchor: [canvas.width / 2, canvas.height / 2],
       zoom: 1,
       origin: [0, 0],
+      rotation: 0,
     }
   }
+  const layout = selectCompositionLayout(
+    canvasBounds.width,
+    canvasBounds.height,
+  )
   const bounds = anchor.getBoundingClientRect()
-  const textWidthRatio = bounds.width / canvasBounds.height
+  const textWidthRatio =
+    bounds.width / Math.min(canvasBounds.width, canvasBounds.height)
   return {
     anchor: [
       (bounds.left + bounds.width / 2 - canvasBounds.left) * bufferScale,
       (bounds.top + bounds.height / 2 - canvasBounds.top) * bufferScale,
     ],
     zoom: Math.min(
-      1,
-      Math.max(minimumCompositionZoom, bayTextWidthRatio / textWidthRatio),
+      layout.maximumZoom,
+      Math.max(layout.minimumZoom, layout.textWidthRatio / textWidthRatio),
     ),
-    origin: bayOrigin,
+    origin: layout.origin,
+    rotation: (layout.rotationDegrees * Math.PI) / 180,
   }
 }
 
@@ -363,6 +422,7 @@ function drawBackground(curtainFrame: ThemeCurtainFrame | undefined) {
     composition.origin[0],
     composition.origin[1],
   )
+  context.uniform1f(uniformLocations.compositionRotation, composition.rotation)
   context.drawArrays(context.TRIANGLES, 0, 6)
   isBackgroundReady.value = true
 }
