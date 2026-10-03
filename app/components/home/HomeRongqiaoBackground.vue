@@ -32,6 +32,7 @@ const fragmentShaderSource = `
   uniform float compositionZoom;
   uniform vec2 compositionOrigin;
   uniform float compositionRotation;
+  uniform vec3 darkCanvasColor;
 
   mat2 rotation(float a) {
     return mat2(cos(a), -sin(a), sin(a), cos(a));
@@ -108,17 +109,22 @@ const fragmentShaderSource = `
     lightColor = mix(lightColor, whiteChocolate, seam * 0.65);
     lightColor = mix(lightColor, warmMilk, foldedMilk * 0.18);
 
-    vec3 darkChocolate = vec3(33.0, 26.0, 23.0) / 255.0;
-    vec3 mixedChocolate = vec3(72.0, 51.0, 38.0) / 255.0;
-    vec3 cocoaMilk = vec3(129.0, 98.0, 72.0) / 255.0;
-    vec3 darkColor = mix(darkChocolate, mixedChocolate, bodyTint * 0.78);
-    darkColor = mix(darkColor, cocoaMilk, cream * 0.76);
-    darkColor = mix(darkColor, cocoaMilk, seam * 0.40);
-    darkColor = mix(darkColor, cocoaMilk, foldedMilk * 0.15);
+    // Dark theme: the theme's own canvas with background-only accents at 44% strength —
+    // a warm brown shadow, warm milk on the streaks and cooler grey edge lines. Milk sits
+    // on the streaks rather than washing the whole band, which read as grey haze.
+    float darkAccentStrength = 0.44;
+    vec3 darkWarmShadow = mix(darkCanvasColor, vec3(51.0, 42.0, 34.0) / 255.0, darkAccentStrength);
+    vec3 darkStreakMilk = mix(darkCanvasColor, vec3(230.0, 220.0, 203.0) / 255.0, darkAccentStrength);
+    vec3 darkEdgeMilk = mix(darkCanvasColor, vec3(156.0, 154.0, 146.0) / 255.0, darkAccentStrength);
+    float darkStreakCoverage = envelope * (0.12 + 0.88 * streak) * (0.84 + 0.16 * blended);
+    vec3 darkColor = mix(darkCanvasColor, darkWarmShadow, bodyTint * 0.78);
+    darkColor = mix(darkColor, darkStreakMilk, darkStreakCoverage * 0.76);
+    darkColor = mix(darkColor, darkEdgeMilk, seam * 0.40);
+    darkColor = mix(darkColor, darkEdgeMilk, foldedMilk * 0.15);
 
     float ridge = exp(-pow((abs(lane) - width) / 0.010, 2.0)) * 0.65;
     lightColor += ridge * vec3(0.004, 0.003, 0.002);
-    darkColor += ridge * vec3(0.012, 0.010, 0.007);
+    darkColor += ridge * vec3(0.060, 0.055, 0.048);
 
     // Matches the curtain veil's soft leading edge: 1 where the previous theme is still covered.
     float previousThemeCoverage = clamp(
@@ -145,6 +151,7 @@ const uniformNames = [
   "compositionZoom",
   "compositionOrigin",
   "compositionRotation",
+  "darkCanvasColor",
 ] as const
 type UniformName = (typeof uniformNames)[number]
 
@@ -225,10 +232,29 @@ let uniformLocations: Record<UniformName, WebGLUniformLocation | null>
 let reducedMotionPreference: MediaQueryList | undefined
 let canvasResizeObserver: ResizeObserver | undefined
 let isRenderingUnavailable = false
+// Used only if the theme's dark canvas cannot be resolved; matches @ayingott/theme 0.3.0.
+const fallbackDarkCanvasColor = [25 / 255, 25 / 255, 24 / 255] as const
+let darkCanvasColor: readonly [number, number, number] = fallbackDarkCanvasColor
 let elapsedSeconds = initialElapsedSeconds
 let previousFrameTime = 0
 let lastDrawTime = 0
 let animationFrameId = 0
+
+// The dark canvas comes from the theme even while the page is light, because a theme
+// transition draws both themes at once. A hidden probe carries the dark theme classes.
+function readThemeDarkCanvasColor(): readonly [number, number, number] {
+  const probe = document.createElement("div")
+  probe.className = "brutal dark"
+  probe.style.cssText =
+    "position: absolute; visibility: hidden; color: var(--surface-canvas)"
+  document.body.append(probe)
+  const channels = getComputedStyle(probe)
+    .color.match(/[\d.]+/g)
+    ?.map(Number)
+  probe.remove()
+  if (!channels || channels.length < 3) return fallbackDarkCanvasColor
+  return [channels[0]! / 255, channels[1]! / 255, channels[2]! / 255]
+}
 
 function isDocumentDark() {
   return document.documentElement.classList.contains("dark")
@@ -423,6 +449,12 @@ function drawBackground(curtainFrame: ThemeCurtainFrame | undefined) {
     composition.origin[1],
   )
   context.uniform1f(uniformLocations.compositionRotation, composition.rotation)
+  context.uniform3f(
+    uniformLocations.darkCanvasColor,
+    darkCanvasColor[0],
+    darkCanvasColor[1],
+    darkCanvasColor[2],
+  )
   context.drawArrays(context.TRIANGLES, 0, 6)
   isBackgroundReady.value = true
 }
@@ -555,6 +587,7 @@ onMounted(() => {
     isRenderingUnavailable = true
     return
   }
+  darkCanvasColor = readThemeDarkCanvasColor()
   markBackdropActive()
   canvas.addEventListener("webglcontextlost", handleContextLost)
   canvas.addEventListener("webglcontextrestored", handleContextRestored)
