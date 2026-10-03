@@ -45,7 +45,7 @@ const fragmentShaderSource = `
   // travelling wave, small ripples and curl wobble were removed: together they swayed
   // the shape without a direction and pinched the right shoulder into sharp turns.
   vec2 flow(vec2 p) {
-    p = curl(p, vec2(0.50, 0.08), 0.42, 1.45);
+    p = curl(p, vec2(0.50, 0.08), 0.42, 1.0);
     p = curl(p, vec2(-0.68, -0.16), 0.55, -0.88);
     return p;
   }
@@ -158,9 +158,9 @@ const themeBackdropAttribute = "webgl"
 // Where the introduction's centre sits in composition space: the bay under the arch.
 // With this origin and zoom the band, its outer seam included, keeps at least 1.3 times
 // its reach away from the introduction on landscape viewports 1024px wide and up.
-const bayOrigin = [0.16, -0.13] as const
+const bayOrigin = [0.1, -0.01] as const
 // Wider text relative to the viewport height enlarges the composition so the bay fits it.
-const bayTextWidthRatio = 0.32
+const bayTextWidthRatio = 0.36
 const minimumCompositionZoom = 0.7
 
 const backgroundCanvas = useTemplateRef<HTMLCanvasElement>("backgroundCanvas")
