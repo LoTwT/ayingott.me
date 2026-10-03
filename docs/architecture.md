@@ -45,7 +45,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
-首页单独组合 `HomeRongqiaoBackground`，固定画布位于正文和主题光幕下方，仅在客户端初始化 WebGL；初始化成功后在 `<html>` 上设置 `data-theme-backdrop="webgl"`，卸载或上下文丢失时移除。`ThemeSwitcher` 据此隐藏光幕层但保留其动画，背景每帧读取 `.theme-curtain` 的方向与边缘宽度、`.theme-curtain-veil` 的位置来绘制分界；这些类名与属性构成两者的接口，修改光幕结构时需同步背景。错误页不挂载该背景。
+首页单独组合 `HomeRongqiaoBackground`，固定画布位于正文和主题光幕下方，仅在客户端初始化 WebGL；初始化成功后在 `<html>` 上设置 `data-theme-backdrop="webgl"`，卸载或上下文丢失时移除。`ThemeSwitcher` 据此隐藏光幕层但保留其动画，背景每帧读取 `.theme-curtain` 的方向与边缘宽度、`.theme-curtain-veil` 的位置来绘制分界；这些类名与属性构成两者的接口，修改光幕结构时需同步背景。介绍区以 `data-backdrop-anchor` 标记为构图锚点，背景每次绘制时读取其位置与宽度。错误页不挂载该背景。
 
 `HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度与降级行为见 [首页动效](specs/design.md#首页动效已选)。
 

@@ -27,6 +27,9 @@ const fragmentShaderSource = `
   uniform float curtainLeadingEdge;
   uniform float curtainEdgeWidth;
   uniform float curtainCoverageDirection;
+  uniform vec2 compositionAnchor;
+  uniform float compositionZoom;
+  uniform vec2 compositionOrigin;
 
   mat2 rotation(float a) {
     return mat2(cos(a), -sin(a), sin(a), cos(a));
@@ -38,23 +41,26 @@ const fragmentShaderSource = `
     return center + rotation(angle * weight) * d;
   }
 
+  // Two fixed curls bend a gently waving line into the Ω. The independent drift,
+  // travelling wave, small ripples and curl wobble were removed: together they swayed
+  // the shape without a direction and pinched the right shoulder into sharp turns.
   vec2 flow(vec2 p) {
-    float drift = time * 0.09;
-    p.x += 0.09 * sin(drift);
-    p.y += 0.045 * sin(p.x * 2.1 - drift * 0.8);
-    p = curl(p, vec2(0.50, 0.08), 0.42, 1.45 + 0.23 * sin(drift * 0.8));
-    p = curl(p, vec2(-0.68, -0.16), 0.55, -0.88 + 0.12 * sin(drift + 1.0));
-    p.y += 0.040 * sin(p.x * 4.3 + 0.16 * sin(drift));
-    p.y += 0.015 * sin(p.x * 8.7 - p.y * 2.6 - drift * 0.35);
+    p = curl(p, vec2(0.50, 0.08), 0.42, 1.45);
+    p = curl(p, vec2(-0.68, -0.16), 0.55, -0.88);
     return p;
   }
 
   void main() {
     vec2 uv = vec2(gl_FragCoord.x / resolution.x, 1.0 - gl_FragCoord.y / resolution.y);
-    float aspect = resolution.x / resolution.y;
-    float viewWidth = mix(0.95, 1.92, smoothstep(0.6, 2.2, aspect));
-    vec2 p = vec2((uv.x - 0.5) * viewWidth, uv.y - 0.5);
-    vec2 q = flow(p);
+    // Composition space is anchored to the introduction: its centre lands in the bay
+    // under the arch, measured in viewport heights and scaled by the zoom.
+    vec2 pixel = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
+    vec2 p = (pixel - compositionAnchor) * compositionZoom / resolution.y + compositionOrigin;
+    // Breathing: once every 20 seconds the Ω opens out around the introduction by 3%
+    // and settles back. It only expands from rest, so the band never nears the text.
+    float breath = 0.5 - 0.5 * cos(time * 6.2831853 / 20.0);
+    vec2 breathingP = compositionOrigin + (p - compositionOrigin) / (1.0 + 0.03 * breath);
+    vec2 q = flow(breathingP);
     float centerOffset = q.y - 0.135 + 0.065 * sin(q.x * 2.8 - 0.3);
     // The curls and the aspect-dependent horizontal scale stretch the band unevenly.
     // Dividing by the offset's screen gradient turns it into a distance in viewport
@@ -124,6 +130,9 @@ const uniformNames = [
   "curtainLeadingEdge",
   "curtainEdgeWidth",
   "curtainCoverageDirection",
+  "compositionAnchor",
+  "compositionZoom",
+  "compositionOrigin",
 ] as const
 type UniformName = (typeof uniformNames)[number]
 
@@ -146,6 +155,13 @@ const maximumFrameDeltaSeconds = 0.1
 const maximumRenderScale = 1.35
 const maximumBufferEdge = 1350
 const themeBackdropAttribute = "webgl"
+// Where the introduction's centre sits in composition space: the bay under the arch.
+// With this origin and zoom the band, its outer seam included, keeps at least 1.3 times
+// its reach away from the introduction on landscape viewports 1024px wide and up.
+const bayOrigin = [0.16, -0.13] as const
+// Wider text relative to the viewport height enlarges the composition so the bay fits it.
+const bayTextWidthRatio = 0.32
+const minimumCompositionZoom = 0.7
 
 const backgroundCanvas = useTemplateRef<HTMLCanvasElement>("backgroundCanvas")
 const isBackgroundReady = shallowRef(false)
@@ -267,6 +283,39 @@ function readThemeCurtainFrame(
   }
 }
 
+// Anchor point (top-origin buffer pixels), zoom and origin for the composition.
+type CompositionFrame = {
+  anchor: readonly [number, number]
+  zoom: number
+  origin: readonly [number, number]
+}
+
+function measureComposition(canvas: HTMLCanvasElement): CompositionFrame {
+  const canvasBounds = canvas.getBoundingClientRect()
+  const anchor = document.querySelector<HTMLElement>("[data-backdrop-anchor]")
+  const bufferScale = canvasBounds.width ? canvas.width / canvasBounds.width : 1
+  if (!anchor || !canvasBounds.height) {
+    return {
+      anchor: [canvas.width / 2, canvas.height / 2],
+      zoom: 1,
+      origin: [0, 0],
+    }
+  }
+  const bounds = anchor.getBoundingClientRect()
+  const textWidthRatio = bounds.width / canvasBounds.height
+  return {
+    anchor: [
+      (bounds.left + bounds.width / 2 - canvasBounds.left) * bufferScale,
+      (bounds.top + bounds.height / 2 - canvasBounds.top) * bufferScale,
+    ],
+    zoom: Math.min(
+      1,
+      Math.max(minimumCompositionZoom, bayTextWidthRatio / textWidthRatio),
+    ),
+    origin: bayOrigin,
+  }
+}
+
 function drawBackground(curtainFrame: ThemeCurtainFrame | undefined) {
   const canvas = backgroundCanvas.value
   const context = renderingContext
@@ -301,6 +350,18 @@ function drawBackground(curtainFrame: ThemeCurtainFrame | undefined) {
   context.uniform1f(
     uniformLocations.curtainCoverageDirection,
     curtainFrame?.coverageDirection ?? 1,
+  )
+  const composition = measureComposition(canvas)
+  context.uniform2f(
+    uniformLocations.compositionAnchor,
+    composition.anchor[0],
+    composition.anchor[1],
+  )
+  context.uniform1f(uniformLocations.compositionZoom, composition.zoom)
+  context.uniform2f(
+    uniformLocations.compositionOrigin,
+    composition.origin[0],
+    composition.origin[1],
   )
   context.drawArrays(context.TRIANGLES, 0, 6)
   isBackgroundReady.value = true

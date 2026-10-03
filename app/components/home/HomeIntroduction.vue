@@ -7,7 +7,7 @@ import HomeLinks from "~/components/home/HomeLinks.vue"
     aria-labelledby="introduction-title"
     class="home-introduction flex items-center"
   >
-    <div>
+    <div data-backdrop-anchor>
       <h1
         id="introduction-title"
         class="theme-color-transition font-display text-4xl leading-tight font-medium sm:text-5xl"
