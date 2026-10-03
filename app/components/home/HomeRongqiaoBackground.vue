@@ -8,8 +8,9 @@ import {
 } from "vue"
 import { useColorMode } from "#imports"
 
-// Material shader from “融巧 V1 · 原版”. Only the final theme mix differs:
-// it follows the theme curtain's live geometry instead of its own sweep.
+// Material and palette from “融巧 V1 · 原版”. The band's shape, thickness, outer seam,
+// motion and placement were reworked for the homepage (see docs/specs/design.md), and the
+// final theme mix follows the theme curtain's live geometry instead of its own sweep.
 const vertexShaderSource = `
   attribute vec2 position;
   void main() { gl_Position = vec4(position, 0.0, 1.0); }
@@ -53,11 +54,10 @@ const fragmentShaderSource = `
 
   void main() {
     vec2 uv = vec2(gl_FragCoord.x / resolution.x, 1.0 - gl_FragCoord.y / resolution.y);
-    // Composition space is anchored to the introduction: its centre lands in the bay
-    // under the arch, measured in short sides and scaled by the zoom.
+    // Composition space is anchored to the introduction: its centre lands in the bay under
+    // the arch. Lengths are measured in short sides, so portrait screens keep landscape
+    // proportions, and portrait layouts turn the composition clockwise around the anchor.
     vec2 pixel = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
-    // Lengths are measured in short sides, so portrait screens keep landscape proportions;
-    // portrait layouts also turn the composition clockwise around the introduction.
     float shortSide = min(resolution.x, resolution.y);
     vec2 fromAnchor = pixel - compositionAnchor;
     float rotationCosine = cos(compositionRotation);
@@ -334,7 +334,7 @@ function readThemeCurtainFrame(
   }
 }
 
-// Anchor point (top-origin buffer pixels), zoom and origin for the composition.
+// Anchor point (top-origin buffer pixels), zoom, origin and rotation for the composition.
 type CompositionFrame = {
   anchor: readonly [number, number]
   zoom: number
