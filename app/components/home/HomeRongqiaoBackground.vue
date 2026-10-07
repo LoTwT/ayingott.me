@@ -109,22 +109,17 @@ const fragmentShaderSource = `
     lightColor = mix(lightColor, whiteChocolate, seam * 0.65);
     lightColor = mix(lightColor, warmMilk, foldedMilk * 0.18);
 
-    // Dark theme: the theme's own canvas with background-only accents at 44% strength —
-    // a warm brown shadow, warm milk on the streaks and cooler grey edge lines. Milk sits
-    // on the streaks rather than washing the whole band, which read as grey haze.
+    // Dark theme: only the band's soft outer seam and fold, in 44% warm milk on the theme's
+    // own canvas, so the band reads as a quiet glow at about the light theme's strength.
+    // Streaks, shadow and edge gloss are left out: crisp lines beside the soft seam made
+    // the seam read as out of focus, and a shadow below the dark canvas read as a smudge.
     float darkAccentStrength = 0.44;
-    vec3 darkWarmShadow = mix(darkCanvasColor, vec3(51.0, 42.0, 34.0) / 255.0, darkAccentStrength);
-    vec3 darkStreakMilk = mix(darkCanvasColor, vec3(230.0, 220.0, 203.0) / 255.0, darkAccentStrength);
-    vec3 darkEdgeMilk = mix(darkCanvasColor, vec3(156.0, 154.0, 146.0) / 255.0, darkAccentStrength);
-    float darkStreakCoverage = envelope * (0.12 + 0.88 * streak) * (0.84 + 0.16 * blended);
-    vec3 darkColor = mix(darkCanvasColor, darkWarmShadow, bodyTint * 0.78);
-    darkColor = mix(darkColor, darkStreakMilk, darkStreakCoverage * 0.76);
-    darkColor = mix(darkColor, darkEdgeMilk, seam * 0.40);
+    vec3 darkEdgeMilk = mix(darkCanvasColor, vec3(212.0, 196.0, 172.0) / 255.0, darkAccentStrength);
+    vec3 darkColor = mix(darkCanvasColor, darkEdgeMilk, seam * 0.40);
     darkColor = mix(darkColor, darkEdgeMilk, foldedMilk * 0.15);
 
     float ridge = exp(-pow((abs(lane) - width) / 0.010, 2.0)) * 0.65;
     lightColor += ridge * vec3(0.004, 0.003, 0.002);
-    darkColor += ridge * vec3(0.060, 0.055, 0.048);
 
     // Matches the curtain veil's soft leading edge: 1 where the previous theme is still covered.
     float previousThemeCoverage = clamp(
