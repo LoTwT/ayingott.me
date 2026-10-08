@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useHead, useSeoMeta } from "#imports"
 import HomeIntroduction from "~/components/home/HomeIntroduction.vue"
-import HomeRongqiaoBackground from "~/components/home/HomeRongqiaoBackground.vue"
 
 const pageTitle = "Lo"
 const pageDescription = "Lo 的个人主页，GitHub、邮箱与简历。"
@@ -35,7 +34,6 @@ useSeoMeta({
 
 <template>
   <main id="main-content" tabindex="-1">
-    <HomeRongqiaoBackground />
     <HomeIntroduction />
   </main>
 </template>

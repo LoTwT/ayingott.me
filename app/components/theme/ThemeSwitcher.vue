@@ -257,11 +257,6 @@ async function cycleTheme() {
   );
 }
 
-/* A page backdrop that draws its own theme edge keeps the curtain as timing only. */
-html[data-theme-backdrop="webgl"] .theme-curtain-veil {
-  visibility: hidden;
-}
-
 .theme-curtain[data-direction="right"] .theme-curtain-veil {
   --theme-curtain-gradient-direction: to left;
   inset: 0 -40% 0 0;

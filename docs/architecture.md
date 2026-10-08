@@ -27,25 +27,22 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                            | 职责                                                     |
-| ------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                                   | 组合站点框架与当前路由页面                               |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                           | Header、跳到正文入口、内容栏与页脚组合；默认插槽承载页面 |
-| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                         | 页脚文案与呈现                                           |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)                  | 主题偏好选择与持久化                                     |
-| [pages/index.vue](../app/pages/index.vue)                                       | 组合首页内容，提供正文焦点入口                           |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)             | 组合首屏介绍与图标入口，维护视口高度布局                 |
-| [HomeRongqiaoBackground.vue](../app/components/home/HomeRongqiaoBackground.vue) | 首页融巧背景的 WebGL 绘制、主题分界与运行生命周期        |
-| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                           | GitHub、邮箱与简历图标入口及交互                         |
-| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)               | 图标磁吸的偏移计算、指针能力检查与清理                   |
-| [error.vue](../app/error.vue)                                                   | 404 与其他错误的展示、返回首页入口                       |
-| [assets/main.css](../app/assets/main.css)                                       | Tailwind、主题字体、主题样式和全局基础规则               |
+| 文件                                                                | 职责                                                     |
+| ------------------------------------------------------------------- | -------------------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                               |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口、内容栏与页脚组合；默认插槽承载页面 |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现                                           |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
+| [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
+| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)   | 图标磁吸的偏移计算、指针能力检查与清理                   |
+| [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
+| [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
 
 页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
-
-首页单独组合 `HomeRongqiaoBackground`，固定画布位于正文和主题光幕下方，仅在客户端初始化 WebGL；初始化成功后在 `<html>` 上设置 `data-theme-backdrop="webgl"`，卸载或上下文丢失时移除。`ThemeSwitcher` 据此隐藏光幕层但保留其动画，主题切换期间背景每帧读取 `.theme-curtain` 的方向与边缘宽度、`.theme-curtain-veil` 的位置来绘制分界；这些类名与属性构成两者的接口，修改光幕结构时需同步背景。介绍区以 `data-backdrop-anchor` 标记为构图锚点，背景每次绘制时读取其位置与宽度。背景挂载时用带 `brutal dark` 类的隐藏探针读取主题深色画布 `--surface-canvas`，主题切换时同时绘制明暗两套画面；深色细缝的暖奶色为背景专用色，见 [首页动效](specs/design.md#首页动效已选)。错误页不挂载该背景。
 
 `HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度与降级行为见 [首页动效](specs/design.md#首页动效已选)。
 
