@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { FileText, Mail } from "@lucide/vue"
 import githubMarkUrl from "~/assets/icons/github.svg?inline"
+import { useMagneticPointer } from "~/composables/useMagneticPointer"
 
 const githubMaskImage = `url("${githubMarkUrl}")`
+const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer()
 
 const links = [
   {
@@ -39,25 +41,27 @@ const links = [
           "
           :title="link.label"
           class="flex size-9 items-center justify-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
+          @pointermove.passive="moveMagneticIcon"
+          @pointerleave="resetMagneticOffset"
+          @pointercancel="resetMagneticOffset"
+          @blur="resetMagneticOffset"
         >
           <span
-            v-if="link.icon === 'github'"
+            class="magnetic-visual grid place-items-center"
             aria-hidden="true"
-            class="size-5.5 bg-current mask-contain mask-center mask-no-repeat"
-            :style="{ maskImage: githubMaskImage }"
-          />
-          <Mail
-            v-else-if="link.icon === 'mail'"
-            class="size-6"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
-          <FileText
-            v-else
-            class="size-6"
-            :stroke-width="2"
-            aria-hidden="true"
-          />
+          >
+            <span
+              v-if="link.icon === 'github'"
+              class="size-5.5 bg-current mask-contain mask-center mask-no-repeat"
+              :style="{ maskImage: githubMaskImage }"
+            />
+            <Mail
+              v-else-if="link.icon === 'mail'"
+              class="size-6"
+              :stroke-width="2"
+            />
+            <FileText v-else class="size-6" :stroke-width="2" />
+          </span>
         </a>
       </li>
     </ul>

@@ -9,6 +9,7 @@ import {
   watchEffect,
 } from "vue"
 import { useColorMode } from "#imports"
+import { useMagneticPointer } from "~/composables/useMagneticPointer"
 
 const themeOptions = [
   { value: "system", label: "跟随系统", icon: Monitor },
@@ -17,6 +18,7 @@ const themeOptions = [
 ] as const
 
 const colorMode = useColorMode()
+const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer(2)
 const themeTransitionDuration = 600
 const themeCurtainEdgeWidth = 0.308
 const themeTransitionTiming = {
@@ -201,16 +203,21 @@ async function cycleTheme() {
     :title="buttonLabel"
     class="grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
     @click="cycleTheme"
+    @pointermove.passive="moveMagneticIcon"
+    @pointerleave="resetMagneticOffset"
+    @pointercancel="resetMagneticOffset"
+    @blur="resetMagneticOffset"
   >
-    <component
-      :is="option.icon"
-      v-for="option in themeOptions"
-      :key="option.value"
-      :data-theme-icon="option.value"
-      :size="20"
-      class="theme-icon"
-      aria-hidden="true"
-    />
+    <span class="magnetic-visual grid" aria-hidden="true">
+      <component
+        :is="option.icon"
+        v-for="option in themeOptions"
+        :key="option.value"
+        :data-theme-icon="option.value"
+        :size="20"
+        class="theme-icon"
+      />
+    </span>
   </button>
   <Teleport v-if="themeCurtain" to="body">
     <div
