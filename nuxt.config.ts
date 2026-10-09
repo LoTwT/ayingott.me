@@ -61,5 +61,9 @@ export default defineNuxtConfig({
       failOnError: true,
     },
   },
+  experimental: {
+    // 构建时用 error.vue 生成完整的 404.html，未匹配路径无需等待客户端渲染。
+    prerenderErrorPages: true,
+  },
   vite: { plugins: [tailwindcss()] },
 })

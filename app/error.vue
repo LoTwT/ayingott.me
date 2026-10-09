@@ -7,7 +7,7 @@ import { ownerName } from "~/utils/profile"
 
 const props = defineProps<{ error: NuxtError }>()
 const message = computed(() =>
-  props.error.statusCode === 404 ? "这里还没有页面。" : "页面暂时无法打开。",
+  props.error.status === 404 ? "这里还没有页面。" : "页面暂时无法打开。",
 )
 
 useSeoMeta({
@@ -18,10 +18,14 @@ useSeoMeta({
 
 <template>
   <SiteFrame>
-    <main id="main-content" class="mb-24 flex flex-1 items-center py-20">
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="mb-24 flex flex-1 items-center py-20 focus:outline-none"
+    >
       <div class="space-y-5">
         <p class="theme-color-transition font-mono text-sm text-(--text-muted)">
-          {{ error.statusCode }}
+          {{ error.status }}
         </p>
         <h1 class="theme-color-transition font-display text-3xl font-medium">
           {{ message }}
