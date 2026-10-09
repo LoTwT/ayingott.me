@@ -19,7 +19,7 @@
 
 ## 渲染与部署边界
 
-`pnpm build` 与 `pnpm generate` 都执行静态生成。[nuxt.config.ts](../nuxt.config.ts) 显式使用 Nitro 的 `static` 预设，使本地与 Cloudflare Git 构建都输出到 `.output/public`，避免托管环境自动选择其他输出目录。配置中的 `ssr: true` 用于生成 HTML，不代表部署请求时运行的 Nuxt 服务端。
+`pnpm build` 与 `pnpm generate` 都执行静态生成。[nuxt.config.ts](../nuxt.config.ts) 显式使用 Nitro 的 `static` 预设，使本地与 Cloudflare Git 构建都输出到 `.output/public`，避免托管环境自动选择其他输出目录。配置中的 `ssr: true` 用于生成 HTML，不代表部署请求时运行的 Nuxt 服务端。`experimental.prerenderErrorPages` 在构建时用 `error.vue` 渲染 `404.html`，Pages 对未匹配路径返回该文件时自带完整内容，不再是等待客户端渲染的空壳；该页不应依赖当前请求路径。见 [Nuxt：200.html 与 404.html](https://nuxt.com/docs/4.x/guide/concepts/rendering#what-are-200html-and-404html)。
 
 Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
@@ -41,7 +41,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
 | [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
 
-页面提供 `<main id="main-content">`，对应公共框架的“跳到正文”链接。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
+页面与错误页提供 `<main id="main-content" tabindex="-1">`，对应公共框架的“跳到正文”链接；`<main>` 只作为程序化焦点目标，不显示焦点轮廓。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
