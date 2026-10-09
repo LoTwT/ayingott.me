@@ -2,20 +2,25 @@
 import { FileText, Mail } from "@lucide/vue"
 import githubMarkUrl from "~/assets/icons/github.svg?inline"
 import { useMagneticPointer } from "~/composables/useMagneticPointer"
+import {
+  contactEmailAddress,
+  githubProfileUrl,
+  githubUsername,
+} from "~/utils/profile"
 
 const githubMaskImage = `url("${githubMarkUrl}")`
 const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer()
 
 const links = [
   {
-    label: "GitHub：LoTwT",
-    href: "https://github.com/LoTwT",
+    label: `GitHub：${githubUsername}`,
+    href: githubProfileUrl,
     icon: "github",
     openInNewTab: false,
   },
   {
-    label: "邮箱：hi@ayingott.me",
-    href: "mailto:hi@ayingott.me",
+    label: `邮箱：${contactEmailAddress}`,
+    href: `mailto:${contactEmailAddress}`,
     icon: "mail",
     openInNewTab: false,
   },

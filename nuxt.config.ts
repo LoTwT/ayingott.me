@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite"
 import { defineNuxtConfig } from "nuxt/config"
+import { ownerName } from "./app/utils/profile"
 
 export default defineNuxtConfig({
   compatibilityDate: "2026-09-14",
@@ -10,7 +11,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: "zh-CN", class: "brutal" },
-      title: "Lo",
+      title: ownerName,
       link: [
         {
           rel: "icon",
@@ -39,6 +40,12 @@ export default defineNuxtConfig({
             'document.documentElement.dataset.themePreference = window.__NUXT_COLOR_MODE__?.preference || "system";',
         },
       ],
+    },
+  },
+  runtimeConfig: {
+    public: {
+      // 在构建时确定，预渲染 HTML 与客户端水合使用同一年份。
+      copyrightYear: new Date().getFullYear(),
     },
   },
   colorMode: {
