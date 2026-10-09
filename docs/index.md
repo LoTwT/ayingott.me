@@ -31,6 +31,8 @@
 
 | 日期       | 验收对象                                                                       |
 | ---------- | ------------------------------------------------------------------------------ |
+| 2026-10-09 | [跨浏览器与 Lighthouse 线上检查](verification/2026-10-09-browser-coverage.md)  |
+| 2026-10-09 | [404 预渲染与错误页样式线上验收](verification/2026-10-09-error-page.md)        |
 | 2026-10-09 | [依赖升级与线上浏览器检查](verification/2026-10-09-dependency-upgrade.md)      |
 | 2026-10-09 | [生产状态核对与站点维护](verification/2026-10-09-site-maintenance.md)          |
 | 2026-09-18 | [首屏字体加载优化](verification/2026-09-18-font-loading.md)                    |
