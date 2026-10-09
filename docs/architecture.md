@@ -31,12 +31,13 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | ------------------------------------------------------------------- | -------------------------------------------------------- |
 | [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                               |
 | [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口、内容栏与页脚组合；默认插槽承载页面 |
-| [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现                                           |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`     |
 | [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
 | [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
 | [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
 | [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
 | [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)   | 图标磁吸的偏移计算、指针能力检查与清理                   |
+| [utils/profile.ts](../app/utils/profile.ts)                         | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用      |
 | [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
 | [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
 
@@ -75,9 +76,11 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 
 静态资源由 `public/` 输出到生成目录。简历文件的保留要求见 [重建要求](specs/requirements.md)，资源一致性校验见 [开发约定](development.md#检查)。
 
+- [robots.txt](../public/robots.txt) 与 [sitemap.xml](../public/sitemap.xml)：允许抓取并声明站点地图。站点地图手动维护，新增可索引页面时同步补充。Cloudflare 若开启托管的 robots.txt，会在该文件前追加内容信号声明。
+
 ## 站点标识与分享信息
 
-[nuxt.config.ts](../nuxt.config.ts) 注册全站图标和默认标题；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
+[nuxt.config.ts](../nuxt.config.ts) 注册全站图标和默认标题；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
 
 素材的视觉约定见 [设计方向](specs/design.md#站点标识与分享初版)。文件职责如下：
 

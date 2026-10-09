@@ -59,6 +59,12 @@ curl -fsS "$site_url/resume.pdf" | cmp public/resume.pdf -
 
 前两个请求应依次返回 `200`、`404`；PDF 比较应退出成功且无输出。PDF 的保留要求见 [重建要求](specs/requirements.md)。
 
+确认站点地图可访问，应返回 `200`：
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' "$site_url/sitemap.xml"
+```
+
 再完成 [浏览器检查](development.md#本地预览)，确认实际页面内容、交互和资源加载正常。基础检查与构建通过后，仍需完成这一步。
 
 ## Git 构建与生产发布

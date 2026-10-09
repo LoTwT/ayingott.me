@@ -3,6 +3,7 @@ import type { NuxtError } from "#app"
 import { computed } from "vue"
 import { useSeoMeta } from "#imports"
 import SiteFrame from "~/components/site/SiteFrame.vue"
+import { ownerName } from "~/utils/profile"
 
 const props = defineProps<{ error: NuxtError }>()
 const message = computed(() =>
@@ -10,7 +11,7 @@ const message = computed(() =>
 )
 
 useSeoMeta({
-  title: () => `${message.value} · Lo`,
+  title: () => `${message.value} · ${ownerName}`,
   robots: "noindex, nofollow",
 })
 </script>

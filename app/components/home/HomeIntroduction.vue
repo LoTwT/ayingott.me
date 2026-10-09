@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HomeLinks from "~/components/home/HomeLinks.vue"
+import { ownerName } from "~/utils/profile"
 </script>
 
 <template>
@@ -12,7 +13,7 @@ import HomeLinks from "~/components/home/HomeLinks.vue"
         id="introduction-title"
         class="theme-color-transition font-display text-4xl leading-tight font-medium sm:text-5xl"
       >
-        你好，我是 Lo
+        你好，我是 {{ ownerName }}
       </h1>
       <HomeLinks class="mt-1.5" />
     </div>
