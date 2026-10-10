@@ -28,10 +28,10 @@
 
 ## 分支预览
 
-先完成上面的检查，使用明确的非生产分支名。以下是首轮工程分支的直接上传命令；上传未提交的工作区时保留 `--commit-dirty=true`，避免把产物误记为已提交代码：
+先完成上面的检查，使用明确的非生产分支名，把下面命令中的 `<branch>` 换成实际分支。上传未提交的工作区时保留 `--commit-dirty=true`，避免把产物误记为已提交代码：
 
 ```bash
-pnpm exec wrangler pages deploy .output/public --project-name ayingott-me --branch codex/nuxt-foundation --commit-dirty=true
+pnpm exec wrangler pages deploy .output/public --project-name ayingott-me --branch <branch> --commit-dirty=true
 ```
 
 命令返回实际预览地址后，对该地址完成下面的发布验收。
