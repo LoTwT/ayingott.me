@@ -1,14 +1,18 @@
-import { lstat, readdir, readFile } from "node:fs/promises"
-import { join, relative, resolve, sep } from "node:path"
+import { lstat, mkdir, readdir, readFile, writeFile } from "node:fs/promises"
+import { dirname, extname, join, relative, resolve, sep } from "node:path"
 import type { Nodes } from "mdast"
+import { imageSize } from "image-size"
 import { fromMarkdown } from "mdast-util-from-markdown"
 import { defineNuxtModule } from "nuxt/kit"
 import { parseDocument } from "yaml"
 import { z } from "zod"
+import { ownerName, siteOrigin } from "../app/utils/profile"
+import { renderPostShareCard } from "./post-share-cards/render-post-share-card"
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const contentFileExtensions = new Set([".md", ".yml", ".yaml", ".json"])
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/
+const shareCardImageExtensions = new Set([".png", ".jpg", ".jpeg"])
 
 function isExistingCalendarDate(value: string) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
@@ -42,6 +46,7 @@ const postFrontmatterSchema = z
       description: requiredString().trim().min(1, "不能为空"),
       date: calendarDateSchema,
       updated: calendarDateSchema.optional(),
+      image: z.string("必须是文章目录内图片的相对路径").optional(),
       tags: z
         .array(
           z.string().regex(slugPattern, "标签必须匹配 slug 格式，如 nuxt、css"),
@@ -115,6 +120,50 @@ async function getImageFileKind(path: string) {
   )
 }
 
+// 返回错误说明；绝对地址与站内地址不检查，返回 undefined。
+async function checkImageReference(postDirectory: string, url: string) {
+  if (!url.trim()) return "图片地址为空"
+  if (!isRelativeImageUrl(url)) return undefined
+  let decodedPath: string
+  try {
+    decodedPath = decodeURI(url.replace(/[?#].*$/, ""))
+  } catch {
+    return `图片路径无法解码：${url}`
+  }
+  const imagePath = resolve(postDirectory, decodedPath)
+  if (!imagePath.startsWith(postDirectory + sep)) {
+    return `图片路径越出文章目录：${url}`
+  }
+  const imageFileKind = await getImageFileKind(imagePath)
+  // 符号链接已在扫描 content/ 时报错，这里不再重复。
+  if (imageFileKind === "missing" || imageFileKind === "other") {
+    return `图片不存在：${url}`
+  }
+  return undefined
+}
+
+async function checkShareCardImage(postDirectory: string, url: string) {
+  if (!url.trim()) return "图片地址为空"
+  if (!isRelativeImageUrl(url)) return "必须是文章目录内图片的相对路径"
+  if (!shareCardImageExtensions.has(extname(url).toLowerCase())) {
+    return "分享卡片图片只支持 PNG 与 JPEG"
+  }
+  const referenceError = await checkImageReference(postDirectory, url)
+  if (referenceError) return referenceError
+  // 按文件内容判断格式，避免扩展名与实际内容不符时到生成卡片时才失败。
+  const imageData = await readFile(resolve(postDirectory, decodeURI(url)))
+  let imageType: string | undefined
+  try {
+    imageType = imageSize(imageData).type
+  } catch {
+    imageType = undefined
+  }
+  if (imageType !== "png" && imageType !== "jpg") {
+    return `不是有效的 PNG 或 JPEG 图片：${url}`
+  }
+  return undefined
+}
+
 async function validatePost(contentDirectory: string, slug: string) {
   const errors: string[] = []
   const postDirectory = join(contentDirectory, "posts", slug)
@@ -155,28 +204,14 @@ async function validatePost(contentDirectory: string, slug: string) {
     errors.push(`${displayPath}：未定义的图片引用：${label}`)
   }
   for (const url of body.imageUrls) {
-    if (!url.trim()) {
-      errors.push(`${displayPath}：图片地址为空`)
-      continue
-    }
-    if (!isRelativeImageUrl(url)) continue
-    let decodedPath: string
-    try {
-      decodedPath = decodeURI(url.replace(/[?#].*$/, ""))
-    } catch {
-      errors.push(`${displayPath}：图片路径无法解码：${url}`)
-      continue
-    }
-    const imagePath = resolve(postDirectory, decodedPath)
-    if (!imagePath.startsWith(postDirectory + sep)) {
-      errors.push(`${displayPath}：图片路径越出文章目录：${url}`)
-    } else {
-      const imageFileKind = await getImageFileKind(imagePath)
-      // 符号链接已在扫描 content/ 时报错，这里不再重复。
-      if (imageFileKind === "missing" || imageFileKind === "other") {
-        errors.push(`${displayPath}：图片不存在：${url}`)
-      }
-    }
+    const imageError = await checkImageReference(postDirectory, url)
+    if (imageError) errors.push(`${displayPath}：${imageError}`)
+  }
+
+  const shareCardImage = result.data?.image
+  if (shareCardImage !== undefined) {
+    const imageError = await checkShareCardImage(postDirectory, shareCardImage)
+    if (imageError) errors.push(`${displayPath}：image：${imageError}`)
   }
 
   return { errors, frontmatter: result.data }
@@ -270,6 +305,31 @@ export default defineNuxtModule({
       throw new Error(
         `文章内容校验失败（${errors.length} 项）：\n${errors.map((error) => `  - ${error}`).join("\n")}`,
       )
+    }
+
+    // 生产构建为每篇文章生成分享卡片；开发服务不生成，页面中的 og:image 地址在开发时无对应文件。
+    if (!nuxt.options.dev) {
+      nuxt.hook("nitro:build:public-assets", async (nitro) => {
+        for (const post of posts) {
+          const postDirectory = join(contentDirectory, "posts", post.slug)
+          const card = await renderPostShareCard({
+            title: post.frontmatter.title,
+            date: post.frontmatter.date,
+            byline: `${ownerName} · ${new URL(siteOrigin).host}`,
+            imagePath: post.frontmatter.image
+              ? resolve(postDirectory, decodeURI(post.frontmatter.image))
+              : undefined,
+          })
+          const cardPath = join(
+            nitro.options.output.publicDir,
+            "og",
+            "posts",
+            `${post.slug}.png`,
+          )
+          await mkdir(dirname(cardPath), { recursive: true })
+          await writeFile(cardPath, card)
+        }
+      })
     }
 
     const tags = new Set(posts.flatMap((post) => post.frontmatter.tags ?? []))

@@ -15,7 +15,7 @@
 | 组织方式 | 只用标签，不设分类                                                       |
 | 订阅     | RSS                                                                      |
 
-不做：草稿、分类、在线编辑器或 CMS、评论、站内搜索、多语言、单篇文章的分享图生成、旧站 `/blog` 地址的恢复或跳转、页内锚点有效性检查。
+不做：草稿、分类、在线编辑器或 CMS、评论、站内搜索、多语言、旧站 `/blog` 地址的恢复或跳转、页内锚点有效性检查。
 
 内容由 [Nuxt Content](https://content.nuxt.com/) 管理，图片由 [nuxt-content-assets](https://nuxt.com/modules/content-assets) 处理。
 
@@ -44,6 +44,7 @@ frontmatter 采用严格模式，出现未知字段即报错：
 | `date`        | `YYYY-MM-DD` 字符串 | 必填，必须是真实存在的日期；按字符串格式化，不经过 `Date` |
 | `updated`     | `YYYY-MM-DD` 字符串 | 可选，必须是真实存在的日期，且不早于 `date`               |
 | `tags`        | string[]            | 可选，每项匹配 slug 正则，如 `nuxt`、`css`                |
+| `image`       | 相对路径字符串      | 可选，文章目录内的 PNG 或 JPEG，只用于合成分享卡片        |
 
 日期按字符串处理，避免构建环境的时区导致日期偏移；旧博客出现过这个问题（提交 `35d963b`）。
 
@@ -134,7 +135,11 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 ## SEO 与分享
 
 - 文章页设置标题、描述、canonical、Open Graph（`og:type=article`、发布与更新时间）与 Twitter Card。
-- 分享图沿用 `og-image.png`。
+- 每篇文章在构建时生成一张 1200 × 630 的分享卡片 `/og/posts/<slug>.png`，作为 `og:image`、`twitter:image` 与 JSON-LD 的 `image`，`og:image:alt` 为“文章标题 · Lo”。卡片包含署名、标题与发布日期；填写 `image` 时，图片合成在卡片右侧。版式见 [设计方向](design.md#文章分享卡片)。
+- 卡片由 `modules/content-posts.ts` 调用 [渲染模块](../../modules/post-share-cards/render-post-share-card.ts) 生成：用 `satori` 排版、`@resvg/resvg-js` 转为 PNG。satori 不支持 WOFF2 与可变字体，因此按每张卡片用到的字，从主题字体中子集化出 TrueType，并固定 Bricolage Grotesque 的可变轴。
+- 卡片只在生产构建中生成，开发服务下 `og:image` 指向的文件不存在。卡片放在 `/og/` 下，不与文章目录中的图片重名。
+- `image` 的校验与正文图片相同，另外要求扩展名为 `.png`、`.jpg` 或 `.jpeg`，并按文件内容确认是 PNG 或 JPEG。
+- 首页与列表页继续使用站点的 `og-image.png`。
 - 文章页输出 schema.org `BlogPosting` JSON-LD，作者信息取自 [profile.ts](../../app/utils/profile.ts)。
 
 ## 导航与页面视觉
@@ -209,6 +214,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
   - 用 `..` 越出文章目录的引用；
   - 空的图片地址；
   - 没有定义行的引用式图片。
+- 分享卡片图片（`image`）：不存在、越出文章目录、空字符串、非字符串、绝对地址、PNG 与 JPEG 以外的格式、扩展名与文件内容不符。
 - 构建环境：设置 `NITRO_PRESET=cloudflare_pages`。
 
 **能力样例**：本地临时加入一篇覆盖全部内容能力的文章，验收后删除，不提交。检查内容：
@@ -231,6 +237,8 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 **字体**：按上文的预算口径统计每类页面，所有页面都没有完整字库请求。
 
 **XML**：`/feed.xml` 与 `/sitemap.xml` 内容正确。
+
+**分享卡片**：有图与无图、短标题与超长标题（中文与英文）、横图与竖图的卡片版式正确，超长标题以省略号截断；每篇文章的 `og:image`、`twitter:image` 与 JSON-LD 的 `image` 指向对应卡片。
 
 **图片**：
 

@@ -60,13 +60,14 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 文章的内容模型、校验规则、路由与验收标准由 [文章发布](specs/articles.md) 维护，这里只说明各部分的位置与相互关系。
 
-| 文件                                                            | 职责                                                             |
-| --------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [content.config.ts](../content.config.ts)                       | posts 集合声明，只写声明，不执行校验                             |
-| [modules/content-posts.ts](../modules/content-posts.ts)         | 构建期独立校验 `content/`，追加文章、标签与 XML 路由到预渲染列表 |
-| [server/routes/feed.xml.ts](../server/routes/feed.xml.ts)       | 预渲染生成 RSS                                                   |
-| [server/routes/sitemap.xml.ts](../server/routes/sitemap.xml.ts) | 预渲染生成站点地图                                               |
-| [nuxt.config.ts](../nuxt.config.ts)                             | 模块顺序、Content 的 Markdown 插件与高亮、`NITRO_PRESET` 断言    |
+| 文件                                                                               | 职责                                                                                    |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [content.config.ts](../content.config.ts)                                          | posts 集合声明，只写声明，不执行校验                                                    |
+| [modules/content-posts.ts](../modules/content-posts.ts)                            | 构建期独立校验 `content/`，追加文章、标签与 XML 路由到预渲染列表                        |
+| [modules/post-share-cards/](../modules/post-share-cards/render-post-share-card.ts) | 渲染文章分享卡片；由 `content-posts.ts` 在生产构建时调用，输出到 `/og/posts/<slug>.png` |
+| [server/routes/feed.xml.ts](../server/routes/feed.xml.ts)                          | 预渲染生成 RSS                                                                          |
+| [server/routes/sitemap.xml.ts](../server/routes/sitemap.xml.ts)                    | 预渲染生成站点地图                                                                      |
+| [nuxt.config.ts](../nuxt.config.ts)                                                | 模块顺序、Content 的 Markdown 插件与高亮、`NITRO_PRESET` 断言                           |
 
 页面只在 `useAsyncData` 中调用 `queryCollection`，预渲染后客户端导航读取各页的 `_payload.json`，不加载 Content 的 WASM SQLite。代码高亮的双主题样式由 Content 底层的 MDC 随正文输出，其中包含 `html.dark` 下读取暗色变量的规则。
 

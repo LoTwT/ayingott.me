@@ -69,7 +69,7 @@ for path in /sitemap.xml /feed.xml /posts; do
 done
 ```
 
-再从 `/feed.xml` 中任选一篇文章与一个标签，确认 `/posts/<slug>`、`/tags/<tag>` 返回 `200`，`/sitemap.xml` 与 `/feed.xml` 中包含本次发布的文章。使用 Git 集成时，确认构建日志中没有 Content 切换到 D1 的提示。
+再从 `/feed.xml` 中任选一篇文章与一个标签，确认 `/posts/<slug>`、`/tags/<tag>` 与分享卡片 `/og/posts/<slug>.png` 返回 `200`，`/sitemap.xml` 与 `/feed.xml` 中包含本次发布的文章。使用 Git 集成时，确认构建日志中没有 Content 切换到 D1 的提示。
 
 再完成 [浏览器检查](development.md#本地预览)，确认实际页面内容、交互和资源加载正常。基础检查与构建通过后，仍需完成这一步。
 

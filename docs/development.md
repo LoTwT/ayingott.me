@@ -28,13 +28,14 @@ Vue 组件使用 Composition API 和 `<script setup lang="ts">`。`app/` 中的�
    description: 一句话摘要，用于列表、分享与 RSS
    date: 2026-10-10
    tags: [nuxt, css]
+   image: ./images/cover.png # 可选，合成到分享卡片右侧
    ---
    ```
 
    正文从二级标题开始，不写一级标题。不要用名称以 `.` 开头的目录存放草稿，也不要使用符号链接，两者都会使构建失败。
 
 2. 图片放在同一目录，正文用相对路径引用，如 `![替代文本](./images/a.png "图片说明")`；引号中的标题显示为图片下方的说明，可省略。
-3. 运行 `pnpm dev` 预览。内容校验在开发服务启动时执行，修改 frontmatter 或图片引用后需重启开发服务才会重新校验；修改图片或其尺寸后，重新保存对应的 Markdown 或重启开发服务。开发时使用完整字库，字体子集只能在构建产物中检查。开发服务下直接访问 `/posts` 或文章页会被重定向到带尾斜杠的地址，原因见 [文章发布](specs/articles.md#路由与数据获取)，构建产物不受影响。
+3. 运行 `pnpm dev` 预览。内容校验在开发服务启动时执行，修改 frontmatter 或图片引用后需重启开发服务才会重新校验；修改图片或其尺寸后，重新保存对应的 Markdown 或重启开发服务。开发时使用完整字库，字体子集只能在构建产物中检查；分享卡片也只在构建时生成，构建后在 `.output/public/og/posts/` 中查看。开发服务下直接访问 `/posts` 或文章页会被重定向到带尾斜杠的地址，原因见 [文章发布](specs/articles.md#路由与数据获取)，构建产物不受影响。
 4. 在分支上完成下文的检查与预览，合入 `main` 即发布。未完成的文章不要合入 `main`。
 
 正文中的交互组件放在 `app/components/content/`，以 MDC 语法引用，如 `::demo-name`。该目录中的 `ProsePre.vue`、`ProseImg.vue` 覆盖 Content 的默认渲染，分别负责 Mermaid 图表与图片说明。

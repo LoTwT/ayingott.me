@@ -42,8 +42,9 @@ const containsMath = JSON.stringify(article.body).includes('"katex"')
 const pageTitle = `${article.title} · ${ownerName}`
 const canonicalUrl = `${siteOrigin}${article.path}`
 const homeUrl = `${siteOrigin}/`
-const socialImageUrl = `${siteOrigin}/og-image.png`
-const socialImageAlt = `米白色背景上的“你好，我是 ${ownerName}”和域名 ${new URL(siteOrigin).host}`
+// Generated at build time by modules/content-posts.ts.
+const socialImageUrl = `${siteOrigin}/og/posts/${slug}.png`
+const socialImageAlt = pageTitle
 
 const blogPostingStructuredData = {
   "@context": "https://schema.org",
