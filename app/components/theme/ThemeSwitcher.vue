@@ -26,6 +26,14 @@ const themeTransitionTiming = {
   easing: "cubic-bezier(0.45, 0, 0.55, 1)",
   fill: "both",
 } as const
+// Text blocks generated from Markdown cannot carry the class themselves; their container
+// opts in with .theme-color-transition-blocks. List items and formulas switch color by
+// position like links instead of using the text gradient, because list markers and the
+// lines KaTeX draws with borders would vanish while the text is transparent.
+const textTransitionSelector =
+  ".theme-color-transition, .theme-color-transition-blocks :is(p, h2, h3, h4, h5, h6, blockquote, th, td, .article-figure-caption)"
+const positionalColorTransitionSelector =
+  ".theme-color-transition-blocks :is(li, .katex)"
 const curtainVeil = useTemplateRef<HTMLDivElement>("curtainVeil")
 const reducedMotionPreference = import.meta.client
   ? window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -108,7 +116,7 @@ async function cycleTheme() {
   const curtainId = ++themeCurtainId
   const previousColors = Array.from(
     document.querySelectorAll<HTMLElement>(
-      "a, button, .theme-color-transition",
+      `a, button, ${textTransitionSelector}, ${positionalColorTransitionSelector}`,
     ),
     (element) => {
       const bounds = element.getBoundingClientRect()
@@ -137,6 +145,11 @@ async function cycleTheme() {
   if (themeCurtain.value?.id !== curtainId || !curtainVeil.value) return
 
   const travelDirection = direction === "left" ? -1 : 1
+  // Read every next color before starting any animation: a parent that is already animating
+  // would otherwise hand its transparent or old color down to nested elements.
+  const nextColors = previousColors.map(
+    ({ element }) => getComputedStyle(element).color,
+  )
   themeAnimations = [
     curtainVeil.value.animate(
       [
@@ -147,10 +160,10 @@ async function cycleTheme() {
       ],
       themeTransitionTiming,
     ),
-    ...previousColors.map(({ element, left, color, distance }) => {
-      const nextColor = getComputedStyle(element).color
+    ...previousColors.map(({ element, left, color, distance }, index) => {
+      const nextColor = nextColors[index]!
       const totalTravel = 1 + themeCurtainEdgeWidth
-      if (element.matches(".theme-color-transition")) {
+      if (element.matches(textTransitionSelector)) {
         const viewportWidth = window.innerWidth
         const gradientWidth = viewportWidth * themeCurtainEdgeWidth
         const textGradient = {

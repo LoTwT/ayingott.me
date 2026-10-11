@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SiteFooter from "~/components/site/SiteFooter.vue"
+import SiteNavigation from "~/components/site/SiteNavigation.vue"
 import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
 </script>
 
@@ -13,10 +14,16 @@ import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
     >
       跳到正文
     </a>
-    <header
-      class="flex h-(--site-header-height) shrink-0 items-center justify-end px-6 sm:px-10"
-    >
-      <ThemeSwitcher />
+    <header class="relative h-(--site-header-height) shrink-0">
+      <div
+        class="mx-auto flex h-full w-full max-w-3xl items-center px-6 sm:px-10"
+      >
+        <SiteNavigation />
+      </div>
+      <!-- The icon ends 1.5rem (2.5rem from 640px) from the viewport edge; the 44px hit area extends evenly around it. -->
+      <div class="absolute inset-y-0 right-3 flex items-center sm:right-7">
+        <ThemeSwitcher />
+      </div>
     </header>
     <div class="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 sm:px-10">
       <slot />

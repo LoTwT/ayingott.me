@@ -1,0 +1,139 @@
+/* 文章正文排版，只由文章页引入；数值见 docs/specs/design.md 的“文章页”。 */
+.article-content {
+  /* 标题使用展示字体；经由语义变量引用，字体预算超标时可整体替换。 */
+  --reading-font-heading: var(--font-display);
+
+  max-width: var(--reading-measure);
+  font-family: var(--reading-font-body);
+  font-size: var(--reading-font-size);
+  line-height: var(--reading-line-height);
+  letter-spacing: var(--reading-letter-spacing);
+  color: var(--reading-fg);
+  overflow-wrap: break-word;
+}
+
+.article-content > * + * {
+  margin-top: var(--reading-paragraph-gap);
+}
+
+.article-content :is(h2, h3, h4) {
+  font-family: var(--reading-font-heading);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.article-content h2 {
+  margin-top: 2.2em;
+  font-size: var(--reading-scale-h2);
+}
+
+.article-content h3 {
+  margin-top: 1.8em;
+  font-size: var(--reading-scale-h3);
+}
+
+.article-content h4 {
+  margin-top: 1.8em;
+  font-size: var(--reading-scale-h4);
+}
+
+.article-content :is(h2, h3, h4) > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.article-content a {
+  color: var(--reading-link);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.article-content a:hover {
+  color: var(--reading-link-hover);
+}
+
+.article-content a:focus-visible {
+  outline: 2px solid var(--reading-focus);
+  outline-offset: 2px;
+  box-shadow: var(--reading-focus-shadow);
+}
+
+.article-content ul {
+  list-style: disc;
+  padding-left: 1.25em;
+}
+
+.article-content ol {
+  list-style: decimal;
+  padding-left: 1.25em;
+}
+
+.article-content li + li,
+.article-content li > :is(ul, ol) {
+  margin-top: 0.35em;
+}
+
+.article-content :not(pre) > code {
+  padding: 0.1em 0.35em;
+  font-family: var(--reading-font-mono);
+  font-size: 0.85em;
+  color: var(--reading-code-fg);
+  background: var(--reading-code-bg);
+}
+
+.article-content pre {
+  overflow-x: auto;
+  padding: 1rem 1.25rem;
+  font-family: var(--reading-font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.article-content blockquote {
+  padding-left: 1em;
+  color: var(--reading-fg-muted);
+  border-left: 3px solid var(--accent-primary);
+}
+
+.article-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border-subtle);
+}
+
+.article-content .article-figure-caption {
+  display: block;
+  margin-top: 0.5em;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.article-content hr {
+  border: 0;
+  border-top: 1px solid var(--reading-rule);
+}
+
+.article-content table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.article-content :is(th, td) {
+  padding: 0.4em 0.75em;
+  text-align: left;
+  border: 1px solid var(--border-subtle);
+}
+
+.article-content th {
+  font-weight: 500;
+}
+
+.article-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
