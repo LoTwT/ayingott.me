@@ -6,7 +6,7 @@ import subsetFont from "subset-font"
 
 const chineseCharacterPattern =
   /[\p{Script=Han}\u3000-\u303f\uff01-\uff60\uffe0-\uffe6]/gu
-// 内容子集任一字重超过该体积时，需改为按页面生成子集，见 docs/specs/articles.md 的字体预算。
+// 内容子集任一字重超过该体积时，需改为按页面生成子集，见 docs/specs/articles.md 的“字体”一节。
 const contentSubsetBudgetBytes = 400 * 1024
 
 async function collectChineseCharacters(directory: string, pattern: string) {
