@@ -96,7 +96,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 构建日志会输出每组子集的字数与体积，内容子集超出预算时给出警告。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
 
-子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用。
+子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用；文章分享卡片的 [渲染模块](../modules/post-share-cards/render-post-share-card.ts) 也直接引用主题包中的字体文件名。
 
 视觉风格默认使用 `brutal`，由 [nuxt.config.ts](../nuxt.config.ts) 在 `<html>` 上设置 `brutal` 类。明暗模式默认跟随系统，系统偏好变化时同步更新；用户手动选择浅色或深色后保存偏好，重新选择“跟随系统”即可恢复自动切换。
 
@@ -125,7 +125,7 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 | [favicon.svg](../public/favicon.svg)                      | 浏览器图标的矢量源文件，含深浅配色            |
 | [favicon.png](../public/favicon.png)                      | 96 × 96px 的浅色图标，供 PNG 图标使用场景读取 |
 | [apple-touch-icon.png](../public/apple-touch-icon.png)    | 180 × 180px 的手机收藏图标                    |
-| [social-card.svg](../app/assets/identity/social-card.svg) | 分享卡片的矢量源文件                          |
-| [og-image.png](../public/og-image.png)                    | 1200 × 630px 的分享图片                       |
+| [social-card.svg](../app/assets/identity/social-card.svg) | 站点分享卡片的矢量源文件                      |
+| [og-image.png](../public/og-image.png)                    | 1200 × 630px 的站点分享图片，首页使用         |
 
-Favicon 使用 Oleo Script 的字形轮廓，分享卡片使用 `@ayingott/theme` 0.3.0 中的 Bricolage Grotesque 与 LXGW WenKai 字形轮廓；配色取自该版本的 `brutal` 主题。SVG 和 PNG 均可独立显示，无需额外字体请求。SVG 是素材维护来源，修改后按表中尺寸重新导出 PNG；主题字体或配色更新时需同步检查这组静态素材。导出工具临时使用，不新增应用依赖或构建脚本。
+Favicon 使用 Oleo Script 的字形轮廓，站点分享卡片使用 `@ayingott/theme` 0.3.0 中的 Bricolage Grotesque 与 LXGW WenKai 字形轮廓；配色取自该版本的 `brutal` 主题。SVG 和 PNG 均可独立显示，无需额外字体请求。SVG 是素材维护来源，修改后按表中尺寸重新导出 PNG；主题字体或配色更新时需同步检查这组静态素材。导出工具临时使用，不新增应用依赖或构建脚本。
