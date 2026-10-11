@@ -18,21 +18,31 @@
   "dependencies": {
     "@ayingott/theme": "0.3.0",
     "@lucide/vue": "1.54.0",
+    "@nuxt/content": "3.16.1",
+    "katex": "0.16.47",
+    "mermaid": "12.1.0",
     "nuxt": "4.6.0",
+    "nuxt-content-assets": "3.0.1",
+    "rehype-katex": "7.0.1",
+    "remark-math": "6.0.0",
     "vue": "3.5.43",
     "vue-router": "5.4.0"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "4.0.1",
     "@tailwindcss/vite": "4.3.3",
+    "@types/mdast": "4.0.4",
     "@types/subset-font": "2.3.0",
+    "mdast-util-from-markdown": "2.1.0",
     "oxfmt": "0.72.0",
     "oxlint": "1.87.0",
     "subset-font": "2.9.0",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "vue-tsc": "3.3.12",
-    "wrangler": "4.149.0"
+    "wrangler": "4.149.0",
+    "yaml": "2.9.1",
+    "zod": "4.6.5"
   },
   "engines": {
     "node": "24.x",

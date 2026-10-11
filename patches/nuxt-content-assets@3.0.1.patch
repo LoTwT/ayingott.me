@@ -1,0 +1,12 @@
+diff --git a/dist/runtime/plugin.client.js b/dist/runtime/plugin.client.js
+index 813a5980f241f08b27cfc96d8fb9ee5c498ec1f0..874bedf0bb252cfb17c1daf5bf97fa63ff4fcaef 100644
+--- a/dist/runtime/plugin.client.js
++++ b/dist/runtime/plugin.client.js
+@@ -1,5 +1,6 @@
+ import { defineNuxtPlugin } from "#imports";
+-import { HMR_EVENT } from "../types";
++// The published package ships ../types only as a declaration file, so the import fails at runtime.
++const HMR_EVENT = "nuxt-content-assets:update";
+ export default defineNuxtPlugin(() => {
+   if (!import.meta.hot || !import.meta.client) {
+     return;

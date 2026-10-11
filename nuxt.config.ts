@@ -2,11 +2,19 @@ import tailwindcss from "@tailwindcss/vite"
 import { defineNuxtConfig } from "nuxt/config"
 import { ownerName } from "./app/utils/profile"
 
+// Content 优先按 NITRO_PRESET 选择数据库，值中含 cloudflare 时会切换到 D1，与纯静态部署冲突。
+if (process.env.NITRO_PRESET && process.env.NITRO_PRESET !== "static") {
+  throw new Error(
+    `NITRO_PRESET 只能为 static 或不设置，当前为 ${process.env.NITRO_PRESET}`,
+  )
+}
+
 export default defineNuxtConfig({
   compatibilityDate: "2026-09-14",
   ssr: true,
   devtools: { enabled: true },
-  modules: ["@nuxtjs/color-mode"],
+  // nuxt-content-assets 必须在 @nuxt/content 之前，否则缓存的文档可能保留旧的图片路径或尺寸。
+  modules: ["nuxt-content-assets", "@nuxt/content", "@nuxtjs/color-mode"],
   css: ["~/assets/main.css"],
   app: {
     head: {
@@ -48,6 +56,17 @@ export default defineNuxtConfig({
       copyrightYear: new Date().getFullYear(),
     },
   },
+  content: {
+    experimental: { sqliteConnector: "native" },
+    build: {
+      markdown: {
+        highlight: { theme: { default: "github-light", dark: "github-dark" } },
+        remarkPlugins: { "remark-math": {} },
+        rehypePlugins: { "rehype-katex": {} },
+      },
+    },
+  },
+  contentAssets: { imageSize: "attrs" },
   colorMode: {
     preference: "system",
     fallback: "light",
@@ -57,7 +76,10 @@ export default defineNuxtConfig({
   nitro: {
     preset: "static",
     prerender: {
+      // 文章、标签与 XML 路由由 modules/content-posts.ts 追加。
       routes: ["/"],
+      // 输出 posts.html 而非 posts/index.html，Pages 以无尾斜杠的 /posts 提供页面。
+      autoSubfolderIndex: false,
       failOnError: true,
     },
   },
