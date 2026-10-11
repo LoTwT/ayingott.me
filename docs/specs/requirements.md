@@ -19,7 +19,7 @@
 
 ## 生产状态与站点维护
 
-当前首页已通过 `main` 的 Cloudflare Git 集成发布到生产域名，核对结果见 [验收记录](../index.md#验收记录)。文章功能已在 `feat/articles` 分支实现，尚无真实文章，尚未部署预览或发布到生产；本地验收的结果与暂时接受的未达标项见 [文章发布](articles.md)。合入 `main` 后按 [发布说明](../release.md) 核对并记录。
+当前首页已通过 `main` 的 Cloudflare Git 集成发布到生产域名，核对结果见 [验收记录](../index.md#验收记录)。文章功能已在 `feat/articles` 分支实现，尚无真实文章，尚未部署预览或发布到生产；本地验收的结果与待复查的 Lighthouse 项见 [文章发布](articles.md)。合入 `main` 后按 [发布说明](../release.md) 核对并记录。
 
 - 旧站的 `/about`、`/works` 已移除，不做跳转，访问时显示 404 页并提供回到首页的入口。
 - 提供 `robots.txt`、构建时生成的 `sitemap.xml` 与 `/feed.xml`；首页附带描述本人的 schema.org `Person` 结构化数据，文章页附带 `BlogPosting` 结构化数据。
