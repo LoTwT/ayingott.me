@@ -87,5 +87,22 @@ export default defineNuxtConfig({
     // 构建时用 error.vue 生成完整的 404.html，未匹配路径无需等待客户端渲染。
     prerenderErrorPages: true,
   },
+  hooks: {
+    // KaTeX 样式只随含公式的文章加载，不在其他页面预取。组件与其样式文件各有一条清单记录，
+    // 两者都要关闭；找不到组件时报错，避免改名后静默恢复预取。
+    "build:manifest"(manifest) {
+      const katexStylesheetKey = "components/posts/PostKatexStylesheet.vue"
+      const katexStylesheet = manifest[katexStylesheetKey]
+      if (!katexStylesheet) {
+        throw new Error(
+          `构建清单中没有 ${katexStylesheetKey}，请同步更新 nuxt.config.ts 中的键名`,
+        )
+      }
+      for (const key of [katexStylesheetKey, ...(katexStylesheet.css ?? [])]) {
+        const resource = manifest[key]
+        if (resource) resource.prefetch = false
+      }
+    },
+  },
   vite: { plugins: [tailwindcss()] },
 })
