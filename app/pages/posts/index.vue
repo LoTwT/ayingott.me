@@ -4,6 +4,7 @@ import { Rss } from "@lucide/vue"
 import { queryCollection, useAsyncData, useHead, useSeoMeta } from "#imports"
 import PostList from "~/components/posts/PostList.vue"
 import { ownerName, siteOrigin } from "~/utils/profile"
+import { shareCardSeoMeta } from "~/utils/share-card-seo-meta"
 
 const { data: posts } = await useAsyncData("posts", () =>
   queryCollection("posts")
@@ -26,6 +27,10 @@ useSeoMeta({
   ogDescription: pageDescription,
   ogUrl: canonicalUrl,
   ogLocale: "zh_CN",
+  twitterTitle: pageTitle,
+  twitterDescription: pageDescription,
+  // Generated at build time by modules/content-posts.ts.
+  ...shareCardSeoMeta(`${siteOrigin}/og/posts.png`, pageTitle),
 })
 </script>
 

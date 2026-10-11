@@ -15,6 +15,7 @@ import PostBackToTop from "~/components/posts/PostBackToTop.vue"
 import PostTagLinks from "~/components/posts/PostTagLinks.vue"
 import SiteBackLink from "~/components/site/SiteBackLink.vue"
 import { ownerName, siteOrigin } from "~/utils/profile"
+import { shareCardSeoMeta } from "~/utils/share-card-seo-meta"
 
 const PostKatexStylesheet = defineAsyncComponent(
   () => import("~/components/posts/PostKatexStylesheet.vue"),
@@ -97,20 +98,13 @@ useSeoMeta({
   ogDescription: article.description,
   ogUrl: canonicalUrl,
   ogLocale: "zh_CN",
-  ogImage: socialImageUrl,
-  ogImageWidth: 1200,
-  ogImageHeight: 630,
-  ogImageType: "image/png",
-  ogImageAlt: socialImageAlt,
   articlePublishedTime: article.date,
   articleModifiedTime: article.updated ?? article.date,
   articleAuthor: [homeUrl],
   articleTag: articleTags,
-  twitterCard: "summary_large_image",
   twitterTitle: article.title,
   twitterDescription: article.description,
-  twitterImage: socialImageUrl,
-  twitterImageAlt: socialImageAlt,
+  ...shareCardSeoMeta(socialImageUrl, socialImageAlt),
 })
 </script>
 

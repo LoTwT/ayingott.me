@@ -91,8 +91,11 @@ Content 的集合 schema 不能当作校验：缺少必填字段可能写成 `NU
 ## SEO 与分享
 
 - 文章页设置标题、描述、canonical、Open Graph（`og:type=article`、发布与更新时间）、Twitter Card 与 schema.org `BlogPosting`。
-- 每篇文章在构建时生成 1200 × 630 的分享卡片 `/og/posts/<slug>.png`，作为 `og:image`、`twitter:image` 与 JSON-LD 的 `image`。卡片包含署名、标题与发布日期，填写 `image` 时图片合成在右侧，版式见 [设计方向](design.md#文章分享卡片)。列表页与标签页不设分享图。
-- 卡片由 [渲染模块](../../modules/post-share-cards/render-post-share-card.ts) 用 `satori` 排版、`@resvg/resvg-js` 转为 PNG。satori 不支持 WOFF2 与可变字体，因此按每张卡片用到的字从主题字体子集化出 TrueType，并固定 Bricolage Grotesque 的可变轴。卡片只在生产构建中生成。
+- 构建时生成 1200 × 630 的分享卡片，作为对应页面的 `og:image` 与 `twitter:image`，`og:image:alt` 为页面标题：
+  - 文章页：`/og/posts/<slug>.png`，同时作为 JSON-LD 的 `image`。卡片包含署名、标题与发布日期，填写 `image` 时图片合成在右侧。
+  - 列表页：`/og/posts.png`，标签页：`/og/tags/<tag>.png`。卡片标题为“文章”或 `#<tag>`，底部为篇数。
+  - 版式见 [设计方向](design.md#内容分享卡片)；首页使用站点的 `og-image.png`。
+- 卡片由 [渲染模块](../../modules/share-cards/render-share-card.ts) 用 `satori` 排版、`@resvg/resvg-js` 转为 PNG。satori 不支持 WOFF2 与可变字体，因此按每张卡片用到的字从主题字体子集化出 TrueType，并固定 Bricolage Grotesque 的可变轴。卡片只在生产构建中生成。
 
 ## 字体
 

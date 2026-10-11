@@ -16,15 +16,18 @@ const cardColors = {
   imageBorder: "rgba(17, 17, 17, 0.16)",
 }
 const bylineFontSize = 30
-const dateFontSize = 28
+const footnoteFontSize = 28
 const imageBoxWidth = 420
 const imageBoxHeight = shareCardHeight - cardPadding * 2
 const columnGap = 64
 
-export interface PostShareCardContent {
-  title: string
-  date: string
+// 分享卡片自上而下为署名、标题与底部小字；文章卡片的底部小字是发布日期，列表与标签卡片是篇数。
+export interface ShareCardContent {
   byline: string
+  title: string
+  footnote: string
+  // 日期使用等宽的 Space Mono；篇数等文字说明使用文楷，避免等宽空格过宽。
+  footnoteKind: "date" | "text"
   imagePath?: string
 }
 
@@ -36,6 +39,7 @@ const themeFontFiles = {
   bricolage: resolveThemeFont(
     "bricolage-grotesque-latin-opsz-wght-normal.woff2",
   ),
+  lxgwWenKaiRegular: resolveThemeFont("lxgw-wenkai-400-normal.woff2"),
   lxgwWenKaiMedium: resolveThemeFont("lxgw-wenkai-500-normal.woff2"),
   spaceMono: resolveThemeFont("space-mono-latin-400-normal.woff2"),
 }
@@ -69,7 +73,7 @@ async function readCardImage(imagePath: string) {
   }
 }
 
-export async function renderPostShareCard(content: PostShareCardContent) {
+export async function renderShareCard(content: ShareCardContent) {
   const hasImage = content.imagePath !== undefined
   const titleFontSize = hasImage ? 56 : 68
   const titleLineClamp = hasImage ? 4 : 3
@@ -105,9 +109,17 @@ export async function renderPostShareCard(content: PostShareCardContent) {
       ),
     },
     {
+      name: "LXGW WenKai",
+      weight: 400 as const,
+      data: await createCardFont(
+        themeFontFiles.lxgwWenKaiRegular,
+        content.footnote,
+      ),
+    },
+    {
       name: "Space Mono",
       weight: 400 as const,
-      data: await createCardFont(themeFontFiles.spaceMono, content.date),
+      data: await createCardFont(themeFontFiles.spaceMono, content.footnote),
     },
   ]
 
@@ -164,11 +176,15 @@ export async function renderPostShareCard(content: PostShareCardContent) {
           type: "div",
           props: {
             style: {
-              fontFamily: "Space Mono",
-              fontSize: dateFontSize,
+              fontFamily:
+                content.footnoteKind === "date"
+                  ? "Space Mono, LXGW WenKai"
+                  : "LXGW WenKai",
+              fontWeight: 400,
+              fontSize: footnoteFontSize,
               color: cardColors.muted,
             },
-            children: content.date,
+            children: content.footnote,
           },
         },
       ],

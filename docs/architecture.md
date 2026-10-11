@@ -60,14 +60,14 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 文章的内容模型、校验规则与路由由 [文章发布](specs/articles.md) 维护，这里只说明各部分的位置与相互关系。
 
-| 文件                                                                               | 职责                                                                                    |
-| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [content.config.ts](../content.config.ts)                                          | posts 集合声明，只写声明，不执行校验                                                    |
-| [modules/content-posts.ts](../modules/content-posts.ts)                            | 构建期独立校验 `content/`，追加文章、标签与 XML 路由到预渲染列表                        |
-| [modules/post-share-cards/](../modules/post-share-cards/render-post-share-card.ts) | 渲染文章分享卡片；由 `content-posts.ts` 在生产构建时调用，输出到 `/og/posts/<slug>.png` |
-| [server/routes/feed.xml.ts](../server/routes/feed.xml.ts)                          | 预渲染生成 RSS                                                                          |
-| [server/routes/sitemap.xml.ts](../server/routes/sitemap.xml.ts)                    | 预渲染生成站点地图                                                                      |
-| [nuxt.config.ts](../nuxt.config.ts)                                                | 模块顺序、Content 的 Markdown 插件与高亮、`NITRO_PRESET` 断言                           |
+| 文件                                                                | 职责                                                                                     |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [content.config.ts](../content.config.ts)                           | posts 集合声明，只写声明，不执行校验                                                     |
+| [modules/content-posts.ts](../modules/content-posts.ts)             | 构建期独立校验 `content/`，追加文章、标签与 XML 路由到预渲染列表                         |
+| [modules/share-cards/](../modules/share-cards/render-share-card.ts) | 渲染文章、列表与标签的分享卡片；由 `content-posts.ts` 在生产构建时调用，输出到 `/og/` 下 |
+| [server/routes/feed.xml.ts](../server/routes/feed.xml.ts)           | 预渲染生成 RSS                                                                           |
+| [server/routes/sitemap.xml.ts](../server/routes/sitemap.xml.ts)     | 预渲染生成站点地图                                                                       |
+| [nuxt.config.ts](../nuxt.config.ts)                                 | 模块顺序、Content 的 Markdown 插件与高亮、`NITRO_PRESET` 断言                            |
 
 页面只在 `useAsyncData` 中调用 `queryCollection`，预渲染后客户端导航读取各页的 `_payload.json`，不加载 Content 的 WASM SQLite。代码高亮的双主题样式由 Content 底层的 MDC 随正文输出，其中包含 `html.dark` 下读取暗色变量的规则。
 
@@ -96,7 +96,7 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 构建日志会输出每组子集的字数与体积，内容子集超出预算时给出警告。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
 
-子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用；文章分享卡片的 [渲染模块](../modules/post-share-cards/render-post-share-card.ts) 也直接引用主题包中的字体文件名。
+子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用；分享卡片的 [渲染模块](../modules/share-cards/render-share-card.ts) 也直接引用主题包中的字体文件名。
 
 视觉风格默认使用 `brutal`，由 [nuxt.config.ts](../nuxt.config.ts) 在 `<html>` 上设置 `brutal` 类。明暗模式默认跟随系统，系统偏好变化时同步更新；用户手动选择浅色或深色后保存偏好，重新选择“跟随系统”即可恢复自动切换。
 
@@ -116,7 +116,7 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 
 ## 站点标识与分享信息
 
-[nuxt.config.ts](../nuxt.config.ts) 注册全站图标、默认标题与 RSS 的 `alternate` 链接；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。文章页、列表页与标签页的元信息分别在各自页面中设置，文章页另外输出 `BlogPosting` 结构化数据，要求见 [文章发布](specs/articles.md#seo-与分享)。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
+[nuxt.config.ts](../nuxt.config.ts) 注册全站图标、默认标题与 RSS 的 `alternate` 链接；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。文章页、列表页与标签页的分享卡片元信息由 [share-card-seo-meta.ts](../app/utils/share-card-seo-meta.ts) 统一生成。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。文章页、列表页与标签页的元信息分别在各自页面中设置，文章页另外输出 `BlogPosting` 结构化数据，要求见 [文章发布](specs/articles.md#seo-与分享)。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
 
 素材的视觉约定见 [设计方向](specs/design.md#站点标识与分享)。文件职责如下：
 

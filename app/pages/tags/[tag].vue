@@ -10,6 +10,7 @@ import {
 } from "#imports"
 import PostList from "~/components/posts/PostList.vue"
 import { ownerName, siteOrigin } from "~/utils/profile"
+import { shareCardSeoMeta } from "~/utils/share-card-seo-meta"
 
 const tag = String(useRoute().params.tag)
 
@@ -44,6 +45,10 @@ useSeoMeta({
   ogDescription: pageDescription,
   ogUrl: canonicalUrl,
   ogLocale: "zh_CN",
+  twitterTitle: pageTitle,
+  twitterDescription: pageDescription,
+  // Generated at build time by modules/content-posts.ts.
+  ...shareCardSeoMeta(`${siteOrigin}/og/tags/${tag}.png`, pageTitle),
 })
 </script>
 

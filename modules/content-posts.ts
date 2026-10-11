@@ -7,7 +7,8 @@ import { defineNuxtModule } from "nuxt/kit"
 import { parseDocument } from "yaml"
 import { z } from "zod"
 import { ownerName, siteOrigin } from "../app/utils/profile"
-import { renderPostShareCard } from "./post-share-cards/render-post-share-card"
+import type { ShareCardContent } from "./share-cards/render-share-card"
+import { renderShareCard } from "./share-cards/render-share-card"
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const contentFileExtensions = new Set([".md", ".yml", ".yaml", ".json"])
@@ -296,6 +297,10 @@ export async function validateContentPosts(contentDirectory: string) {
   return { errors, posts }
 }
 
+function describePostCount(count: number) {
+  return count > 0 ? `共 ${count} 篇文章` : "还没有文章"
+}
+
 export default defineNuxtModule({
   meta: { name: "content-posts" },
   async setup(_options, nuxt) {
@@ -307,32 +312,56 @@ export default defineNuxtModule({
       )
     }
 
-    // 生产构建为每篇文章生成分享卡片；开发服务不生成，页面中的 og:image 地址在开发时无对应文件。
+    const tags = new Set(posts.flatMap((post) => post.frontmatter.tags ?? []))
+
+    // 生产构建为文章、列表页与各标签页生成分享卡片；开发服务不生成，页面中的 og:image 地址在开发时无对应文件。
     if (!nuxt.options.dev) {
       nuxt.hook("nitro:build:public-assets", async (nitro) => {
+        const byline = `${ownerName} · ${new URL(siteOrigin).host}`
+        const writeShareCard = async (
+          cardPathSegments: string[],
+          content: Omit<ShareCardContent, "byline">,
+        ) => {
+          const cardPath = join(
+            nitro.options.output.publicDir,
+            "og",
+            ...cardPathSegments,
+          )
+          await mkdir(dirname(cardPath), { recursive: true })
+          await writeFile(
+            cardPath,
+            await renderShareCard({ byline, ...content }),
+          )
+        }
         for (const post of posts) {
           const postDirectory = join(contentDirectory, "posts", post.slug)
-          const card = await renderPostShareCard({
+          await writeShareCard(["posts", `${post.slug}.png`], {
             title: post.frontmatter.title,
-            date: post.frontmatter.date,
-            byline: `${ownerName} · ${new URL(siteOrigin).host}`,
+            footnote: post.frontmatter.date,
+            footnoteKind: "date",
             imagePath: post.frontmatter.image
               ? resolve(postDirectory, decodeURI(post.frontmatter.image))
               : undefined,
           })
-          const cardPath = join(
-            nitro.options.output.publicDir,
-            "og",
-            "posts",
-            `${post.slug}.png`,
-          )
-          await mkdir(dirname(cardPath), { recursive: true })
-          await writeFile(cardPath, card)
+        }
+        await writeShareCard(["posts.png"], {
+          title: "文章",
+          footnote: describePostCount(posts.length),
+          footnoteKind: "text",
+        })
+        for (const tag of tags) {
+          await writeShareCard(["tags", `${tag}.png`], {
+            title: `#${tag}`,
+            footnote: describePostCount(
+              posts.filter((post) => post.frontmatter.tags?.includes(tag))
+                .length,
+            ),
+            footnoteKind: "text",
+          })
         }
       })
     }
 
-    const tags = new Set(posts.flatMap((post) => post.frontmatter.tags ?? []))
     // Nitro 的爬虫不跟随 .xml 链接，XML 路由必须显式列出。文章与标签页虽能经链接发现，
     // 也显式列出：Content 解析失败跳过某篇文章时，该路由会渲染 404 并由 failOnError 使构建失败。
     nuxt.options.nitro.prerender ??= {}
