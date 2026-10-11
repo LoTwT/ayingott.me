@@ -1,6 +1,6 @@
 # 文章发布
 
-更新日期：2026-10-10。状态：方案与视觉已定稿，正在实现。
+更新日期：2026-10-10。状态：已在 `feat/articles` 分支实现，尚未发布，也还没有真实文章。本地验收见 [文章发布本地验收](../verification/2026-10-10-articles.md)：能力样例在移动端的 Lighthouse 性能分未达标，已暂时接受，待真实文章加入后复查。
 
 本文维护文章功能的范围、内容约定、构建行为与验收标准。选型理由与评审修订见 [0004：加入文章发布](../decisions/0004-articles.md)。
 
@@ -30,6 +30,9 @@ content/posts/<slug>/
 - 所有文章平铺在 `content/posts/` 下，一篇文章一个目录。目录名即 slug，也是访问地址 `/posts/<slug>`。
 - slug 必须匹配 `^[a-z0-9]+(?:-[a-z0-9]+)*$`，不能为 `index`，因为 Content 的路径规则会特殊处理这个名字。
 - 文章文件只能是 `<slug>/index.md`。`content/` 下的其他 `.md`、`.yml`、`.yaml`、`.json` 文件都会使构建失败，避免未经校验的文件进入集合。
+- `content/posts/` 下不能有隐藏目录（名称以 `.` 开头），因为 Content 会把 `posts/.draft/index.md` 这样的文件当作文章收录。其他位置的隐藏条目（如 `.obsidian/`、`.DS_Store`）不会被发布，校验时忽略。
+- `content/` 中不能使用符号链接：nuxt-content-assets 不会复制链接指向的图片，发布后会缺图。
+- 正文不使用一级标题。文章页的 `<h1>` 由 frontmatter 的 `title` 提供，正文从二级标题开始。
 - 标签不影响目录与 URL，修改标签不会改变文章链接。
 
 frontmatter 采用严格模式，出现未知字段即报错：
@@ -54,13 +57,15 @@ frontmatter 采用严格模式，出现未知字段即报错：
 
 Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构建校验：缺少必填字段可能写成 `NULL`，单个文件解析失败只会警告并跳过。因此由本地模块 `modules/content-posts.ts` 在异步 `setup` 中独立校验。该模块不依赖 Content 的 hook，因为 Content 命中解析缓存时不会调用 parse。
 
-1. 扫描 `content/` 下的全部文件，拒绝约定以外的内容文件，检查 slug 正则与 `index` 保留字。
+1. 扫描 `content/` 下的全部条目（包括隐藏条目），拒绝约定以外的内容文件、`content/posts/` 下的隐藏目录与符号链接，检查 slug 正则与 `index` 保留字。
 2. 用 `yaml` 包的 `parseDocument` 解析 frontmatter，`document.errors` 非空即报错。
    - Content 底层通过 `remark-mdc` 使用的就是 `yaml` 包。
    - 不使用 `remark-mdc` 的 `parseFrontMatter`：它不检查解析错误，重复的键、未闭合的数组都会被静默接受。
    - `yaml` 作为直接依赖锁定精确版本，升级时核对它与 Content 实际使用的版本是否一致。
 3. 用 zod 严格校验上文的字段规则。
-4. 用 `mdast-util-from-markdown` 解析正文，检查行内图片与引用式图片，跳过代码块。
+4. 用 `mdast-util-from-markdown` 解析正文，检查一级标题、行内图片与引用式图片，跳过代码块。
+   - 正文中出现 Markdown 一级标题（`#` 或 Setext 写法）即报错；正文中直接写的 HTML 标签不在检查范围内。
+   - 图片地址不能为空；引用式图片必须有对应的定义行，否则 CommonMark 会把它当作普通文本输出。缺少定义的引用从正文文本中识别，只覆盖完整写法 `![说明][标识]` 与折叠写法 `![说明][]`，不覆盖简写 `![说明]`，也不覆盖说明中带有加粗等格式的情况。
    - 相对路径必须指向当前文章目录内已存在的文件，不能用 `..` 越出该目录。
    - MDC 组件属性中的图片不在检查范围内。
 5. 汇总全部错误后一次性抛出，使 `dev` 与 `build` 失败。
@@ -70,7 +75,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 
 ## 内容能力
 
-**代码高亮**：使用 Content 内置的 Shiki，配置 `default` 与 `dark` 双主题，用 CSS 让 `html.dark` 下读取 Shiki 的暗色变量，与现有 color-mode 的 `classSuffix: ""` 一致。
+**代码高亮**：使用 Content 内置的 Shiki，配置 `default` 与 `dark` 双主题（`github-light`、`github-dark`）。Content 底层的 MDC 随正文输出的样式已包含 `html.dark` 下读取暗色变量的规则，与现有 color-mode 的 `classSuffix: ""` 一致，无需另写 CSS。
 
 **图片**：正文用相对路径引用同目录图片，如 `![说明](./images/a.png)`。
 
@@ -78,15 +83,18 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 - 在 `modules` 中，`nuxt-content-assets` 必须排在 `@nuxt/content` 之前，否则缓存的文档可能保留旧路径或旧尺寸。
 - 输出路径为 `/posts/<slug>/images/...`，不带内容哈希。
 - 开发时修改图片或改变尺寸后，需要重新保存对应的 Markdown 或重启开发服务。
+- Markdown 图片标题（`![替代文本](./images/a.png "图片说明")` 中引号内的文字）显示为图片下方的说明，由 `app/components/content/ProseImg.vue` 渲染。
+- 3.0.1 的开发期客户端插件存在打包缺陷，会使开发服务下的页面无法水合，由补丁修复，见 [开发约定](../development.md#环境准备)。
 - 退出路径：文章始终是标准 Markdown 加相对路径。如需移除该模块，可用一次性脚本把图片移到 `public/posts/<slug>/` 并改写路径。
 
-**数学公式**：用 `remark-math` 与 `rehype-katex`，通过 `content.build.markdown` 接入，构建时渲染为静态 HTML。KaTeX 样式只在含公式的页面加载。
+**数学公式**：用 `remark-math` 与 `rehype-katex`，通过 `content.build.markdown` 接入，构建时渲染为静态 HTML。KaTeX 样式只在含公式的页面加载：文章页以异步组件引入样式，并在 `build:manifest` 中关闭该组件的预取。
 
 **图表**：写成 ` ```mermaid ` 代码块，GitHub、Obsidian、Typora 都能直接渲染。
 
-- 站点在客户端懒加载 `mermaid`，只有含图表的页面会下载。
+- 站点在客户端懒加载 `mermaid`，只有含图表的页面会下载；图表进入视口前 200px 时才开始下载与渲染，避免与首屏资源争抢带宽。
 - 切换主题时重新渲染。
-- 渲染容器预留稳定尺寸，避免布局偏移。
+- 图表语法有误时，在同一容器中以代码块显示源码，并在浏览器控制台输出错误；构建期不检查图表语法。
+- 渲染容器固定高度 20rem，图表在其中按比例缩小并居中，渲染前后不产生布局偏移；较小的图表上下会留白。
 - 不在构建时渲染，因为那需要无头浏览器。
 
 **交互组件**：使用 MDC 语法（如 `::demo-name`），组件放在 `app/components/content/`。这种写法在其他编辑器中显示为普通文本。
@@ -106,6 +114,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 - 客户端一旦执行查询，Content 会加载 WASM SQLite，见 [静态部署说明](https://content.nuxt.com/docs/deploy/static)。按上面的约束，预渲染页面之间导航应只读取 `_payload.json`，以验收中的网络检查为准。
 - SQLite 使用 `content.experimental.sqliteConnector: "native"`，即 Node 自带的 `node:sqlite`。该连接器要求 Node 22.5 及以上，本项目的版本见 [.node-version](../../.node-version)。
 - `/posts` 不复用旧站的 `/blog`，旧地址继续返回 404。
+- 页面输出为 `posts.html` 这样的文件，Pages 以无尾斜杠的地址提供，带尾斜杠的请求 308 重定向到无斜杠地址。开发服务下 nuxt-content-assets 的图片目录与 `/posts` 同名，直接访问会被重定向到 `/posts/`，不影响构建产物。
 - 产物会包含 `/__nuxt_content/posts/sql_dump.txt`，即已发布内容的数据库导出，经过 gzip 与 base64 编码，属于公开数据。
 
 ## 标签、RSS 与 sitemap
@@ -114,7 +123,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 
 - 只有一层标签。需要粗粒度划分时，直接用 `tech`、`essay` 这样的标签。
 - 标签在各篇文章的 frontmatter 中声明，构建时汇总，不另设定义文件。
-- 标签页在 `useAsyncData` 中读取全部文章的 `path`、`title`、`description`、`date`、`tags`，筛选出含当前标签的文章；预渲染时只把筛选结果写入页面数据。
+- 标签页在 `useAsyncData` 中读取全部文章的 `path`、`title`、`date`、`tags`，筛选出含当前标签的文章；预渲染时只把筛选结果写入页面数据。
 - 文章页与列表项都显示标签，链接到对应的标签页。标签页直接展示 slug，不设显示名。
 - 标签页是独立的静态页面，不使用 `/posts?tag=` 查询参数。
 
@@ -133,7 +142,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 - 文章入口放在全站 Header 的导航中（“首页”“文章”），首页的图标入口保持不变，只承载个人信息。
 - 列表页、文章页与标签页沿用 `SiteFrame` 与内容栏，不使用 `brutal` 风格的粗边框与硬阴影。
 - RSS 的可见入口放在文章列表页的标题行；全站 `<head>` 另外声明 `<link rel="alternate" type="application/rss+xml">`，供阅读器自动发现。
-- 文章页提供“回到顶部”按钮，不设返回文章列表的链接。
+- 文章页提供“回到顶部”按钮，并在文章末尾提供“全部文章”入口；顶部不设返回文章列表的链接。
 - 正文排版使用 `@ayingott/theme` 的 `--reading-*` 语义变量，不引入 `@tailwindcss/typography`。
 - 具体视觉见 [设计方向](design.md) 中的站点导航、文章列表与标签页、文章页三节。
 
@@ -152,6 +161,10 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 
 400、500 两个字重都收录全部内容字符，不按字重细分。正文加粗、表头、交互组件都可能用到 500 字重，漏收一个字就会下载完整字库。
 
+内容子集必须在主题完整字库之后声明，`unicode-range` 重叠时后声明的字体优先。Nuxt 默认内联的组件样式排在 `entry.css` 之前，因此这三类页面的样式改为 `<link>` 引入，配置见 [架构说明](../architecture.md#文章内容管线)。
+
+文章页在预渲染的 HTML 中预加载 Space Mono 400。行内代码从回退字体换成 Space Mono 时宽度略有变化，可能使段落重新换行；能力样例在移动端因此产生 0.2173 的 CLS，预加载后降到 0.0004。
+
 2026-10-10 用仓库中的中文文档模拟文章，实测结果如下（LXGW WenKai 400）：
 
 | 文本            | 中文字符数 | 按内容生成子集 | 通用分片（`@chinese-fonts/lxgwwenkai` 3.0.0） |
@@ -160,7 +173,7 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 | architecture.md | 433        | 94KB           | 833KB，命中 22 片                             |
 | 全部 docs 合计  | 760        | 166KB          | 1007KB，命中 25 片                            |
 
-当前站点子集约 16KB。按 GB2312 一级字估算，1500 字约 354KB，3755 字约 838KB。
+实现前站点子集约 16KB；实现后为 86 字、约 19KB，新增的字都来自页面文案。按 GB2312 一级字估算，1500 字约 354KB，3755 字约 838KB。
 
 **预算**：
 
@@ -187,10 +200,15 @@ Content 的集合 schema 只用于字段类型与 SQL 生成，不能作为构�
 - 目录与文件：
   - 非法的 slug；
   - 名为 `index` 的 slug；
+  - `content/posts/` 下的隐藏目录；
+  - 符号链接；
   - 约定以外的内容文件。
+- 正文：一级标题。
 - 图片：
   - 引用不存在的图片；
-  - 用 `..` 越出文章目录的引用。
+  - 用 `..` 越出文章目录的引用；
+  - 空的图片地址；
+  - 没有定义行的引用式图片。
 - 构建环境：设置 `NITRO_PRESET=cloudflare_pages`。
 
 **能力样例**：本地临时加入一篇覆盖全部内容能力的文章，验收后删除，不提交。检查内容：

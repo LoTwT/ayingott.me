@@ -11,6 +11,7 @@
 | 主题与字体     | npm 正式发布的 `@ayingott/theme`              |
 | 明暗主题       | `@nuxtjs/color-mode`                          |
 | 图标           | Lucide，通过 `@lucide/vue` 按需引入           |
+| 文章内容       | Nuxt Content v3、nuxt-content-assets          |
 | 检查与格式     | Oxlint、Oxfmt、vue-tsc                        |
 | 运行时与包管理 | Node 24 LTS、pnpm                             |
 | 构建与托管     | SSG、Cloudflare Pages、Wrangler               |
@@ -21,31 +22,58 @@
 
 `pnpm build` 与 `pnpm generate` 都执行静态生成。[nuxt.config.ts](../nuxt.config.ts) 显式使用 Nitro 的 `static` 预设，使本地与 Cloudflare Git 构建都输出到 `.output/public`，避免托管环境自动选择其他输出目录。配置中的 `ssr: true` 用于生成 HTML，不代表部署请求时运行的 Nuxt 服务端。`experimental.prerenderErrorPages` 在构建时用 `error.vue` 渲染 `404.html`，Pages 对未匹配路径返回该文件时自带完整内容，不再是等待客户端渲染的空壳；该页不应依赖当前请求路径。见 [Nuxt：200.html 与 404.html](https://nuxt.com/docs/4.x/guide/concepts/rendering#what-are-200html-and-404html)。
 
+预渲染关闭了 `autoSubfolderIndex`，`/posts` 输出为 `posts.html` 而非 `posts/index.html`。Pages 因此以无尾斜杠的地址提供页面，带尾斜杠的请求 308 重定向到无斜杠地址，与规格中的路由一致。
+
 Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 ## 组件与文件职责
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                | 职责                                                     |
-| ------------------------------------------------------------------- | -------------------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                       | 组合站点框架与当前路由页面                               |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)               | Header、跳到正文入口、内容栏与页脚组合；默认插槽承载页面 |
-| [SiteFooter.vue](../app/components/site/SiteFooter.vue)             | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`     |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)      | 主题偏好选择与持久化                                     |
-| [pages/index.vue](../app/pages/index.vue)                           | 组合首页内容，提供正文焦点入口                           |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue) | 组合首屏介绍与图标入口，维护视口高度布局                 |
-| [HomeLinks.vue](../app/components/home/HomeLinks.vue)               | GitHub、邮箱与简历图标入口及交互                         |
-| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)   | 图标磁吸的偏移计算、指针能力检查与清理                   |
-| [utils/profile.ts](../app/utils/profile.ts)                         | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用      |
-| [error.vue](../app/error.vue)                                       | 404 与其他错误的展示、返回首页入口                       |
-| [assets/main.css](../app/assets/main.css)                           | Tailwind、主题字体、主题样式和全局基础规则               |
+| 文件                                                                   | 职责                                                                               |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                         |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、内容栏与页脚组合；默认插槽承载页面    |
+| [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”导航与当前栏目判断                                                     |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                               |
+| [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 带左箭头的辅助返回链接，用于错误页“回到首页”与文章末尾“全部文章”；整页跳转时不预取 |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)         | 主题偏好选择与持久化                                                               |
+| [pages/index.vue](../app/pages/index.vue)                              | 组合首页内容，提供正文焦点入口                                                     |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)    | 组合首屏介绍与图标入口，维护视口高度布局                                           |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                  | GitHub、邮箱与简历图标入口及交互                                                   |
+| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)      | 图标磁吸的偏移计算、指针能力检查与清理                                             |
+| [utils/profile.ts](../app/utils/profile.ts)                            | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用                                |
+| [error.vue](../app/error.vue)                                          | 404 与其他错误的展示、返回首页入口                                                 |
+| [pages/posts/](../app/pages/posts/)、[pages/tags/](../app/pages/tags/) | 文章列表、文章页与标签页的数据获取、SEO 与布局                                     |
+| [components/posts/](../app/components/posts/)                          | 文章列表、标签链接、回到顶部、Mermaid 图表与 KaTeX 样式                            |
+| [components/content/](../app/components/content/)                      | 正文中可用的 MDC 组件，以及覆盖默认渲染的 `ProsePre`、`ProseImg`                   |
+| [assets/main.css](../app/assets/main.css)                              | Tailwind、主题字体、主题样式和全局基础规则                                         |
+| [assets/article-content.css](../app/assets/article-content.css)        | 文章正文排版，只由文章页引入                                                       |
 
 页面与错误页提供 `<main id="main-content" tabindex="-1">`，对应公共框架的“跳到正文”链接；`<main>` 只作为程序化焦点目标，不显示焦点轮廓。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
 `HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度与降级行为见 [首页动效](specs/design.md#首页动效已选)。
+
+## 文章内容管线
+
+文章的内容模型、校验规则、路由与验收标准由 [文章发布](specs/articles.md) 维护，这里只说明各部分的位置与相互关系。
+
+| 文件                                                            | 职责                                                             |
+| --------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [content.config.ts](../content.config.ts)                       | posts 集合声明，只写声明，不执行校验                             |
+| [modules/content-posts.ts](../modules/content-posts.ts)         | 构建期独立校验 `content/`，追加文章、标签与 XML 路由到预渲染列表 |
+| [server/routes/feed.xml.ts](../server/routes/feed.xml.ts)       | 预渲染生成 RSS                                                   |
+| [server/routes/sitemap.xml.ts](../server/routes/sitemap.xml.ts) | 预渲染生成站点地图                                               |
+| [nuxt.config.ts](../nuxt.config.ts)                             | 模块顺序、Content 的 Markdown 插件与高亮、`NITRO_PRESET` 断言    |
+
+页面只在 `useAsyncData` 中调用 `queryCollection`，预渲染后客户端导航读取各页的 `_payload.json`，不加载 Content 的 WASM SQLite。代码高亮的双主题样式由 Content 底层的 MDC 随正文输出，其中包含 `html.dark` 下读取暗色变量的规则。
+
+样式加载有两处针对文章的配置，均在 [nuxt.config.ts](../nuxt.config.ts)：
+
+- `features.inlineStyles` 不内联 `app/pages/posts/` 与 `app/pages/tags/` 的样式。Nuxt 内联的组件样式排在 `entry.css` 的链接之前，内容字体子集若被内联，会先于主题完整字库声明，`unicode-range` 重叠时浏览器改用完整字库。改为 `<link>` 后排在 `entry.css` 之后。
+- `build:manifest` hook 关闭 KaTeX 样式组件的预取，使其样式与字体只在含公式的文章页加载。
 
 ## 样式与主题
 
@@ -60,7 +88,12 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不手动复制主题或完整字体文件，不引入 `--ayingott-*` 兼容变量。
 
-生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，从 `app/` 中的 Vue、TypeScript 和 JSON 源码提取汉字与中文标点，为主题包中的 LXGW WenKai 400、500 字重生成 WOFF2 子集。源码中的注释也会被收录，不需要额外维护字表。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
+生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，为主题包中的 LXGW WenKai 400、500 字重生成两组 WOFF2 子集，`unicode-range` 互不重叠：
+
+- 站点子集：从 `app/` 中的 Vue、TypeScript 和 JSON 源码提取汉字与中文标点，作为全局样式加载。源码中的注释也会被收录，不需要额外维护字表。
+- 内容子集：从 `content/posts/*/index.md` 提取，减去站点子集已有的字，只由文章页、列表页与标签页引入。收录范围与预算见 [文章发布](specs/articles.md#字体)。
+
+构建日志会输出每组子集的字数与体积，内容子集超出预算时给出警告。子集仅生成在 Nuxt 构建目录中，由 Vite 输出带内容哈希的资源，不提交字体副本。西文字体、原始字形与字重保持不变。
 
 子集的 `@font-face` 在原字体声明之后加载，通过 `unicode-range` 覆盖已收录字符；其他字符仍使用主题包的完整字库，因此完整字体仍会出现在构建产物中。开发服务沿用原字库，字体加载体积应通过 `pnpm build` 后的静态预览检查。生成时保留字体版权与许可元数据，主题包的完整第三方许可同步输出到 `/font-licenses/THIRD_PARTY_NOTICES.txt`。主题包升级后需确认字体路径、字重与许可仍适用。
 
@@ -76,11 +109,13 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 
 静态资源由 `public/` 输出到生成目录。简历文件的保留要求见 [重建要求](specs/requirements.md)，资源一致性校验见 [开发约定](development.md#检查)。
 
-- [robots.txt](../public/robots.txt) 与 [sitemap.xml](../public/sitemap.xml)：允许抓取并声明站点地图。站点地图手动维护，新增可索引页面时同步补充。Cloudflare 若开启托管的 robots.txt，会在该文件前追加内容信号声明。
+- [robots.txt](../public/robots.txt)：允许抓取并声明站点地图。Cloudflare 若开启托管的 robots.txt，会在该文件前追加内容信号声明。
+- `/sitemap.xml` 由 [sitemap 路由](../server/routes/sitemap.xml.ts) 在构建时生成，包含首页、文章列表、文章页与标签页；新增其他可索引页面时需在该路由中补充。
+- 文章图片由 nuxt-content-assets 从 `content/posts/<slug>/` 复制到 `/posts/<slug>/`，不放入 `public/`。
 
 ## 站点标识与分享信息
 
-[nuxt.config.ts](../nuxt.config.ts) 注册全站图标和默认标题；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
+[nuxt.config.ts](../nuxt.config.ts) 注册全站图标、默认标题与 RSS 的 `alternate` 链接；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。文章页、列表页与标签页的元信息分别在各自页面中设置，文章页另外输出 `BlogPosting` 结构化数据，要求见 [文章发布](specs/articles.md#seo-与分享)。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
 
 素材的视觉约定见 [设计方向](specs/design.md#站点标识与分享初版)。文件职责如下：
 

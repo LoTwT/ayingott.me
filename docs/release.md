@@ -18,6 +18,8 @@
 | 生产分支                  | `main`                                                                                  |
 | 预览分支                  | 保留现有全部分支预览设置                                                                |
 
+Production 与 Preview 都不能设置 `NITRO_PRESET`：Content 优先按这个变量选择数据库，值中含 `cloudflare` 时会切换到 D1，构建会被 [nuxt.config.ts](../nuxt.config.ts) 中的断言终止。原因见 [文章发布](specs/articles.md#集合与构建环境)。
+
 构建环境需同时覆盖 Production 与 Preview。Pages 使用仓库中的版本文件选择 Node 与 pnpm；使用 Wrangler 配置后，构建所需的非敏感变量在其 `vars` 中维护，不能仅依赖控制台中的同名普通变量。[wrangler.jsonc](../wrangler.jsonc) 还固定 Pages 项目名、输出目录和兼容日期；该兼容日期控制 Pages Functions 运行时，不决定构建用的 Node 版本。
 
 升级 Node 或 pnpm 后，更新对应版本文件并检查 Git 构建日志中实际使用的版本，不依赖控制台默认值。安装必须使用锁文件；不要把 `.output` 或本地 `node_modules` 提交到 Git。
@@ -59,11 +61,15 @@ curl -fsS "$site_url/resume.pdf" | cmp public/resume.pdf -
 
 前两个请求应依次返回 `200`、`404`；PDF 比较应退出成功且无输出。PDF 的保留要求见 [重建要求](specs/requirements.md)。
 
-确认站点地图可访问，应返回 `200`：
+确认站点地图、RSS 与文章页面可访问，均应返回 `200`：
 
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' "$site_url/sitemap.xml"
+for path in /sitemap.xml /feed.xml /posts; do
+  curl -sS -o /dev/null -w "$path %{http_code}\n" "$site_url$path"
+done
 ```
+
+再从 `/feed.xml` 中任选一篇文章与一个标签，确认 `/posts/<slug>`、`/tags/<tag>` 返回 `200`，`/sitemap.xml` 与 `/feed.xml` 中包含本次发布的文章。使用 Git 集成时，确认构建日志中没有 Content 切换到 D1 的提示。
 
 再完成 [浏览器检查](development.md#本地预览)，确认实际页面内容、交互和资源加载正常。基础检查与构建通过后，仍需完成这一步。
 

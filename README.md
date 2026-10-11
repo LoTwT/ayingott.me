@@ -1,6 +1,6 @@
 # ayingott.me
 
-Lo 的个人主页，使用 Nuxt、Tailwind CSS 和 `@ayingott/theme`，静态生成后部署到 Cloudflare Pages。
+Lo 的个人主页与文章，使用 Nuxt、Nuxt Content、Tailwind CSS 和 `@ayingott/theme`，静态生成后部署到 Cloudflare Pages。
 
 项目范围、开发约定、决策与部署说明统一从 [文档索引](docs/index.md) 进入。
 
