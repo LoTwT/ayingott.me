@@ -38,6 +38,12 @@ export default defineNuxtConfig({
           sizes: "180x180",
           href: "/apple-touch-icon.png",
         },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: `${ownerName} 的文章`,
+          href: "/feed.xml",
+        },
       ],
       script: [
         {
@@ -82,6 +88,12 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false,
       failOnError: true,
     },
+  },
+  features: {
+    // 默认内联 Vue 组件样式，但内联样式排在 entry.css 之前；文章相关页面引入内容字体子集，
+    // 必须改用 <link> 排在主题完整字库之后，unicode-range 重叠时子集才会优先。
+    inlineStyles: (id) =>
+      !!id && id.includes(".vue") && !/\/app\/pages\/(?:posts|tags)\//.test(id),
   },
   experimental: {
     // 构建时用 error.vue 生成完整的 404.html，未匹配路径无需等待客户端渲染。
