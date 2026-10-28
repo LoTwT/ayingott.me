@@ -43,7 +43,12 @@ function scrollToTop() {
     class="back-to-top fixed right-6 bottom-6 z-10 grid size-11 cursor-pointer place-items-center rounded-full bg-(--surface-elevated) text-(--text-secondary) shadow-(--shadow-md) focus-ring hover:text-(--text-primary) sm:right-10 sm:bottom-10"
     @click="scrollToTop"
   >
-    <ArrowUp :size="20" :stroke-width="2" aria-hidden="true" />
+    <ArrowUp
+      :size="20"
+      :stroke-width="2"
+      class="back-to-top-arrow"
+      aria-hidden="true"
+    />
   </button>
 </template>
 
@@ -63,5 +68,24 @@ function scrollToTop() {
   transition:
     opacity 180ms ease-out,
     visibility 0s;
+}
+
+/* The arrow hops up once, as if about to fly back to the top. */
+@media (prefers-reduced-motion: no-preference) {
+  .back-to-top:hover .back-to-top-arrow {
+    animation: hop 520ms var(--ease-out-soft);
+  }
+}
+
+@keyframes hop {
+  30% {
+    translate: 0 -5px;
+    rotate: -6deg;
+  }
+
+  60% {
+    translate: 0 1px;
+    rotate: 3deg;
+  }
 }
 </style>

@@ -8,6 +8,7 @@ import {
   useRoute,
   useSeoMeta,
 } from "#imports"
+import PlacedText from "~/components/doodle/PlacedText.vue"
 import PostList from "~/components/posts/PostList.vue"
 import { ownerName, siteOrigin } from "~/utils/profile"
 import { shareCardSeoMeta } from "~/utils/share-card-seo-meta"
@@ -58,10 +59,8 @@ useSeoMeta({
     tabindex="-1"
     class="pt-8 pb-16 focus:outline-none sm:pt-12"
   >
-    <h1
-      class="theme-color-transition font-display text-3xl leading-tight font-medium sm:text-4xl"
-    >
-      #{{ tag }}
+    <h1 class="font-display text-3xl leading-tight font-medium sm:text-4xl">
+      <PlacedText :text="`#${tag}`" :delay="0" />
     </h1>
     <PostList :posts="posts ?? []" class="mt-12" />
   </main>

@@ -30,31 +30,34 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                   | 职责                                                                               |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                         |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、内容栏与页脚组合；默认插槽承载页面    |
-| [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”导航与当前栏目判断                                                     |
-| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                               |
-| [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 带左箭头的辅助返回链接，用于错误页“回到首页”与文章末尾“全部文章”；整页跳转时不预取 |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)         | 主题偏好选择与持久化                                                               |
-| [pages/index.vue](../app/pages/index.vue)                              | 组合首页内容，提供正文焦点入口                                                     |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)    | 组合首屏介绍与图标入口，维护视口高度布局                                           |
-| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                  | GitHub、邮箱与简历图标入口及交互                                                   |
-| [useMagneticPointer.ts](../app/composables/useMagneticPointer.ts)      | 图标磁吸的偏移计算、指针能力检查与清理                                             |
-| [utils/profile.ts](../app/utils/profile.ts)                            | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用                                |
-| [error.vue](../app/error.vue)                                          | 404 与其他错误的展示、返回首页入口                                                 |
-| [pages/posts/](../app/pages/posts/)、[pages/tags/](../app/pages/tags/) | 文章列表、文章页与标签页的数据获取、SEO 与布局                                     |
-| [components/posts/](../app/components/posts/)                          | 文章列表、标签链接、回到顶部、Mermaid 图表与 KaTeX 样式                            |
-| [components/content/](../app/components/content/)                      | 正文中可用的 MDC 组件，以及覆盖默认渲染的 `ProsePre`、`ProseImg`                   |
-| [assets/main.css](../app/assets/main.css)                              | Tailwind、主题字体、主题样式和全局基础规则                                         |
-| [assets/article-content.css](../app/assets/article-content.css)        | 文章正文排版，只由文章页引入                                                       |
+| 文件                                                                   | 职责                                                                                |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                          |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、内容栏与页脚组合；默认插槽承载页面     |
+| [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”导航与当前栏目判断                                                      |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                                |
+| [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 带左箭头的辅助返回链接，用于错误页“回到首页”与文章末尾“全部文章”；整页跳转时不预取  |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)         | 主题偏好选择与持久化                                                                |
+| [pages/index.vue](../app/pages/index.vue)                              | 组合首页内容，提供正文焦点入口                                                      |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)    | 组合首屏介绍与图标入口，维护视口高度布局                                            |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                  | GitHub、邮箱与简历图标入口及交互                                                    |
+| [DoodleStroke.vue](../app/components/doodle/DoodleStroke.vue)          | 手绘笔划的路径库与 SVG 输出，绘制进度由使用处的 `--doodle-offset` 控制              |
+| [PlacedText.vue](../app/components/doodle/PlacedText.vue)              | 标题逐字落下，同时为读屏软件保留完整文字                                            |
+| [doodle-burst.ts](../app/utils/doodle-burst.ts)                        | 点击图标时在 `<body>` 上迸发的短线                                                  |
+| [useDrawOnView.ts](../app/composables/useDrawOnView.ts)                | 正文中的手绘笔划在滚动进入视口时画出                                                |
+| [utils/profile.ts](../app/utils/profile.ts)                            | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用                                 |
+| [error.vue](../app/error.vue)                                          | 404 与其他错误的展示、返回首页入口                                                  |
+| [pages/posts/](../app/pages/posts/)、[pages/tags/](../app/pages/tags/) | 文章列表、文章页与标签页的数据获取、SEO 与布局                                      |
+| [components/posts/](../app/components/posts/)                          | 文章列表、标签链接、回到顶部、Mermaid 图表与 KaTeX 样式                             |
+| [components/content/](../app/components/content/)                      | 正文中可用的 MDC 组件，以及覆盖默认渲染的 `ProsePre`、`ProseImg`、`ProseBlockquote` |
+| [assets/main.css](../app/assets/main.css)                              | Tailwind、主题字体、主题样式和全局基础规则                                          |
+| [assets/article-content.css](../app/assets/article-content.css)        | 文章正文排版，只由文章页引入                                                        |
 
 页面与错误页提供 `<main id="main-content" tabindex="-1">`，对应公共框架的“跳到正文”链接；`<main>` 只作为程序化焦点目标，不显示焦点轮廓。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
-`HomeLinks` 与 `ThemeSwitcher` 复用 `useMagneticPointer`，由原有链接、按钮接收指针事件，CSS 仅平移内部 `.magnetic-visual`；共享样式由 CSS 入口维护。动效的幅度与降级行为见 [首页动效](specs/design.md#首页动效)。
+动效的共享部分集中在 [CSS 入口](../app/assets/main.css)：曲线变量、手绘笔划的基础样式、落下与摆动等关键帧，以及页面切换和主题扩散的 View Transition 规则。站内跳转由 [nuxt.config.ts](../nuxt.config.ts) 的 `app.viewTransition` 开启；Header 与 `#main-content` 各自命名，使 Header 不参与过渡。主题切换在 `<html>` 上设置 `data-theme-transition`，扩散期间取消这两个命名，让整页一起显露。各组件只在 scoped 样式中声明自己的位置、颜色与触发条件；子组件内部的 `<path>` 需用 `:deep()` 选中。动效的具体参数与降级行为见 [动效](specs/design.md#动效)。
 
 ## 文章内容管线
 

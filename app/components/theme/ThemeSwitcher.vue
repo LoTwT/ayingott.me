@@ -5,11 +5,10 @@ import {
   nextTick,
   onBeforeUnmount,
   shallowRef,
-  useTemplateRef,
   watchEffect,
 } from "vue"
 import { useColorMode } from "#imports"
-import { useMagneticPointer } from "~/composables/useMagneticPointer"
+import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
 
 const themeOptions = [
   { value: "system", label: "跟随系统", icon: Monitor },
@@ -18,34 +17,56 @@ const themeOptions = [
 ] as const
 
 const colorMode = useColorMode()
-const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer(2)
-const themeTransitionDuration = 600
-const themeCurtainEdgeWidth = 0.308
-const themeTransitionTiming = {
-  duration: themeTransitionDuration,
-  easing: "cubic-bezier(0.45, 0, 0.55, 1)",
-  fill: "both",
-} as const
-// Text blocks generated from Markdown cannot carry the class themselves; their container
-// opts in with .theme-color-transition-blocks. List items and formulas switch color by
-// position like links instead of using the text gradient, because list markers and the
-// lines KaTeX draws with borders would vanish while the text is transparent.
-const textTransitionSelector =
-  ".theme-color-transition, .theme-color-transition-blocks :is(p, h2, h3, h4, h5, h6, blockquote, th, td, .article-figure-caption)"
-const positionalColorTransitionSelector =
-  ".theme-color-transition-blocks :is(li, .katex)"
-const curtainVeil = useTemplateRef<HTMLDivElement>("curtainVeil")
-const reducedMotionPreference = import.meta.client
-  ? window.matchMedia("(prefers-reduced-motion: reduce)")
-  : undefined
-let themeTransitionTimeout: number | undefined
-let themeAnimations: Animation[] = []
-let themeCurtainId = 0
-const themeCurtain = shallowRef<{
-  id: number
-  color: string
-  direction: "left" | "right"
-}>()
+// Long enough for the icon swap; the page reveal ends with its view transition.
+const iconTransitionDuration = 560
+let iconTransitionTimeout: number | undefined
+let themeViewTransition: ViewTransition | undefined
+
+// After the page turns light or dark, a few hand-drawn marks appear around the button:
+// sun rays for light, little stars for dark. They draw, linger, then fade.
+const celebrationDuration = 1100
+let celebrationId = 0
+let celebrationTimeout: number | undefined
+const themeCelebration = shallowRef<{ id: number; theme: "light" | "dark" }>()
+
+// The new theme spreads out as an ink blot rather than a perfect circle. The radius of
+// each point is fixed, so every blot has the same hand-cut edge; it turns slightly as it grows.
+const inkBlotOffsets = [
+  0.07, -0.05, 0.1, -0.08, 0.04, 0.09, -0.06, 0.05, -0.09, 0.03, 0.08, -0.04,
+] as const
+
+function formatPoint(x: number, y: number) {
+  return `${x.toFixed(1)} ${y.toFixed(1)}`
+}
+
+function inkBlotPath(
+  centerX: number,
+  centerY: number,
+  radius: number,
+  rotation: number,
+) {
+  const points = inkBlotOffsets.map((offset, index) => {
+    const angle = (index / inkBlotOffsets.length) * Math.PI * 2 + rotation
+    const distance = radius * (1 + offset)
+    return [
+      centerX + Math.cos(angle) * distance,
+      centerY + Math.sin(angle) * distance,
+    ] as const
+  })
+  const pointAt = (index: number) =>
+    points[(index + points.length) % points.length]!
+  // Catmull-Rom through the points, written as cubic curves, closes into a smooth blot.
+  let path = `M${formatPoint(...pointAt(0))}`
+  for (let index = 0; index < points.length; index++) {
+    const [x0, y0] = pointAt(index - 1)
+    const [x1, y1] = pointAt(index)
+    const [x2, y2] = pointAt(index + 1)
+    const [x3, y3] = pointAt(index + 2)
+    path += ` C${formatPoint(x1 + (x2 - x0) / 6, y1 + (y2 - y0) / 6)} ${formatPoint(x2 - (x3 - x1) / 6, y2 - (y3 - y1) / 6)} ${formatPoint(x2, y2)}`
+  }
+  return `path("${path} Z")`
+}
+
 const currentTheme = computed(
   () =>
     themeOptions.find((option) => option.value === colorMode.preference) ??
@@ -63,7 +84,6 @@ const buttonLabel = computed(() =>
 )
 
 if (import.meta.client) {
-  reducedMotionPreference?.addEventListener("change", finishThemeTransition)
   watchEffect(() => {
     if (!colorMode.unknown) {
       document.documentElement.dataset.themePreference = colorMode.preference
@@ -72,20 +92,26 @@ if (import.meta.client) {
 }
 
 onBeforeUnmount(() => {
-  reducedMotionPreference?.removeEventListener("change", finishThemeTransition)
   finishThemeTransition()
+  window.clearTimeout(celebrationTimeout)
 })
 
+function celebrateTheme(theme: "light" | "dark") {
+  window.clearTimeout(celebrationTimeout)
+  themeCelebration.value = { id: ++celebrationId, theme }
+  celebrationTimeout = window.setTimeout(() => {
+    themeCelebration.value = undefined
+  }, celebrationDuration)
+}
+
 function finishThemeTransition() {
-  window.clearTimeout(themeTransitionTimeout)
-  for (const animation of themeAnimations) animation.cancel()
-  themeAnimations = []
-  themeCurtain.value = undefined
+  window.clearTimeout(iconTransitionTimeout)
+  themeViewTransition?.skipTransition()
+  themeViewTransition = undefined
   delete document.documentElement.dataset.themeTransition
 }
 
-async function cycleTheme() {
-  window.clearTimeout(themeTransitionTimeout)
+function cycleTheme(event: MouseEvent) {
   const root = document.documentElement
   const preference = nextTheme.value.value
   const resolvedTheme =
@@ -95,116 +121,61 @@ async function cycleTheme() {
         : "light"
       : preference
 
-  if (reducedMotionPreference?.matches) {
-    finishThemeTransition()
+  finishThemeTransition()
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     colorMode.preference = preference
     return
   }
 
-  if (resolvedTheme === colorMode.value) {
-    root.dataset.themeTransition ??= "preference"
+  const themeChanges = resolvedTheme !== colorMode.value
+
+  // Only the icon changes when the page stays light or dark, or the browser cannot reveal it.
+  if (!themeChanges || !document.startViewTransition) {
+    root.dataset.themeTransition = "icon"
     colorMode.preference = preference
-    themeTransitionTimeout = window.setTimeout(
+    if (themeChanges) celebrateTheme(resolvedTheme)
+    iconTransitionTimeout = window.setTimeout(
       finishThemeTransition,
-      themeTransitionDuration + 40,
+      iconTransitionDuration,
     )
     return
   }
 
-  finishThemeTransition()
-  const direction = resolvedTheme === "dark" ? "left" : "right"
-  const curtainId = ++themeCurtainId
-  const previousColors = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      `a, button, ${textTransitionSelector}, ${positionalColorTransitionSelector}`,
+  // The blot grows from the button until even its innermost dips cover the farthest corner.
+  const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  const originX = bounds.left + bounds.width / 2
+  const originY = bounds.top + bounds.height / 2
+  const farthestCorner = Math.hypot(
+    Math.max(originX, window.innerWidth - originX),
+    Math.max(originY, window.innerHeight - originY),
+  )
+  const smallestOffset = Math.min(...inkBlotOffsets)
+  root.style.setProperty(
+    "--theme-reveal-from",
+    inkBlotPath(originX, originY, 4, -0.6),
+  )
+  root.style.setProperty(
+    "--theme-reveal-to",
+    inkBlotPath(
+      originX,
+      originY,
+      (farthestCorner / (1 + smallestOffset)) * 1.1,
+      0,
     ),
-    (element) => {
-      const bounds = element.getBoundingClientRect()
-      const horizontalPosition = Math.min(
-        1,
-        Math.max(0, (bounds.left + bounds.width / 2) / window.innerWidth),
-      )
-      return {
-        element,
-        left: bounds.left,
-        color: getComputedStyle(element).color,
-        distance:
-          direction === "left" ? 1 - horizontalPosition : horizontalPosition,
-      }
-    },
   )
   root.dataset.themeTransition = "page"
-  themeCurtain.value = {
-    id: curtainId,
-    color: getComputedStyle(document.body).backgroundColor,
-    direction,
-  }
-  colorMode.preference = preference
-  await nextTick()
 
-  if (themeCurtain.value?.id !== curtainId || !curtainVeil.value) return
-
-  const travelDirection = direction === "left" ? -1 : 1
-  // Read every next color before starting any animation: a parent that is already animating
-  // would otherwise hand its transparent or old color down to nested elements.
-  const nextColors = previousColors.map(
-    ({ element }) => getComputedStyle(element).color,
-  )
-  themeAnimations = [
-    curtainVeil.value.animate(
-      [
-        {
-          transform: `translate3d(${-travelDirection * themeCurtainEdgeWidth * 100}vw, 0, 0)`,
-        },
-        { transform: `translate3d(${travelDirection * 100}vw, 0, 0)` },
-      ],
-      themeTransitionTiming,
-    ),
-    ...previousColors.map(({ element, left, color, distance }, index) => {
-      const nextColor = nextColors[index]!
-      const totalTravel = 1 + themeCurtainEdgeWidth
-      if (element.matches(textTransitionSelector)) {
-        const viewportWidth = window.innerWidth
-        const gradientWidth = viewportWidth * themeCurtainEdgeWidth
-        const textGradient = {
-          color: "transparent",
-          backgroundColor: nextColor,
-          backgroundImage: `linear-gradient(to ${direction === "left" ? "right" : "left"}, ${color} calc(100% - ${gradientWidth}px), ${nextColor} 100%)`,
-          backgroundSize: `${viewportWidth * totalTravel}px 100%`,
-          backgroundRepeat: "no-repeat",
-          backgroundClip: "text",
-        }
-        const start = (direction === "left" ? 0 : -gradientWidth) - left
-        const end =
-          (direction === "left"
-            ? -viewportWidth * totalTravel
-            : viewportWidth) - left
-        return element.animate(
-          [
-            { ...textGradient, backgroundPositionX: `${start}px` },
-            { ...textGradient, backgroundPositionX: `${end}px` },
-          ],
-          themeTransitionTiming,
-        )
-      }
-      return element.animate(
-        [
-          { color, offset: 0 },
-          { color, offset: distance / totalTravel },
-          {
-            color: nextColor,
-            offset: (distance + themeCurtainEdgeWidth) / totalTravel,
-          },
-          { color: nextColor, offset: 1 },
-        ],
-        themeTransitionTiming,
-      )
-    }),
-  ]
-  themeTransitionTimeout = window.setTimeout(
-    finishThemeTransition,
-    themeTransitionDuration + 40,
-  )
+  const transition = document.startViewTransition(async () => {
+    colorMode.preference = preference
+    await nextTick()
+  })
+  themeViewTransition = transition
+  transition.finished.finally(() => {
+    if (themeViewTransition !== transition) return
+    finishThemeTransition()
+    celebrateTheme(resolvedTheme)
+  })
 }
 </script>
 
@@ -214,14 +185,10 @@ async function cycleTheme() {
     :disabled="colorMode.unknown"
     :aria-label="buttonLabel"
     :title="buttonLabel"
-    class="grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
+    class="wobble-on-hover relative grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
     @click="cycleTheme"
-    @pointermove.passive="moveMagneticIcon"
-    @pointerleave="resetMagneticOffset"
-    @pointercancel="resetMagneticOffset"
-    @blur="resetMagneticOffset"
   >
-    <span class="magnetic-visual grid" aria-hidden="true">
+    <span class="wobble-target grid" aria-hidden="true">
       <component
         :is="option.icon"
         v-for="option in themeOptions"
@@ -231,53 +198,22 @@ async function cycleTheme() {
         class="theme-icon"
       />
     </span>
+    <DoodleStroke
+      v-if="themeCelebration"
+      :key="themeCelebration.id"
+      :shape="themeCelebration.theme === 'dark' ? 'stars' : 'rays'"
+      :data-theme="themeCelebration.theme"
+      class="theme-celebration"
+    />
   </button>
-  <Teleport v-if="themeCurtain" to="body">
-    <div
-      :key="themeCurtain.id"
-      :data-direction="themeCurtain.direction"
-      :style="{
-        '--theme-curtain-color': themeCurtain.color,
-        '--theme-curtain-edge-width': `${themeCurtainEdgeWidth * 100}vw`,
-        '--theme-curtain-start': `${(themeCurtain.direction === 'left' ? 1 : -1) * themeCurtainEdgeWidth * 100}vw`,
-      }"
-      class="theme-curtain"
-      aria-hidden="true"
-    >
-      <div ref="curtainVeil" class="theme-curtain-veil" />
-    </div>
-  </Teleport>
 </template>
 
 <style scoped>
-.theme-curtain {
-  position: fixed;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.theme-curtain-veil {
-  --theme-curtain-gradient-direction: to right;
-  position: absolute;
-  inset: 0 0 0 -40%;
-  transform: translate3d(var(--theme-curtain-start), 0, 0);
-  background: linear-gradient(
-    var(--theme-curtain-gradient-direction),
-    var(--theme-curtain-color) calc(100% - var(--theme-curtain-edge-width)),
-    transparent 100%
-  );
-}
-
-.theme-curtain[data-direction="right"] .theme-curtain-veil {
-  --theme-curtain-gradient-direction: to left;
-  inset: 0 -40% 0 0;
-}
-
 .theme-icon {
   grid-area: 1 / 1;
   opacity: 0;
+  rotate: -90deg;
+  scale: 0.4;
   pointer-events: none;
 }
 
@@ -286,11 +222,50 @@ html:not([data-theme-preference="light"]):not([data-theme-preference="dark"])
 html[data-theme-preference="light"] .theme-icon[data-theme-icon="light"],
 html[data-theme-preference="dark"] .theme-icon[data-theme-icon="dark"] {
   opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+.theme-celebration {
+  --doodle-offset: 0;
+  inset: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  stroke-width: 1.8;
+  color: var(--brutal-orange);
+  animation: theme-celebration 1100ms ease-out both;
+}
+
+.theme-celebration[data-theme="dark"] {
+  color: var(--brutal-yellow);
+}
+
+.theme-celebration :deep(path) {
+  animation: doodle-draw 420ms var(--ease-draw) both;
+}
+
+@keyframes theme-celebration {
+  from {
+    rotate: -12deg;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    rotate: 8deg;
+    scale: 1.12;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme-transition] .theme-icon {
-    transition: opacity 180ms ease-out;
+    transition:
+      opacity 180ms ease-out,
+      rotate 520ms var(--ease-sticker),
+      scale 520ms var(--ease-sticker);
   }
 }
 </style>

@@ -14,7 +14,7 @@ import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
     >
       跳到正文
     </a>
-    <header class="relative h-(--site-header-height) shrink-0">
+    <header class="site-header relative h-(--site-header-height) shrink-0">
       <div
         class="mx-auto flex h-full w-full max-w-3xl items-center px-6 sm:px-10"
       >

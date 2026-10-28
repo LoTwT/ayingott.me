@@ -27,12 +27,12 @@ defineProps<{
 <style scoped>
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .back-link-arrow {
-    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 260ms var(--ease-sticker);
   }
 
   .back-link:hover .back-link-arrow,
   .back-link:focus-visible .back-link-arrow {
-    transform: translateX(-2px);
+    transform: translateX(-3px);
   }
 }
 </style>

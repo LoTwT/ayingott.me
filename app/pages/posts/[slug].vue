@@ -115,8 +115,8 @@ useSeoMeta({
     class="flex flex-1 flex-col pt-8 focus:outline-none sm:pt-12"
   >
     <article>
-      <header>
-        <p class="theme-color-transition font-mono text-sm text-(--text-muted)">
+      <header class="post-header">
+        <p class="font-mono text-sm text-(--text-muted)">
           <time :datetime="article.date">{{ article.date }}</time>
           <template v-if="article.updated">
             · 更新于
@@ -125,7 +125,7 @@ useSeoMeta({
         </p>
         <h1
           ref="postTitle"
-          class="theme-color-transition mt-2 font-display text-3xl leading-tight font-medium sm:text-4xl"
+          class="mt-2 font-display text-3xl leading-tight font-medium sm:text-4xl"
         >
           {{ article.title }}
         </h1>
@@ -133,7 +133,7 @@ useSeoMeta({
       </header>
       <ContentRenderer
         :value="article"
-        class="article-content theme-color-transition-blocks mt-10"
+        class="article-content post-body mt-10"
       />
     </article>
     <!-- Kept next to the footer: pushed to the bottom on short posts, at least 4rem below the body. -->
@@ -144,3 +144,17 @@ useSeoMeta({
     <PostBackToTop :observed-title="postTitle" />
   </main>
 </template>
+
+<style scoped>
+/* The header drops in like a sheet of paper, then the body fades in under it. */
+@media (prefers-reduced-motion: no-preference) {
+  .post-header {
+    --placed-rotation: -0.8deg;
+    animation: dropped 520ms var(--ease-sticker) both;
+  }
+
+  .post-body {
+    animation: faded-in 400ms 240ms both;
+  }
+}
+</style>

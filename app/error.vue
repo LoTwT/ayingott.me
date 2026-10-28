@@ -25,11 +25,11 @@ useSeoMeta({
       class="mb-24 flex flex-1 items-center py-20 focus:outline-none"
     >
       <div>
-        <p class="theme-color-transition font-mono text-sm text-(--text-muted)">
+        <p class="font-mono text-sm text-(--text-muted)">
           {{ error.status }}
         </p>
         <h1
-          class="theme-color-transition mt-2 font-display text-3xl leading-tight font-medium sm:text-4xl"
+          class="mt-2 font-display text-3xl leading-tight font-medium sm:text-4xl"
         >
           {{ message }}
         </h1>
