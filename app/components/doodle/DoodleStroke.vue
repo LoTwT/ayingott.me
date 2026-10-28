@@ -34,6 +34,16 @@ const doodleShapes = {
     stretch: false,
     path: "M5 12 L2 5 M11 9 L12.5 1.5 M15 14 L21 11.5",
   },
+  rays: {
+    viewBox: "0 0 48 48",
+    stretch: false,
+    path: "M23.4 7.5 L23.2 2.0 M36.6 12.6 L41.1 8.6 M40.0 23.4 L45.5 23.2 M35.7 37.0 L39.7 41.5 M24.6 40.5 L24.8 46.0 M11.4 35.4 L6.9 39.4 M8.0 24.6 L2.5 24.8 M12.6 11.4 L8.9 7.3",
+  },
+  stars: {
+    viewBox: "0 0 48 48",
+    stretch: false,
+    path: "M38 2 L39.6 7.6 L45 9 L39.6 10.6 L38 16 L36.4 10.6 L31 9 L36.4 7.4 Z M9 33 L10.1 36.9 L14 38 L10.1 39.1 L9 43 L7.9 39.1 L4 38 L7.9 36.9 Z M43 30 L43.8 32.2 L46 33 L43.8 33.8 L43 36 L42.2 33.8 L40 33 L42.2 32.2 Z",
+  },
 } as const
 
 export type DoodleShape = keyof typeof doodleShapes

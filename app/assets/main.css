@@ -159,7 +159,7 @@ html[data-theme-transition="page"] :is(.site-header, #main-content) {
   animation: page-in 460ms var(--ease-sticker) both;
 }
 
-/* 明暗切换：新主题从主题按钮处像墨迹一样圆形扩散，由 ThemeSwitcher 设置圆心与半径。 */
+/* 明暗切换：新主题从主题按钮处像一团墨渍扩散开，起止形状由 ThemeSwitcher 计算。 */
 html[data-theme-transition="page"]::view-transition-old(root),
 html[data-theme-transition="page"]::view-transition-new(root) {
   mix-blend-mode: normal;
@@ -175,13 +175,11 @@ html[data-theme-transition="page"]::view-transition-new(root) {
 
 @keyframes ink-reveal {
   from {
-    clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y));
+    clip-path: var(--theme-reveal-from);
   }
 
   to {
-    clip-path: circle(
-      var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y)
-    );
+    clip-path: var(--theme-reveal-to);
   }
 }
 

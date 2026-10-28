@@ -1,8 +1,29 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef } from "vue"
 import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
 import PlacedText from "~/components/doodle/PlacedText.vue"
 import HomeLinks from "~/components/home/HomeLinks.vue"
 import { ownerName } from "~/utils/profile"
+
+// A selection highlight is painted on the text itself and would swing along with it,
+// so the name stays still while any part of it is selected.
+const introductionName = useTemplateRef<HTMLElement>("introductionName")
+const isNameSelected = shallowRef(false)
+
+function syncNameSelection() {
+  const selection = document.getSelection()
+  isNameSelected.value = Boolean(
+    introductionName.value &&
+    selection &&
+    !selection.isCollapsed &&
+    selection.containsNode(introductionName.value, true),
+  )
+}
+
+onMounted(() => document.addEventListener("selectionchange", syncNameSelection))
+onBeforeUnmount(() =>
+  document.removeEventListener("selectionchange", syncNameSelection),
+)
 </script>
 
 <template>
@@ -17,7 +38,11 @@ import { ownerName } from "~/utils/profile"
       >
         <PlacedText text="你好，我是 " />
         <!-- The name is the signature: a highlighter stroke underneath and a small sparkle, drawn once the greeting has landed. -->
-        <span class="introduction-name wobble-on-hover">
+        <span
+          ref="introductionName"
+          class="introduction-name"
+          :class="{ 'wobble-on-hover': !isNameSelected }"
+        >
           <DoodleStroke shape="marker" class="introduction-name-marker" />
           <span class="wobble-target inline-block">{{ ownerName }}</span>
           <DoodleStroke shape="sparkle" class="introduction-name-sparkle" />
@@ -68,6 +93,7 @@ import { ownerName } from "~/utils/profile"
   right: -0.62em;
   width: 0.5em;
   height: 0.42em;
+  transform-origin: 0 100%;
   stroke-width: 2.2;
   color: var(--brutal-pink);
 }
@@ -78,12 +104,29 @@ html.dark .introduction-name-marker {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* Hovering the name makes the sparkle twinkle: a quick pop and twist from its corner. */
+  .introduction-name:hover .introduction-name-sparkle {
+    animation: twinkle 520ms var(--ease-out-soft);
+  }
+
   .introduction-name-marker :deep(path) {
     animation: doodle-draw 560ms var(--ease-draw) 600ms both;
   }
 
   .introduction-name-sparkle :deep(path) {
     animation: doodle-draw 300ms var(--ease-draw) 960ms both;
+  }
+}
+
+@keyframes twinkle {
+  30% {
+    scale: 1.35;
+    rotate: 14deg;
+  }
+
+  60% {
+    scale: 0.9;
+    rotate: -6deg;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, onMounted, shallowRef } from "vue"
 import { useError, useRoute } from "#imports"
 import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
 
@@ -18,6 +18,13 @@ const currentSection = computed(() => {
   if (/^\/(?:posts|tags)(?:\/|$)/.test(route.path)) return "posts"
   return undefined
 })
+
+// The stroke is drawn after mounting so that it animates on the first load too; it then
+// continues from wherever a hover preview left it instead of restarting from nothing.
+const isMounted = shallowRef(false)
+onMounted(() => {
+  isMounted.value = true
+})
 </script>
 
 <template>
@@ -27,6 +34,7 @@ const currentSection = computed(() => {
         <NuxtLink
           :to="link.href"
           :aria-current="currentSection === link.section ? 'page' : undefined"
+          :class="{ 'is-drawn': isMounted && currentSection === link.section }"
           class="navigation-link relative inline-flex min-h-11 items-center rounded-(--radius-control) text-base text-(--text-muted) focus-ring hover:text-(--text-secondary) aria-[current=page]:text-(--text-primary)"
         >
           {{ link.label }}
@@ -52,14 +60,8 @@ const currentSection = computed(() => {
   --doodle-offset: 0.55;
 }
 
-/* The current section is drawn on load and whenever it becomes current; the previous one is wiped out by the transition. */
-.navigation-link[aria-current="page"] .navigation-underline {
+/* The current section finishes its stroke; the previous one is wiped back out. */
+.navigation-link.is-drawn .navigation-underline {
   --doodle-offset: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .navigation-link[aria-current="page"] .navigation-underline :deep(path) {
-    animation: doodle-draw 420ms var(--ease-draw) 80ms both;
-  }
 }
 </style>

@@ -86,8 +86,8 @@ const links = [
   inset: -4px;
   width: calc(100% + 8px);
   height: calc(100% + 8px);
+  /* Inherits the link color, so the ring matches the icon in every state. */
   stroke-width: 1.6;
-  color: var(--text-muted);
 }
 
 .contact-link:hover .contact-link-ring,
