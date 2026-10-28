@@ -74,10 +74,11 @@ const postsGroupedByYear = computed(() => {
 
 <style scoped>
 .post-list-title-underline {
-  bottom: -7px;
+  /* Sits just under the glyphs, clear of the tags below. */
+  bottom: -2px;
   left: 0;
   width: 100%;
-  height: 7px;
+  height: 6px;
   stroke-width: 1.8;
   color: var(--text-muted);
 }

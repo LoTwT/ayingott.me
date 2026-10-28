@@ -17,7 +17,7 @@ withDefaults(
         :to="`/tags/${tag}`"
         class="post-tag-link rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
       >
-        #{{ tag }}
+        <span class="post-tag-sticker">#{{ tag }}</span>
       </NuxtLink>
     </li>
   </ul>
@@ -25,7 +25,9 @@ withDefaults(
 
 <style scoped>
 /* Hovering peels a tag up as a sticker. The padding is cancelled by negative margins
-   and the edge is drawn with box-shadow, so the layout never moves. */
+   and the edge is drawn with box-shadow, so the layout never moves. Only the inner
+   sticker tilts and lifts: the link keeps its place as the hover area, otherwise a
+   pointer at the edge would fall off the moving tag and make it flicker. */
 .post-tag-link {
   --sticker-color: var(--brutal-yellow);
   --sticker-tilt: -3deg;
@@ -33,7 +35,12 @@ withDefaults(
   --sticker-shadow: 2px 2px 0 1.5px var(--brutal-sticker-ink);
   display: inline-block;
   margin: -1px -6px;
+}
+
+.post-tag-sticker {
+  display: block;
   padding: 1px 6px;
+  border-radius: inherit;
 }
 
 .post-tag-item:nth-child(3n + 2) .post-tag-link {
@@ -46,15 +53,12 @@ withDefaults(
   --sticker-tilt: -1.5deg;
 }
 
-/* On the dark canvas an ink edge and shadow disappear. Like a die-cut sticker, a light
-   margin outlines the color and a deeper, softer shadow lifts it off the page. */
+/* On the dark canvas a 2px ink shadow disappears; a deeper, wider one still lifts the sticker. */
 html.dark .post-tag-link {
-  --sticker-edge:
-    0 0 0 1.5px var(--brutal-sticker-ink), 0 0 0 3px var(--text-primary);
   --sticker-shadow: 3px 4px 0 3px rgb(0 0 0 / 0.55);
 }
 
-.post-tag-link:hover {
+.post-tag-link:hover .post-tag-sticker {
   color: var(--brutal-sticker-ink);
   background-color: var(--sticker-color);
   box-shadow: var(--sticker-edge), var(--sticker-shadow);
@@ -63,7 +67,7 @@ html.dark .post-tag-link {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .post-tag-link {
+  .post-tag-sticker {
     transition:
       color 120ms,
       background-color 120ms,
