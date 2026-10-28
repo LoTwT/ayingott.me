@@ -42,6 +42,36 @@
   text-decoration: none;
 }
 
+/* 悬停标题时，左侧转出一个 # 提示可以链接到此处。 */
+.article-content :is(h2, h3, h4) > a {
+  position: relative;
+}
+
+.article-content :is(h2, h3, h4) > a::before {
+  position: absolute;
+  left: -1.1em;
+  content: "#";
+  color: var(--text-muted);
+  opacity: 0;
+  rotate: -20deg;
+  scale: 0.6;
+}
+
+.article-content :is(h2, h3, h4) > a:is(:hover, :focus-visible)::before {
+  opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .article-content :is(h2, h3, h4) > a::before {
+    transition:
+      opacity 180ms,
+      rotate 320ms var(--ease-sticker),
+      scale 320ms var(--ease-sticker);
+  }
+}
+
 .article-content a {
   color: var(--reading-link);
   text-decoration: underline;
@@ -91,10 +121,10 @@
   border: 1px solid var(--border-subtle);
 }
 
+/* 左侧手绘竖线由 ProseBlockquote 绘制。 */
 .article-content blockquote {
-  padding-left: 1em;
+  padding-left: 1.4em;
   color: var(--reading-fg-muted);
-  border-left: 3px solid var(--accent-primary);
 }
 
 .article-content img {

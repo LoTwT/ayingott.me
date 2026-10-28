@@ -4,6 +4,12 @@
 @import "@ayingott/theme/brutal.css";
 
 @layer base {
+  :root {
+    /* 手作动效的曲线：笔划用对称缓动，落下与贴纸用轻微过冲。 */
+    --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-sticker: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   html {
     color-scheme: light;
   }
@@ -18,9 +24,177 @@
   }
 }
 
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .magnetic-visual {
-    transform: translate3d(var(--magnetic-x, 0px), var(--magnetic-y, 0px), 0);
-    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+/* 手绘笔划：路径长度归一为 1，--doodle-offset 为 0 时画完，1.02 时隐藏。 */
+.doodle {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.doodle path {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: var(--doodle-offset, 1.02);
+}
+
+@keyframes doodle-draw {
+  from {
+    stroke-dashoffset: 1.02;
+  }
+}
+
+/* 字或条目带着各自的角度落下；--placed-rotation 与 --motion-order 由使用处设置。 */
+@keyframes placed {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em) rotate(var(--placed-rotation, 0deg))
+      scale(0.9);
+  }
+}
+
+@keyframes dropped {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(var(--placed-rotation, 0deg));
+  }
+}
+
+@keyframes wobble {
+  25% {
+    rotate: -10deg;
+  }
+
+  50% {
+    rotate: 7deg;
+  }
+
+  75% {
+    rotate: -3deg;
+  }
+}
+
+@keyframes faded-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .doodle path {
+    transition: stroke-dashoffset var(--doodle-duration, 420ms) var(--ease-draw)
+      var(--doodle-delay, 0ms);
+  }
+
+  .wobble-on-hover:hover .wobble-target,
+  .wobble-on-hover:focus-visible .wobble-target {
+    animation: wobble 520ms var(--ease-out-soft);
+  }
+}
+
+/* 点击图标时迸发的短线，由 utils/doodle-burst.ts 插入 body。 */
+.doodle-burst {
+  position: fixed;
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  pointer-events: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 2.4;
+}
+
+.doodle-burst line {
+  animation: burst 460ms var(--ease-out-soft) forwards;
+}
+
+@keyframes burst {
+  from {
+    stroke-dasharray: 0 30;
+    stroke-dashoffset: 0;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    stroke-dasharray: 6 30;
+    stroke-dashoffset: -10;
+  }
+}
+
+/* 页面切换：Header 不参与交叉淡化，当前栏目的笔划直接在新页面上绘制；正文像一张纸片落下。 */
+.site-header {
+  view-transition-name: site-header;
+}
+
+#main-content {
+  view-transition-name: page-content;
+}
+
+html[data-theme-transition="page"] :is(.site-header, #main-content) {
+  view-transition-name: none;
+}
+
+::view-transition-group(site-header),
+::view-transition-new(site-header),
+::view-transition-group(page-content) {
+  animation: none;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-old(page-content) {
+  animation: page-out 200ms var(--ease-draw) both;
+}
+
+::view-transition-new(page-content) {
+  animation: page-in 460ms var(--ease-sticker) both;
+}
+
+/* 明暗切换：新主题从主题按钮处像墨迹一样圆形扩散，由 ThemeSwitcher 设置圆心与半径。 */
+html[data-theme-transition="page"]::view-transition-old(root),
+html[data-theme-transition="page"]::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition="page"]::view-transition-old(root) {
+  animation: none;
+}
+
+html[data-theme-transition="page"]::view-transition-new(root) {
+  animation: ink-reveal 620ms var(--ease-draw) both;
+}
+
+@keyframes ink-reveal {
+  from {
+    clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y));
+  }
+
+  to {
+    clip-path: circle(
+      var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y)
+    );
+  }
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) rotate(0.6deg);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) rotate(-1deg);
   }
 }

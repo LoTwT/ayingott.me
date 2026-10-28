@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { Monitor, Moon, Sun } from "@lucide/vue"
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  shallowRef,
-  useTemplateRef,
-  watchEffect,
-} from "vue"
+import { computed, nextTick, onBeforeUnmount, watchEffect } from "vue"
 import { useColorMode } from "#imports"
-import { useMagneticPointer } from "~/composables/useMagneticPointer"
 
 const themeOptions = [
   { value: "system", label: "跟随系统", icon: Monitor },
@@ -18,34 +10,11 @@ const themeOptions = [
 ] as const
 
 const colorMode = useColorMode()
-const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer(2)
-const themeTransitionDuration = 600
-const themeCurtainEdgeWidth = 0.308
-const themeTransitionTiming = {
-  duration: themeTransitionDuration,
-  easing: "cubic-bezier(0.45, 0, 0.55, 1)",
-  fill: "both",
-} as const
-// Text blocks generated from Markdown cannot carry the class themselves; their container
-// opts in with .theme-color-transition-blocks. List items and formulas switch color by
-// position like links instead of using the text gradient, because list markers and the
-// lines KaTeX draws with borders would vanish while the text is transparent.
-const textTransitionSelector =
-  ".theme-color-transition, .theme-color-transition-blocks :is(p, h2, h3, h4, h5, h6, blockquote, th, td, .article-figure-caption)"
-const positionalColorTransitionSelector =
-  ".theme-color-transition-blocks :is(li, .katex)"
-const curtainVeil = useTemplateRef<HTMLDivElement>("curtainVeil")
-const reducedMotionPreference = import.meta.client
-  ? window.matchMedia("(prefers-reduced-motion: reduce)")
-  : undefined
-let themeTransitionTimeout: number | undefined
-let themeAnimations: Animation[] = []
-let themeCurtainId = 0
-const themeCurtain = shallowRef<{
-  id: number
-  color: string
-  direction: "left" | "right"
-}>()
+// Long enough for the icon swap; the page reveal ends with its view transition.
+const iconTransitionDuration = 560
+let iconTransitionTimeout: number | undefined
+let themeViewTransition: ViewTransition | undefined
+
 const currentTheme = computed(
   () =>
     themeOptions.find((option) => option.value === colorMode.preference) ??
@@ -63,7 +32,6 @@ const buttonLabel = computed(() =>
 )
 
 if (import.meta.client) {
-  reducedMotionPreference?.addEventListener("change", finishThemeTransition)
   watchEffect(() => {
     if (!colorMode.unknown) {
       document.documentElement.dataset.themePreference = colorMode.preference
@@ -71,21 +39,16 @@ if (import.meta.client) {
   })
 }
 
-onBeforeUnmount(() => {
-  reducedMotionPreference?.removeEventListener("change", finishThemeTransition)
-  finishThemeTransition()
-})
+onBeforeUnmount(finishThemeTransition)
 
 function finishThemeTransition() {
-  window.clearTimeout(themeTransitionTimeout)
-  for (const animation of themeAnimations) animation.cancel()
-  themeAnimations = []
-  themeCurtain.value = undefined
+  window.clearTimeout(iconTransitionTimeout)
+  themeViewTransition?.skipTransition()
+  themeViewTransition = undefined
   delete document.documentElement.dataset.themeTransition
 }
 
-async function cycleTheme() {
-  window.clearTimeout(themeTransitionTimeout)
+function cycleTheme(event: MouseEvent) {
   const root = document.documentElement
   const preference = nextTheme.value.value
   const resolvedTheme =
@@ -95,116 +58,45 @@ async function cycleTheme() {
         : "light"
       : preference
 
-  if (reducedMotionPreference?.matches) {
-    finishThemeTransition()
+  finishThemeTransition()
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     colorMode.preference = preference
     return
   }
 
-  if (resolvedTheme === colorMode.value) {
-    root.dataset.themeTransition ??= "preference"
+  // Only the icon changes when the page stays light or dark, or the browser cannot reveal it.
+  if (resolvedTheme === colorMode.value || !document.startViewTransition) {
+    root.dataset.themeTransition = "icon"
     colorMode.preference = preference
-    themeTransitionTimeout = window.setTimeout(
+    iconTransitionTimeout = window.setTimeout(
       finishThemeTransition,
-      themeTransitionDuration + 40,
+      iconTransitionDuration,
     )
     return
   }
 
-  finishThemeTransition()
-  const direction = resolvedTheme === "dark" ? "left" : "right"
-  const curtainId = ++themeCurtainId
-  const previousColors = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      `a, button, ${textTransitionSelector}, ${positionalColorTransitionSelector}`,
-    ),
-    (element) => {
-      const bounds = element.getBoundingClientRect()
-      const horizontalPosition = Math.min(
-        1,
-        Math.max(0, (bounds.left + bounds.width / 2) / window.innerWidth),
-      )
-      return {
-        element,
-        left: bounds.left,
-        color: getComputedStyle(element).color,
-        distance:
-          direction === "left" ? 1 - horizontalPosition : horizontalPosition,
-      }
-    },
+  // The new theme spreads out from the button like ink until it covers the farthest corner.
+  const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  const originX = bounds.left + bounds.width / 2
+  const originY = bounds.top + bounds.height / 2
+  const radius = Math.hypot(
+    Math.max(originX, window.innerWidth - originX),
+    Math.max(originY, window.innerHeight - originY),
   )
+  root.style.setProperty("--theme-reveal-x", `${originX}px`)
+  root.style.setProperty("--theme-reveal-y", `${originY}px`)
+  root.style.setProperty("--theme-reveal-radius", `${radius}px`)
   root.dataset.themeTransition = "page"
-  themeCurtain.value = {
-    id: curtainId,
-    color: getComputedStyle(document.body).backgroundColor,
-    direction,
-  }
-  colorMode.preference = preference
-  await nextTick()
 
-  if (themeCurtain.value?.id !== curtainId || !curtainVeil.value) return
-
-  const travelDirection = direction === "left" ? -1 : 1
-  // Read every next color before starting any animation: a parent that is already animating
-  // would otherwise hand its transparent or old color down to nested elements.
-  const nextColors = previousColors.map(
-    ({ element }) => getComputedStyle(element).color,
-  )
-  themeAnimations = [
-    curtainVeil.value.animate(
-      [
-        {
-          transform: `translate3d(${-travelDirection * themeCurtainEdgeWidth * 100}vw, 0, 0)`,
-        },
-        { transform: `translate3d(${travelDirection * 100}vw, 0, 0)` },
-      ],
-      themeTransitionTiming,
-    ),
-    ...previousColors.map(({ element, left, color, distance }, index) => {
-      const nextColor = nextColors[index]!
-      const totalTravel = 1 + themeCurtainEdgeWidth
-      if (element.matches(textTransitionSelector)) {
-        const viewportWidth = window.innerWidth
-        const gradientWidth = viewportWidth * themeCurtainEdgeWidth
-        const textGradient = {
-          color: "transparent",
-          backgroundColor: nextColor,
-          backgroundImage: `linear-gradient(to ${direction === "left" ? "right" : "left"}, ${color} calc(100% - ${gradientWidth}px), ${nextColor} 100%)`,
-          backgroundSize: `${viewportWidth * totalTravel}px 100%`,
-          backgroundRepeat: "no-repeat",
-          backgroundClip: "text",
-        }
-        const start = (direction === "left" ? 0 : -gradientWidth) - left
-        const end =
-          (direction === "left"
-            ? -viewportWidth * totalTravel
-            : viewportWidth) - left
-        return element.animate(
-          [
-            { ...textGradient, backgroundPositionX: `${start}px` },
-            { ...textGradient, backgroundPositionX: `${end}px` },
-          ],
-          themeTransitionTiming,
-        )
-      }
-      return element.animate(
-        [
-          { color, offset: 0 },
-          { color, offset: distance / totalTravel },
-          {
-            color: nextColor,
-            offset: (distance + themeCurtainEdgeWidth) / totalTravel,
-          },
-          { color: nextColor, offset: 1 },
-        ],
-        themeTransitionTiming,
-      )
-    }),
-  ]
-  themeTransitionTimeout = window.setTimeout(
-    finishThemeTransition,
-    themeTransitionDuration + 40,
-  )
+  const transition = document.startViewTransition(async () => {
+    colorMode.preference = preference
+    await nextTick()
+  })
+  themeViewTransition = transition
+  transition.finished.finally(() => {
+    if (themeViewTransition === transition) finishThemeTransition()
+  })
 }
 </script>
 
@@ -214,14 +106,10 @@ async function cycleTheme() {
     :disabled="colorMode.unknown"
     :aria-label="buttonLabel"
     :title="buttonLabel"
-    class="grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
+    class="wobble-on-hover grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
     @click="cycleTheme"
-    @pointermove.passive="moveMagneticIcon"
-    @pointerleave="resetMagneticOffset"
-    @pointercancel="resetMagneticOffset"
-    @blur="resetMagneticOffset"
   >
-    <span class="magnetic-visual grid" aria-hidden="true">
+    <span class="wobble-target grid" aria-hidden="true">
       <component
         :is="option.icon"
         v-for="option in themeOptions"
@@ -232,52 +120,14 @@ async function cycleTheme() {
       />
     </span>
   </button>
-  <Teleport v-if="themeCurtain" to="body">
-    <div
-      :key="themeCurtain.id"
-      :data-direction="themeCurtain.direction"
-      :style="{
-        '--theme-curtain-color': themeCurtain.color,
-        '--theme-curtain-edge-width': `${themeCurtainEdgeWidth * 100}vw`,
-        '--theme-curtain-start': `${(themeCurtain.direction === 'left' ? 1 : -1) * themeCurtainEdgeWidth * 100}vw`,
-      }"
-      class="theme-curtain"
-      aria-hidden="true"
-    >
-      <div ref="curtainVeil" class="theme-curtain-veil" />
-    </div>
-  </Teleport>
 </template>
 
 <style scoped>
-.theme-curtain {
-  position: fixed;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.theme-curtain-veil {
-  --theme-curtain-gradient-direction: to right;
-  position: absolute;
-  inset: 0 0 0 -40%;
-  transform: translate3d(var(--theme-curtain-start), 0, 0);
-  background: linear-gradient(
-    var(--theme-curtain-gradient-direction),
-    var(--theme-curtain-color) calc(100% - var(--theme-curtain-edge-width)),
-    transparent 100%
-  );
-}
-
-.theme-curtain[data-direction="right"] .theme-curtain-veil {
-  --theme-curtain-gradient-direction: to left;
-  inset: 0 -40% 0 0;
-}
-
 .theme-icon {
   grid-area: 1 / 1;
   opacity: 0;
+  rotate: -90deg;
+  scale: 0.4;
   pointer-events: none;
 }
 
@@ -286,11 +136,16 @@ html:not([data-theme-preference="light"]):not([data-theme-preference="dark"])
 html[data-theme-preference="light"] .theme-icon[data-theme-icon="light"],
 html[data-theme-preference="dark"] .theme-icon[data-theme-icon="dark"] {
   opacity: 1;
+  rotate: 0deg;
+  scale: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-theme-transition] .theme-icon {
-    transition: opacity 180ms ease-out;
+    transition:
+      opacity 180ms ease-out,
+      rotate 520ms var(--ease-sticker),
+      scale 520ms var(--ease-sticker);
   }
 }
 </style>

@@ -2,6 +2,7 @@
 import "#build/theme-font-content-subsets.css"
 import { Rss } from "@lucide/vue"
 import { queryCollection, useAsyncData, useHead, useSeoMeta } from "#imports"
+import PlacedText from "~/components/doodle/PlacedText.vue"
 import PostList from "~/components/posts/PostList.vue"
 import { ownerName, siteOrigin } from "~/utils/profile"
 import { shareCardSeoMeta } from "~/utils/share-card-seo-meta"
@@ -41,23 +42,24 @@ useSeoMeta({
     class="pt-8 pb-16 focus:outline-none sm:pt-12"
   >
     <div class="flex items-center justify-between gap-6">
-      <h1
-        class="theme-color-transition font-display text-3xl leading-tight font-medium sm:text-4xl"
-      >
-        文章
+      <h1 class="font-display text-3xl leading-tight font-medium sm:text-4xl">
+        <PlacedText text="文章" :delay="0" />
       </h1>
       <a
         href="/feed.xml"
         aria-label="RSS 订阅"
         title="RSS 订阅"
-        class="-mr-3 grid size-11 shrink-0 place-items-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
+        class="wobble-on-hover -mr-3 grid size-11 shrink-0 place-items-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
       >
-        <Rss :size="20" :stroke-width="2" aria-hidden="true" />
+        <Rss
+          :size="20"
+          :stroke-width="2"
+          class="wobble-target"
+          aria-hidden="true"
+        />
       </a>
     </div>
     <PostList v-if="posts?.length" :posts="posts" class="mt-12" />
-    <p v-else class="theme-color-transition mt-12 text-(--text-muted)">
-      还没有文章
-    </p>
+    <p v-else class="mt-12 text-(--text-muted)">还没有文章</p>
   </main>
 </template>

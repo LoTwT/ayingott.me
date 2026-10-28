@@ -17,6 +17,8 @@ export default defineNuxtConfig({
   modules: ["nuxt-content-assets", "@nuxt/content", "@nuxtjs/color-mode"],
   css: ["~/assets/main.css"],
   app: {
+    // 站内跳转包在 View Transition 中，动画写在 main.css；减少动态效果时 Nuxt 会跳过。
+    viewTransition: true,
     head: {
       htmlAttrs: { lang: "zh-CN", class: "brutal" },
       title: ownerName,

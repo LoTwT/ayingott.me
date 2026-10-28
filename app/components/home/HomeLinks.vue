@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { FileText, Mail } from "@lucide/vue"
 import githubMarkUrl from "~/assets/icons/github.svg?inline"
-import { useMagneticPointer } from "~/composables/useMagneticPointer"
+import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
+import { burstAround } from "~/utils/doodle-burst"
 import {
   contactEmailAddress,
   githubProfileUrl,
@@ -9,7 +10,6 @@ import {
 } from "~/utils/profile"
 
 const githubMaskImage = `url("${githubMarkUrl}")`
-const { moveMagneticIcon, resetMagneticOffset } = useMagneticPointer()
 
 const links = [
   {
@@ -36,7 +36,12 @@ const links = [
 <template>
   <nav aria-label="联系方式与简历">
     <ul class="flex items-center gap-2">
-      <li v-for="link in links" :key="link.href">
+      <li
+        v-for="(link, index) in links"
+        :key="link.href"
+        class="contact-link-item"
+        :style="{ '--motion-order': index }"
+      >
         <a
           :href="link.href"
           :target="link.openInNewTab ? '_blank' : undefined"
@@ -45,14 +50,11 @@ const links = [
             link.openInNewTab ? `${link.label}，在新标签页打开` : link.label
           "
           :title="link.label"
-          class="flex size-9 items-center justify-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
-          @pointermove.passive="moveMagneticIcon"
-          @pointerleave="resetMagneticOffset"
-          @pointercancel="resetMagneticOffset"
-          @blur="resetMagneticOffset"
+          class="contact-link wobble-on-hover relative flex size-9 items-center justify-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
+          @click="burstAround($event.currentTarget as Element)"
         >
           <span
-            class="magnetic-visual grid place-items-center"
+            class="wobble-target grid place-items-center"
             aria-hidden="true"
           >
             <span
@@ -67,8 +69,38 @@ const links = [
             />
             <FileText v-else class="size-6" :stroke-width="2" />
           </span>
+          <!-- Each ring starts at a different angle, so the three do not look stamped. -->
+          <DoodleStroke
+            shape="ring"
+            class="contact-link-ring"
+            :style="{ rotate: `${index * 120}deg` }"
+          />
         </a>
       </li>
     </ul>
   </nav>
 </template>
+
+<style scoped>
+.contact-link-ring {
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  stroke-width: 1.6;
+  color: var(--text-muted);
+}
+
+.contact-link:hover .contact-link-ring,
+.contact-link:focus-visible .contact-link-ring {
+  --doodle-offset: 0;
+}
+
+/* The icons land after the greeting. */
+@media (prefers-reduced-motion: no-preference) {
+  .contact-link-item {
+    --placed-rotation: 8deg;
+    animation: placed 480ms var(--ease-sticker) both;
+    animation-delay: calc(var(--motion-order) * 70ms + 720ms);
+  }
+}
+</style>
