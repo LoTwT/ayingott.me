@@ -16,7 +16,7 @@ const links = [
     label: `GitHub：${githubUsername}`,
     href: githubProfileUrl,
     icon: "github",
-    openInNewTab: false,
+    openInNewTab: true,
   },
   {
     label: `邮箱：${contactEmailAddress}`,
