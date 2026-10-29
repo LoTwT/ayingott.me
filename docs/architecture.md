@@ -34,9 +34,9 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                          |
 | [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、内容栏与页脚组合；默认插槽承载页面     |
-| [SiteBackdrop.vue](../app/components/backdrop/SiteBackdrop.vue)        | 背景层与前景层：蜡笔墙纸位于页面下方，可点击的小人位于页面上方                      |
+| [SiteBackdrop.vue](../app/components/backdrop/SiteBackdrop.vue)        | 背景层与前景层：蜡笔墙纸位于页面下方，可点击的蛋蛋位于页面上方                      |
 | [CrayonWallpaper.vue](../app/components/backdrop/CrayonWallpaper.vue)  | 铅笔涂鸦墙纸与跟随指针的蜡笔上色区域，图形路径见 `backdrop-shapes.ts`               |
-| [DoodleBuddy.vue](../app/components/backdrop/DoodleBuddy.vue)          | 右下角的定格小人：探头、眨眼、挥手，点击时跳起并说话                                |
+| [DoodleBuddy.vue](../app/components/backdrop/DoodleBuddy.vue)          | 右下角的定格小人“蛋蛋”：探头、眨眼、挥手，点击时跳起并说话                          |
 | [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”导航与当前栏目判断                                                      |
 | [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                                |
 | [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 带左箭头的辅助返回链接，用于错误页“回到首页”与文章末尾“全部文章”；整页跳转时不预取  |

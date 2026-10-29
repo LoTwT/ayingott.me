@@ -6,7 +6,7 @@ import { onBeforeUnmount, shallowRef } from "vue"
 // clicked. It is decorative, so it stays out of the accessibility tree and the tab order.
 const isHopping = shallowRef(false)
 const greeting = shallowRef("")
-const greetings = ["嗨！", "你好呀", "我是 Lo 画的", "别戳啦", "♪"]
+const greetings = ["嗨！", "你好呀", "别戳啦", "♪"]
 let greetingIndex = 0
 let timer = 0
 
