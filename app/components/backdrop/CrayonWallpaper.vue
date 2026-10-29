@@ -1,28 +1,15 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, useTemplateRef } from "vue"
-import { backdropShapes } from "./backdrop-shapes"
+import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef } from "vue"
+import { wallpaperTileSize, wallpaperTileUrl } from "./wallpaper-tile"
 
-// The whole page is doodle wallpaper in pencil grey, slowly drifting. Around the pointer the
-// same doodles show up in crayon colors, as if colored in where you look. When the pointer
-// rests, or on touch screens, the crayon spot wanders on its own, and glides back once the
-// pointer moves again.
-const tileSize = 240
-const tileLayout = [
-  { shape: "spiral", x: 18, y: 14, rotation: -12 },
-  { shape: "star", x: 140, y: 30, rotation: 14 },
-  { shape: "heart", x: 72, y: 92, rotation: -6 },
-  { shape: "zigzag", x: 170, y: 120, rotation: 20 },
-  { shape: "flower", x: 12, y: 170, rotation: 8 },
-  { shape: "loop", x: 110, y: 176, rotation: -18 },
-] as const
+// The whole page is doodle wallpaper in pencil grey, slowly drifting, laid out at random on
+// every visit (see wallpaper-tile.ts). Around the pointer the same doodles show up in
+// crayon colors, as if colored in where you look. When the pointer rests, or on touch
+// screens, the crayon spot wanders on its own, and glides back once the pointer moves again.
 
-const tile = `<svg xmlns='http://www.w3.org/2000/svg' width='${tileSize}' height='${tileSize}' viewBox='0 0 ${tileSize} ${tileSize}' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>${tileLayout
-  .map(
-    (item) =>
-      `<g transform='translate(${item.x} ${item.y}) rotate(${item.rotation} 24 24)'><path d='${backdropShapes[item.shape]}'/></g>`,
-  )
-  .join("")}</svg>`
-const tileUrl = `url("data:image/svg+xml,${encodeURIComponent(tile)}")`
+// Built on the client: the layout is random, so rendering it on the server would not match.
+// Until it exists the layers are not rendered, since without a mask they would be solid.
+const tileUrl = shallowRef("")
 
 const rootRef = useTemplateRef<HTMLDivElement>("root")
 const wanderAfterIdle = 1800
@@ -62,6 +49,7 @@ function pickWaypoint(from: { x: number; y: number }) {
 }
 
 onMounted(() => {
+  tileUrl.value = wallpaperTileUrl()
   const root = rootRef.value
   if (
     !root ||
@@ -156,10 +144,12 @@ onBeforeUnmount(() => cleanup())
     ref="root"
     class="crayon-wallpaper"
     aria-hidden="true"
-    :style="{ '--tile': tileUrl }"
+    :style="{ '--tile': tileUrl, '--tile-size': `${wallpaperTileSize}px` }"
   >
-    <div class="wallpaper pencil" />
-    <div class="wallpaper crayon" />
+    <template v-if="tileUrl">
+      <div class="wallpaper pencil" />
+      <div class="wallpaper crayon" />
+    </template>
   </div>
 </template>
 
@@ -184,7 +174,7 @@ onBeforeUnmount(() => cleanup())
   position: absolute;
   inset: 0;
   mask-size:
-    240px 240px,
+    var(--tile-size) var(--tile-size),
     100% 100%;
   mask-repeat: repeat, no-repeat;
 }
@@ -217,7 +207,7 @@ onBeforeUnmount(() => cleanup())
 
 @media (prefers-reduced-motion: no-preference) {
   .wallpaper {
-    animation: wallpaper-drift 48s linear infinite;
+    animation: wallpaper-drift 96s linear infinite;
   }
 
   .crayon-wallpaper {
@@ -234,7 +224,7 @@ onBeforeUnmount(() => cleanup())
 
   to {
     mask-position:
-      240px 480px,
+      var(--tile-size) calc(var(--tile-size) * 2),
       0 0;
   }
 }
