@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SiteBackdrop from "~/components/backdrop/SiteBackdrop.vue"
 import SiteFooter from "~/components/site/SiteFooter.vue"
 import SiteNavigation from "~/components/site/SiteNavigation.vue"
 import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
@@ -6,8 +7,9 @@ import ThemeSwitcher from "~/components/theme/ThemeSwitcher.vue"
 
 <template>
   <div
-    class="flex min-h-dvh flex-col [--site-footer-height:5rem] [--site-header-height:6rem]"
+    class="relative flex min-h-dvh flex-col [--site-footer-height:5rem] [--site-header-height:6rem]"
   >
+    <SiteBackdrop />
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:z-10 focus:bg-(--surface-canvas) focus:p-3"

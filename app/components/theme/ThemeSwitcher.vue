@@ -77,10 +77,15 @@ const nextTheme = computed(
     themeOptions[themeOptions.indexOf(currentTheme.value) + 1] ??
     themeOptions[0],
 )
+// The tooltip only names the current theme; the accessible name also says what a click does,
+// since a screen reader user cannot see the icon cycle.
+const buttonTitle = computed(() =>
+  colorMode.unknown ? "主题加载中" : `主题：${currentTheme.value.label}`,
+)
 const buttonLabel = computed(() =>
   colorMode.unknown
-    ? "主题正在加载"
-    : `切换主题，当前：${currentTheme.value.label}；点击切换为${nextTheme.value.label}`,
+    ? "主题加载中"
+    : `主题：${currentTheme.value.label}，点击切换为${nextTheme.value.label}`,
 )
 
 if (import.meta.client) {
@@ -184,7 +189,7 @@ function cycleTheme(event: MouseEvent) {
     type="button"
     :disabled="colorMode.unknown"
     :aria-label="buttonLabel"
-    :title="buttonLabel"
+    :title="buttonTitle"
     class="wobble-on-hover relative grid size-11 cursor-pointer place-items-center rounded-(--radius-control) text-(--text-secondary) focus-ring hover:text-(--text-primary)"
     @click="cycleTheme"
   >
