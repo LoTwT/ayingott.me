@@ -160,13 +160,11 @@ html[data-theme-transition="page"] :is(.site-header, #main-content) {
 }
 
 /* 明暗切换：新主题从主题按钮处像一团墨渍扩散开，起止形状由 ThemeSwitcher 计算。 */
-html[data-theme-transition="page"]::view-transition-old(root),
-html[data-theme-transition="page"]::view-transition-new(root) {
-  mix-blend-mode: normal;
-}
-
-html[data-theme-transition="page"]::view-transition-old(root) {
+/* Keep root snapshots opaque when theme cleanup removes its marker. */
+::view-transition-old(root),
+::view-transition-new(root) {
   animation: none;
+  mix-blend-mode: normal;
 }
 
 html[data-theme-transition="page"]::view-transition-new(root) {
