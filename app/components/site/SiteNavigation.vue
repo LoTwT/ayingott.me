@@ -9,12 +9,14 @@ const error = useError()
 const navigationLinks = [
   { label: "首页", href: "/", section: "home" },
   { label: "文章", href: "/posts", section: "posts" },
+  { label: "作品", href: "/projects", section: "projects" },
 ] as const
 
 // Post and tag pages belong to the posts section; error pages have no current section.
 const currentSection = computed(() => {
   if (error.value) return undefined
   if (route.path === "/") return "home"
+  if (/^\/projects\/?$/.test(route.path)) return "projects"
   if (/^\/(?:posts|tags)(?:\/|$)/.test(route.path)) return "posts"
   return undefined
 })
@@ -28,8 +30,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav aria-label="站点导航">
-    <ul class="flex items-center gap-6">
+  <nav class="site-navigation" aria-label="站点导航">
+    <ul class="navigation-links">
       <li v-for="link in navigationLinks" :key="link.href">
         <NuxtLink
           :to="link.href"
@@ -46,6 +48,27 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.site-navigation {
+  container: site-navigation / inline-size;
+}
+
+.navigation-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.5rem;
+}
+
+.navigation-link {
+  white-space: nowrap;
+}
+
+@container site-navigation (inline-size < 12em) {
+  .navigation-links {
+    column-gap: 0.5rem;
+  }
+}
+
 .navigation-underline {
   bottom: 6px;
   left: -4px;

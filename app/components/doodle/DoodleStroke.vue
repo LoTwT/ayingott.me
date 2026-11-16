@@ -12,7 +12,7 @@ const doodleShapes = {
   wave: {
     viewBox: "0 0 100 7",
     stretch: true,
-    path: "M1 4 C 12 1.5, 22 6, 35 3.5 S 58 1.5, 72 4 S 90 5.5, 99 3",
+    path: "M1 4 C 12 1.5, 22 6, 35 3.5 S 58 5.5, 72 3.6 S 90 1.7, 99 4",
   },
   marker: {
     viewBox: "0 0 100 20",

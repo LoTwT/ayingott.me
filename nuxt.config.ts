@@ -84,7 +84,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: "static",
     prerender: {
-      // 文章、标签与 XML 路由由 modules/content-posts.ts 追加。
+      // 文章、标签、XML 与作品路由由对应的本地模块追加。
       routes: ["/"],
       // 输出 posts.html 而非 posts/index.html，Pages 以无尾斜杠的 /posts 提供页面。
       autoSubfolderIndex: false,
@@ -98,6 +98,8 @@ export default defineNuxtConfig({
       !!id && id.includes(".vue") && !/\/app\/pages\/(?:posts|tags)\//.test(id),
   },
   experimental: {
+    // 注册 Nuxt 4 的页面过渡插件；app.viewTransition 决定全站默认行为。
+    viewTransition: true,
     // 构建时用 error.vue 生成完整的 404.html，未匹配路径无需等待客户端渲染。
     prerenderErrorPages: true,
   },

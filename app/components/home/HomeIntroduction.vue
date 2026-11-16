@@ -55,6 +55,7 @@ onBeforeUnmount(() =>
 
 <style scoped>
 .home-introduction {
+  container: home-introduction / inline-size;
   min-block-size: calc(
     100dvh - var(--site-header-height) - var(--site-footer-height)
   );
@@ -96,6 +97,14 @@ onBeforeUnmount(() =>
   transform-origin: 0 100%;
   stroke-width: 2.2;
   color: var(--brutal-pink);
+}
+
+/* Limited inline room moves only the flourish above the name, with room to twinkle. */
+@container home-introduction (inline-size < 10em) {
+  .introduction-name-sparkle {
+    top: -0.45em;
+    right: -0.2em;
+  }
 }
 
 html.dark .introduction-name-marker {

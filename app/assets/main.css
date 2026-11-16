@@ -8,6 +8,9 @@
     /* 手作动效的曲线：笔划用对称缓动，落下与贴纸用轻微过冲。 */
     --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
     --ease-sticker: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --content-link-coral: var(--brutal-orange);
+    --content-link-berry: #de4f89;
+    --content-link-violet: #8a67cf;
   }
 
   html {
@@ -16,6 +19,8 @@
 
   html.dark {
     color-scheme: dark;
+    --content-link-berry: #ff84b4;
+    --content-link-violet: #b99aff;
   }
 
   body {

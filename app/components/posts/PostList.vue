@@ -2,6 +2,7 @@
 import { computed } from "vue"
 import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
 import PostTagLinks from "~/components/posts/PostTagLinks.vue"
+import { contentLinkColor } from "~/utils/content-link-color"
 
 export interface PostListItem {
   path: string
@@ -53,6 +54,9 @@ const postsGroupedByYear = computed(() => {
           <div class="min-w-0">
             <NuxtLink
               :to="post.path"
+              :style="{
+                '--content-link-color': contentLinkColor(`post:${post.path}`),
+              }"
               class="post-list-title relative inline-block rounded-(--radius-control) text-lg text-(--text-primary) focus-ring"
             >
               {{ post.title }}
@@ -80,7 +84,7 @@ const postsGroupedByYear = computed(() => {
   width: 100%;
   height: 6px;
   stroke-width: 1.8;
-  color: var(--text-muted);
+  color: var(--content-link-color);
 }
 
 .post-list-title:hover .post-list-title-underline,

@@ -35,7 +35,7 @@ const links = [
 
 <template>
   <nav aria-label="联系方式与简历">
-    <ul class="flex items-center gap-2">
+    <ul class="flex flex-wrap items-center gap-2">
       <li
         v-for="(link, index) in links"
         :key="link.href"
@@ -50,7 +50,8 @@ const links = [
             link.openInNewTab ? `${link.label}，在新标签页打开` : link.label
           "
           :title="link.label"
-          class="contact-link wobble-on-hover relative flex size-9 items-center justify-center rounded-(--radius-control) text-(--text-muted) focus-ring hover:text-(--text-secondary)"
+          class="contact-link wobble-on-hover relative flex size-11 items-center justify-center rounded-(--radius-control) focus-ring"
+          :class="`contact-link--${link.icon}`"
           @click="burstAround($event.currentTarget as Element)"
         >
           <span
@@ -82,11 +83,32 @@ const links = [
 </template>
 
 <style scoped>
+.contact-link {
+  color: var(--text-muted);
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: var(--text-secondary);
+}
+
+.contact-link--github {
+  --contact-ring-color: var(--content-link-coral);
+}
+
+.contact-link--mail {
+  --contact-ring-color: var(--content-link-berry);
+}
+
+.contact-link--resume {
+  --contact-ring-color: var(--content-link-violet);
+}
+
 .contact-link-ring {
-  inset: -4px;
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
-  /* Inherits the link color, so the ring matches the icon in every state. */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--contact-ring-color);
   stroke-width: 1.6;
 }
 

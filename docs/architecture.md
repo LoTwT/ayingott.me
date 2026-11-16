@@ -30,39 +30,43 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 
 根组件与页面负责组合内容，公共框架和主题偏好各自独立。
 
-| 文件                                                                   | 职责                                                                                    |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                              |
-| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、背景层、内容栏与页脚组合；默认插槽承载页面 |
-| [SiteBackdrop.vue](../app/components/backdrop/SiteBackdrop.vue)        | 背景层与前景层：蜡笔墙纸位于页面下方，可点击的蛋蛋位于页面上方                          |
-| [CrayonWallpaper.vue](../app/components/backdrop/CrayonWallpaper.vue)  | 铅笔涂鸦墙纸的漂移、跟随指针的蜡笔上色区域及其游走、滑回与静置                          |
-| [wallpaper-tile.ts](../app/components/backdrop/wallpaper-tile.ts)      | 随机生成墙纸图块：撒点、松弛、发牌与跨边缘补画，输出 SVG data URL                       |
-| [backdrop-shapes.ts](../app/components/backdrop/backdrop-shapes.ts)    | 墙纸用到的十一种手绘图形路径                                                            |
-| [DoodleBuddy.vue](../app/components/backdrop/DoodleBuddy.vue)          | 右下角的定格小人“蛋蛋”：探头、眨眼、挥手，点击时跳起并说话                              |
-| [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”导航与当前栏目判断                                                          |
-| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                                    |
-| [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 带左箭头的辅助返回链接，用于错误页“回到首页”与文章末尾“全部文章”；整页跳转时不预取      |
-| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)         | 主题偏好选择与持久化                                                                    |
-| [pages/index.vue](../app/pages/index.vue)                              | 组合首页内容，提供正文焦点入口                                                          |
-| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)    | 组合首屏介绍与图标入口，维护视口高度布局                                                |
-| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                  | GitHub、邮箱与简历图标入口及交互                                                        |
-| [DoodleStroke.vue](../app/components/doodle/DoodleStroke.vue)          | 手绘笔划的路径库与 SVG 输出，绘制进度由使用处的 `--doodle-offset` 控制                  |
-| [PlacedText.vue](../app/components/doodle/PlacedText.vue)              | 标题逐字落下，同时为读屏软件保留完整文字                                                |
-| [doodle-burst.ts](../app/utils/doodle-burst.ts)                        | 点击图标时在 `<body>` 上迸发的短线                                                      |
-| [useDrawOnView.ts](../app/composables/useDrawOnView.ts)                | 正文中的手绘笔划在滚动进入视口时画出                                                    |
-| [utils/profile.ts](../app/utils/profile.ts)                            | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用                                     |
-| [error.vue](../app/error.vue)                                          | 404 与其他错误的展示、返回首页入口                                                      |
-| [pages/posts/](../app/pages/posts/)、[pages/tags/](../app/pages/tags/) | 文章列表、文章页与标签页的数据获取、SEO 与布局                                          |
-| [components/posts/](../app/components/posts/)                          | 文章列表、标签链接、回到顶部、Mermaid 图表与 KaTeX 样式                                 |
-| [components/content/](../app/components/content/)                      | 正文中可用的 MDC 组件，以及覆盖默认渲染的 `ProsePre`、`ProseImg`、`ProseBlockquote`     |
-| [assets/main.css](../app/assets/main.css)                              | Tailwind、主题字体、主题样式和全局基础规则                                              |
-| [assets/article-content.css](../app/assets/article-content.css)        | 文章正文排版，只由文章页引入                                                            |
+| 文件                                                                   | 职责                                                                                                          |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [app/app.vue](../app/app.vue)                                          | 组合站点框架与当前路由页面                                                                                    |
+| [SiteFrame.vue](../app/components/site/SiteFrame.vue)                  | Header 中的站点导航与主题按钮、跳到正文入口、背景层、内容栏与页脚组合；默认插槽承载页面                       |
+| [SiteBackdrop.vue](../app/components/backdrop/SiteBackdrop.vue)        | 背景层与前景层：蜡笔墙纸位于页面下方，可点击的蛋蛋位于页面上方                                                |
+| [CrayonWallpaper.vue](../app/components/backdrop/CrayonWallpaper.vue)  | 铅笔涂鸦墙纸的漂移、跟随指针的蜡笔上色区域及其游走、滑回与静置                                                |
+| [wallpaper-tile.ts](../app/components/backdrop/wallpaper-tile.ts)      | 随机生成墙纸图块：撒点、松弛、发牌与跨边缘补画，输出 SVG data URL                                             |
+| [backdrop-shapes.ts](../app/components/backdrop/backdrop-shapes.ts)    | 墙纸用到的十一种手绘图形路径                                                                                  |
+| [DoodleBuddy.vue](../app/components/backdrop/DoodleBuddy.vue)          | 右下角的定格小人“蛋蛋”：探头、眨眼、挥手，点击时跳起并说话                                                    |
+| [SiteNavigation.vue](../app/components/site/SiteNavigation.vue)        | “首页”“文章”“作品”导航与当前栏目判断                                                                          |
+| [SiteFooter.vue](../app/components/site/SiteFooter.vue)                | 页脚文案与呈现，年份读取构建时写入的 `runtimeConfig`                                                          |
+| [SiteBackLink.vue](../app/components/site/SiteBackLink.vue)            | 中性文字/箭头的辅助返回链接；404以可选decorated样式增加珊瑚橙波浪线，文章及其他错误保持默认；整页跳转时不预取 |
+| [ThemeSwitcher.vue](../app/components/theme/ThemeSwitcher.vue)         | 主题偏好选择与持久化                                                                                          |
+| [pages/index.vue](../app/pages/index.vue)                              | 组合首页内容，提供正文焦点入口                                                                                |
+| [HomeIntroduction.vue](../app/components/home/HomeIntroduction.vue)    | 组合首屏介绍与图标入口，维护视口高度布局                                                                      |
+| [HomeLinks.vue](../app/components/home/HomeLinks.vue)                  | GitHub、邮箱与简历图标入口及交互                                                                              |
+| [DoodleStroke.vue](../app/components/doodle/DoodleStroke.vue)          | 手绘笔划的路径库与 SVG 输出，绘制进度由使用处的 `--doodle-offset` 控制                                        |
+| [PlacedText.vue](../app/components/doodle/PlacedText.vue)              | 标题逐字落下，同时为读屏软件保留完整文字                                                                      |
+| [doodle-burst.ts](../app/utils/doodle-burst.ts)                        | 点击图标时在 `<body>` 上迸发的短线                                                                            |
+| [useDrawOnView.ts](../app/composables/useDrawOnView.ts)                | 正文中的手绘笔划在滚动进入视口时画出                                                                          |
+| [utils/profile.ts](../app/utils/profile.ts)                            | 站点域名、姓名、GitHub 与邮箱地址，供页面与组件共用                                                           |
+| [error.vue](../app/error.vue)                                          | 404 与其他错误的展示、返回首页入口                                                                            |
+| [pages/posts/](../app/pages/posts/)、[pages/tags/](../app/pages/tags/) | 文章列表、文章页与标签页的数据获取、SEO 与布局                                                                |
+| [components/posts/](../app/components/posts/)                          | 文章列表、标签链接、回到顶部、Mermaid 图表与 KaTeX 样式                                                       |
+| [components/content/](../app/components/content/)                      | 正文中可用的 MDC 组件，以及覆盖默认渲染的 `ProsePre`、`ProseImg`、`ProseBlockquote`                           |
+| [assets/main.css](../app/assets/main.css)                              | Tailwind、主题字体、主题样式和全局基础规则                                                                    |
+| [assets/article-content.css](../app/assets/article-content.css)        | 文章正文排版，只由文章页引入                                                                                  |
 
 页面与错误页提供 `<main id="main-content" tabindex="-1">`，对应公共框架的“跳到正文”链接；`<main>` 只作为程序化焦点目标，不显示焦点轮廓。`SiteFrame` 的 Header 使用页面全宽，默认插槽由独立的居中内容栏承载，页脚在同一内容栏中接在页面之后；具体宽度和留白见 [设计方向](specs/design.md)。当前页面和组件范围以 [产品要求](specs/requirements.md) 为准。
 
+`SiteFrame` 对首页、文章、标签、作品与错误页使用同一个 48rem 最大外框和左右内边距，不接收页面宽度变体，不通过路由元信息改变宽度。错误页独立组合相同框架。作品列表只在共享内容栏内部通过容器查询安排图文，尺寸与断点由 [作品页规格](specs/projects.md) 维护。
+
+Header 使用两个网格列为导航与主题按钮保留空间。导航左缘根据框架宽度与页内留白定位，主题按钮仍贴近视口右侧；空间不足时由导航容器收紧间距并换行，Header 的自然高度参与正常文档流，不覆盖正文。
+
 首页介绍组件维护首屏的最小视口高度，为 Header 和 Footer 预留空间，联系方式与简历入口由介绍组件组合。页脚使用文档流布局，短页面由公共框架推至视口底部；内容超出视口时使用文档原生滚动。布局与滚动约定见 [设计方向](specs/design.md)。
 
-动效的共享部分集中在 [CSS 入口](../app/assets/main.css)：曲线变量、手绘笔划的基础样式、落下与摆动等关键帧，以及页面切换和主题扩散的 View Transition 规则。站内跳转由 [nuxt.config.ts](../nuxt.config.ts) 的 `app.viewTransition` 开启；Header 与 `#main-content` 各自命名，使 Header 不参与过渡。主题切换在 `<html>` 上设置 `data-theme-transition`，扩散期间取消这两个命名，让整页一起显露。各组件只在 scoped 样式中声明自己的位置、颜色与触发条件；子组件内部的 `<path>` 需用 `:deep()` 选中。动效的具体参数与降级行为见 [动效](specs/design.md#动效)。
+动效的共享部分集中在 [CSS 入口](../app/assets/main.css)：曲线变量、手绘笔划的基础样式、落下与摆动等关键帧，以及页面切换和主题扩散的 View Transition 规则。[nuxt.config.ts](../nuxt.config.ts) 的 `experimental.viewTransition` 注册 Nuxt 4 的页面过渡插件，`app.viewTransition` 开启全站默认行为，两者均需配置；Header 与 `#main-content` 各自命名，使 Header 不参与过渡。主题切换在 `<html>` 上设置 `data-theme-transition`，扩散期间取消这两个命名，让整页一起显露。各组件只在 scoped 样式中声明自己的位置、颜色与触发条件；子组件内部的 `<path>` 需用 `:deep()` 选中。动效的具体参数与降级行为见 [动效](specs/design.md#动效)。
 
 背景由 `SiteBackdrop` 分成两层：墙纸层在页面内容下方（`z-index: -1`），不接收指针事件；蛋蛋所在的前景层在内容上方，只有蛋蛋本身接收点击。墙纸图块的排布是随机的，只在客户端挂载后生成，避免服务端渲染与客户端水合结果不一致；生成之前不渲染墙纸，否则没有遮罩的图层会显示成实心色块。墙纸的渲染开销按以下方式控制，修改时需保持：
 
@@ -90,6 +94,15 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 - `features.inlineStyles` 不内联 `app/pages/posts/` 与 `app/pages/tags/` 的样式。Nuxt 内联的组件样式排在 `entry.css` 的链接之前，内容字体子集若被内联，会先于主题完整字库声明，`unicode-range` 重叠时浏览器改用完整字库。改为 `<link>` 后排在 `entry.css` 之后。
 - `build:manifest` hook 关闭 KaTeX 样式组件的预取，使其样式与字体只在含公式的文章页加载。
 
+## 作品内容与构建
+
+- [data/projects.ts](../app/data/projects.ts) 维护静态类型 `Project` 和按数组顺序展示的正式清单。用途、类别、特点和链接均可省略，不运行 GitHub 请求。
+- [ProjectList.vue](../app/components/projects/ProjectList.vue) 负责列表、空状态和动效；[ProjectPreview.vue](../app/components/projects/ProjectPreview.vue) 支持图片、专属 Vue 组件与缺省字标。新增作品只需配置数据与预览，不修改列表结构。
+- 用途介绍是按自然词组切分的字符串数组，空格与标点由数据保留，只维护这一份文本。[ProjectDescriptionText.vue](../app/components/projects/ProjectDescriptionText.vue) 统一提供词组间的断点与真正超长词组的内部折行；不在 SSR 和客户端分别自动分词。内容约定见 [作品页规格](specs/projects.md#实施记录)。
+- [NicolePreview.vue](../app/components/projects/NicolePreview.vue) 是标明示意性质的 Markdown 文件封面。内容依据与素材出处见 [作品页规格](specs/projects.md#实施记录)。
+- [utils/projects-page.ts](../app/utils/projects-page.ts) 维护作品页标题、描述、路径和分享图地址，供页面 SEO、sitemap 与构建共用。
+- [modules/projects-page.ts](../modules/projects-page.ts) 显式加入预渲染路由，并调用已有分享卡片渲染器生成 `/og/projects.png`。构建使用纯文本页面信息，不导入 Vue 预览组件；不改变文章内容管线。
+
 ## 样式与主题
 
 [CSS 入口](../app/assets/main.css) 按以下顺序导入：
@@ -102,6 +115,8 @@ Cloudflare 的构建配置与发布步骤见 [发布说明](release.md)。
 ```
 
 颜色直接使用主题语义变量，如 `--surface-canvas`、`--text-primary`、`--text-secondary`、`--text-muted` 和 `--focus-ring-color`。字体使用 `font-display`、`font-sans`、`font-mono` 等角色，字体文件交给 Vite 构建输出。不手动复制主题或完整字体文件，不引入 `--ayingott-*` 兼容变量。
+
+非导航内容入口的三色笔划由 [content-link-color.ts](../app/utils/content-link-color.ts) 按稳定内容键以 FNV-1a 分配，返回 CSS 色槽变量，SSR 和客户端共用；列表顺序不参与计算。`main.css` 定义色槽的明暗取值，珊瑚橙复用主题变量。PostList、ProjectList 与作品页收尾的波浪线始终持有入口配色，hover / focus-visible只控制绘制和擦回，不改变文字层级；idle线条隐藏。首页HomeLinks图标保持中性色，圆环独立使用内容三色槽并同色绘制/擦回；SiteBackLink的可选decorated样式只为404增加彩色波浪线，文字与箭头保持中性。线形、色板与状态规则由[设计方向](specs/design.md#内容入口配色)维护；导航使用独立的原 `underline` 和状态规则。
 
 生产构建通过 Nuxt 自动加载的 [字体子集模块](../modules/theme-font-subsets.ts)，为主题包中的 LXGW WenKai 400、500 字重生成两组 WOFF2 子集，`unicode-range` 互不重叠：
 
@@ -125,12 +140,14 @@ GitHub 品牌标识使用 [Primer Octicons 的 mark-github](https://github.com/p
 静态资源由 `public/` 输出到生成目录。简历文件的保留要求见 [产品要求](specs/requirements.md)。
 
 - [robots.txt](../public/robots.txt)：允许抓取并声明站点地图。Cloudflare 若开启托管的 robots.txt，会在该文件前追加内容信号声明。
-- `/sitemap.xml` 由 [sitemap 路由](../server/routes/sitemap.xml.ts) 在构建时生成，包含首页、文章列表、文章页与标签页；新增其他可索引页面时需在该路由中补充。
+- `/sitemap.xml` 由 [sitemap 路由](../server/routes/sitemap.xml.ts) 在构建时生成，包含首页、文章列表、文章页、标签页与作品页；新增其他可索引页面时需在该路由中补充。
 - 文章图片由 nuxt-content-assets 从 `content/posts/<slug>/` 复制到 `/posts/<slug>/`，不放入 `public/`。
 
 ## 站点标识与分享信息
 
 [nuxt.config.ts](../nuxt.config.ts) 注册全站图标、默认标题与 RSS 的 `alternate` 链接；首页的标题、描述、canonical、Open Graph 与 Twitter Card 元信息集中在 [pages/index.vue](../app/pages/index.vue)，随页面预渲染到 HTML。首页元信息使用正式域名 `https://ayingott.me/`，分享图片使用该域名下的绝对地址。文章页、列表页与标签页的分享卡片元信息由 [share-card-seo-meta.ts](../app/utils/share-card-seo-meta.ts) 统一生成。首页同时输出 schema.org `Person` 的 JSON-LD，姓名、域名、GitHub 与邮箱取自 [profile.ts](../app/utils/profile.ts)。页面级文案仅维护一份，普通描述与分享描述共用同一变量；错误页继续独立设置标题和 `noindex, nofollow`。文章页、列表页与标签页的元信息分别在各自页面中设置，文章页另外输出 `BlogPosting` 结构化数据，要求见 [文章发布](specs/articles.md#seo-与分享)。接口约定见 [Nuxt SEO](https://nuxt.com/docs/4.x/getting-started/seo-meta) 与 [Open Graph](https://ogp.me/)。
+
+作品页也使用 [share-card-seo-meta.ts](../app/utils/share-card-seo-meta.ts) 生成分享元信息，元信息随 `/projects` 预渲染输出。
 
 素材的视觉约定见 [设计方向](specs/design.md#站点标识与分享)。文件职责如下：
 
