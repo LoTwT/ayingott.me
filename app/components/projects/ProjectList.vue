@@ -105,14 +105,21 @@ defineProps<{ projects: readonly Project[] }>()
   inset: 0;
   border: 1.5px solid var(--border-default);
   background: var(--surface-panel);
+  /* Keep the item cue crisp, then soften the shadow as the card lifts. */
   box-shadow:
-    calc(4px + 3px * var(--paper-lift)) calc(4px + 3px * var(--paper-lift)) 0
-      var(--brutal-shadow),
-    0 calc(3px + 5px * var(--paper-lift))
-      calc(6px + 5px * var(--paper-lift)) -4px
+    calc(4px + 5px * var(--paper-lift)) calc(4px + 5px * var(--paper-lift))
+      calc(3px * var(--paper-lift) * var(--paper-lift))
       color-mix(
         in srgb,
-        var(--brutal-shadow) calc(var(--paper-lift) * 12%),
+        var(--brutal-shadow)
+          calc(100% - 40% * var(--paper-lift) * var(--paper-lift)),
+        transparent
+      ),
+    0 calc(3px + 10px * var(--paper-lift))
+      calc(6px + 14px * var(--paper-lift)) -4px
+      color-mix(
+        in srgb,
+        var(--brutal-shadow) calc(var(--paper-lift) * 20%),
         transparent
       );
   transform-origin: var(--tape-anchor) 0;
@@ -240,7 +247,7 @@ defineProps<{ projects: readonly Project[] }>()
 }
 
 .project-entry:focus-within .preview-paper {
-  --paper-lift: 1;
+  --paper-lift: 0.35;
 }
 
 .project-name {
@@ -339,15 +346,16 @@ defineProps<{ projects: readonly Project[] }>()
   }
 
   .preview-paper {
-    transform: rotateX(calc(max(0, var(--paper-lift) - 1) * 3deg))
-      rotateZ(calc(max(0, var(--paper-lift) - 1) * var(--paper-hover-turn)));
+    /* Both hover levels continue the same gesture instead of introducing a new tilt. */
+    transform: rotateX(calc(var(--paper-lift) * 2.4deg))
+      rotateZ(calc(var(--paper-lift) * var(--paper-hover-turn)));
     transition:
       transform 380ms var(--ease-sticker),
       box-shadow 380ms var(--ease-sticker);
   }
 
   .project-entry:focus-within .preview-paper {
-    transition-duration: 240ms;
+    transition-duration: 180ms;
     transition-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1);
   }
 
@@ -381,11 +389,11 @@ defineProps<{ projects: readonly Project[] }>()
   }
 
   .project-entry:hover .preview-paper {
-    --paper-lift: 1;
+    --paper-lift: 0.35;
   }
 
   .project-preview:hover .preview-paper {
-    --paper-lift: 2;
+    --paper-lift: 1;
   }
 }
 
@@ -395,8 +403,12 @@ defineProps<{ projects: readonly Project[] }>()
   }
 
   .project-entry:hover .preview-paper {
-    transition-duration: 240ms;
+    transition-duration: 180ms;
     transition-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1);
+  }
+
+  .project-preview:hover .preview-paper {
+    transition-duration: 220ms;
   }
 }
 </style>
