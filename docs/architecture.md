@@ -98,6 +98,7 @@ Header 使用两个网格列为导航与主题按钮保留空间。导航左缘�
 
 - [data/projects.ts](../app/data/projects.ts) 维护静态类型 `Project` 和按数组顺序展示的正式清单。用途、类别、特点和链接均可省略，不运行 GitHub 请求。
 - [ProjectList.vue](../app/components/projects/ProjectList.vue) 负责列表、空状态和动效；[ProjectPreview.vue](../app/components/projects/ProjectPreview.vue) 支持图片、专属 Vue 组件与缺省字标。新增作品只需配置数据与预览，不修改列表结构。
+- [useTapedCardMotion.ts](../app/composables/useTapedCardMotion.ts) 为纸卡提供围绕胶带支点的指针跟随；测量固定占位，通过局部 CSS 变量更新姿态，指针离开、系统动效偏好变化与卸载时清理，不触发列表逐帧渲染。
 - 用途介绍是按自然词组切分的字符串数组，空格与标点由数据保留，只维护这一份文本。[ProjectDescriptionText.vue](../app/components/projects/ProjectDescriptionText.vue) 统一提供词组间的断点与真正超长词组的内部折行；不在 SSR 和客户端分别自动分词。内容约定见 [作品页规格](specs/projects.md#实施记录)。
 - [NicolePreview.vue](../app/components/projects/NicolePreview.vue) 是标明示意性质的 Markdown 文件封面。内容依据与素材出处见 [作品页规格](specs/projects.md#实施记录)。
 - [utils/projects-page.ts](../app/utils/projects-page.ts) 维护作品页标题、描述、路径和分享图地址，供页面 SEO、sitemap 与构建共用。

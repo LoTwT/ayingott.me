@@ -4,9 +4,12 @@ import type { Project } from "~/data/projects"
 import DoodleStroke from "~/components/doodle/DoodleStroke.vue"
 import ProjectDescriptionText from "~/components/projects/ProjectDescriptionText.vue"
 import ProjectPreview from "~/components/projects/ProjectPreview.vue"
+import { useTapedCardMotion } from "~/composables/useTapedCardMotion"
 import { contentLinkColor } from "~/utils/content-link-color"
 
 defineProps<{ projects: readonly Project[] }>()
+
+const { trackCardPointer, resetCardPointer } = useTapedCardMotion()
 </script>
 
 <template>
@@ -24,7 +27,13 @@ defineProps<{ projects: readonly Project[] }>()
           '--content-link-color': contentLinkColor(`project:${project.id}`),
         }"
       >
-        <div class="project-preview">
+        <div
+          class="project-preview"
+          @pointerenter="trackCardPointer"
+          @pointermove="trackCardPointer"
+          @pointerleave="resetCardPointer"
+          @pointercancel="resetCardPointer"
+        >
           <div class="preview-paper">
             <ProjectPreview :name="project.name" :preview="project.preview" />
           </div>
@@ -349,8 +358,11 @@ defineProps<{ projects: readonly Project[] }>()
 
   .preview-paper {
     /* Both hover levels continue the same gesture instead of introducing a new tilt. */
-    transform: rotateX(calc(var(--paper-lift) * 2.4deg))
-      rotateZ(calc(var(--paper-lift) * var(--paper-hover-turn)));
+    transform: rotateX(var(--paper-pitch, calc(var(--paper-lift) * 2.4deg)))
+      rotateY(var(--paper-yaw, 0deg))
+      rotateZ(
+        var(--paper-turn, calc(var(--paper-lift) * var(--paper-hover-turn)))
+      );
     transition:
       transform 380ms var(--ease-sticker),
       box-shadow 380ms var(--ease-sticker);
@@ -410,7 +422,18 @@ defineProps<{ projects: readonly Project[] }>()
   }
 
   .project-preview:hover .preview-paper {
+    --paper-lift: var(--pointer-lift, 1);
+    --paper-pitch: var(--pointer-pitch, 2.4deg);
+    --paper-yaw: var(--pointer-yaw, 0deg);
+    --paper-turn: var(
+      --pointer-turn,
+      calc(var(--paper-lift) * var(--paper-hover-turn))
+    );
     transition-duration: 220ms;
+  }
+
+  .project-preview[data-pointer-following]:hover .preview-paper {
+    transition-duration: 140ms;
   }
 }
 </style>
