@@ -46,4 +46,29 @@ export const projects: readonly Project[] = [
       label: "Nicole 的 Markdown 写作封面示意，非应用截图",
     },
   },
+  {
+    id: "design-system",
+    name: "Ayingott Design System",
+    category: "设计系统",
+    description: [
+      "面向",
+      " ",
+      "Tailwind CSS v4",
+      " ",
+      "的",
+      "主题包，",
+      "统一",
+      "设计令牌、",
+      "语义变量",
+      "与",
+      "基础样式。",
+    ],
+    facts: [
+      { label: "包名", value: "@ayingott/theme" },
+      { label: "配套", value: "自托管字体 · 可访问性工具" },
+    ],
+    links: [
+      { label: "GitHub", href: "https://github.com/LoTwT/design-system" },
+    ],
+  },
 ]
