@@ -133,6 +133,8 @@ defineProps<{ projects: readonly Project[] }>()
 }
 
 .preview-tape {
+  /* A warm paper base softens the denser pigment in both themes. */
+  --tape-paper-color: color-mix(in srgb, var(--tape-color) 55%, #f5ecd9);
   position: absolute;
   z-index: 1;
   top: -0.625rem;
@@ -148,7 +150,7 @@ defineProps<{ projects: readonly Project[] }>()
   position: absolute;
   inset: 0;
   content: "";
-  background-color: color-mix(in srgb, var(--tape-color) 48%, transparent);
+  background-color: var(--tape-paper-color);
   background-image:
     url("/textures/paper-tape-grain.svg"),
     linear-gradient(
