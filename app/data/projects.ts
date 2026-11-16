@@ -39,7 +39,10 @@ export const projects: readonly Project[] = [
       { label: "平台", value: "macOS · Windows · Linux" },
       { label: "源码能力", value: "实时预览 · 沉浸 · 源码编辑" },
     ],
-    links: [{ label: "GitHub", href: "https://github.com/LoTwT/nicole" }],
+    links: [
+      { label: "查看源码", href: "https://github.com/LoTwT/nicole" },
+      { label: "下载安装", href: "https://github.com/LoTwT/nicole/releases" },
+    ],
     preview: {
       kind: "component",
       component: NicolePreview,
@@ -68,7 +71,8 @@ export const projects: readonly Project[] = [
       { label: "配套", value: "自托管字体 · 可访问性工具" },
     ],
     links: [
-      { label: "GitHub", href: "https://github.com/LoTwT/design-system" },
+      { label: "查看源码", href: "https://github.com/LoTwT/design-system" },
+      { label: "查看文档", href: "https://design.ayingott.me/" },
     ],
   },
 ]

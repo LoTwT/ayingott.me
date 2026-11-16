@@ -17,14 +17,22 @@ defineProps<{ projects: readonly Project[] }>()
       class="project-list-item"
       :style="{ '--motion-order': index }"
     >
-      <article class="project-entry" :aria-labelledby="`project-${project.id}`">
+      <article
+        class="project-entry"
+        :aria-labelledby="`project-${project.id}`"
+        :style="{
+          '--content-link-color': contentLinkColor(`project:${project.id}`),
+        }"
+      >
         <div class="project-preview">
+          <div class="preview-paper">
+            <ProjectPreview :name="project.name" :preview="project.preview" />
+          </div>
           <span class="preview-tape" aria-hidden="true"></span>
-          <ProjectPreview :name="project.name" :preview="project.preview" />
         </div>
         <div class="project-info">
           <p class="project-category text-(--text-muted)">
-            <span class="font-mono" aria-hidden="true">{{
+            <span class="project-number font-mono" aria-hidden="true">{{
               String(index + 1).padStart(2, "0")
             }}</span>
             <span v-if="project.category">{{ project.category }}</span>
@@ -49,11 +57,6 @@ defineProps<{ projects: readonly Project[] }>()
                 rel="noopener noreferrer"
                 :aria-label="`${project.name} · ${link.label}（新标签页打开）`"
                 class="project-link focus-ring"
-                :style="{
-                  '--content-link-color': contentLinkColor(
-                    `project:${project.id}`,
-                  ),
-                }"
               >
                 {{ link.label }}
                 <ArrowUpRight :size="16" aria-hidden="true" />
@@ -84,18 +87,41 @@ defineProps<{ projects: readonly Project[] }>()
 }
 
 .project-preview {
+  --tape-color: var(--brutal-yellow);
+  --tape-anchor: 4rem;
+  --paper-hover-turn: 0.45deg;
   position: relative;
   width: 100%;
   max-width: 26rem;
   min-width: 0;
   aspect-ratio: 8 / 5;
-  border: 1.5px solid var(--border-default);
-  background: var(--surface-panel);
-  box-shadow: 4px 4px 0 var(--brutal-shadow);
+  perspective: 850px;
   transform: rotate(-0.65deg);
 }
 
+.preview-paper {
+  --paper-lift: 0;
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--border-default);
+  background: var(--surface-panel);
+  box-shadow:
+    calc(4px + 3px * var(--paper-lift)) calc(4px + 3px * var(--paper-lift)) 0
+      var(--brutal-shadow),
+    0 calc(3px + 5px * var(--paper-lift))
+      calc(6px + 5px * var(--paper-lift)) -4px
+      color-mix(
+        in srgb,
+        var(--brutal-shadow) calc(var(--paper-lift) * 12%),
+        transparent
+      );
+  transform-origin: var(--tape-anchor) 0;
+}
+
 .project-list-item:nth-child(even) .project-preview {
+  --tape-color: var(--brutal-purple);
+  --tape-anchor: calc(100% - 4rem);
+  --paper-hover-turn: -0.35deg;
   transform: rotate(0.5deg);
 }
 
@@ -105,17 +131,69 @@ defineProps<{ projects: readonly Project[] }>()
   top: -0.625rem;
   left: 1.75rem;
   width: 4.5rem;
-  height: 1.25rem;
-  background: color-mix(in srgb, var(--brutal-yellow) 55%, transparent);
-  clip-path: polygon(3% 0, 100% 4%, 96% 92%, 0 100%);
+  height: 1.375rem;
+  filter: drop-shadow(0 0.75px 0.5px rgb(34 25 16 / 16%));
   transform: rotate(-6deg);
   pointer-events: none;
+}
+
+.preview-tape::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-color: color-mix(in srgb, var(--tape-color) 48%, transparent);
+  background-image:
+    url("/textures/paper-tape-grain.svg"),
+    linear-gradient(
+      174deg,
+      rgb(255 255 255 / 12%),
+      transparent 38%,
+      rgb(52 35 18 / 5%) 62%,
+      transparent 76%
+    );
+  background-size:
+    8rem 2rem,
+    100% 100%;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 20%),
+    inset 0 -1px 0 rgb(52 35 18 / 8%);
+  clip-path: polygon(
+    2% 2%,
+    19% 0,
+    43% 3%,
+    68% 1%,
+    99% 4%,
+    98% 11%,
+    99% 17%,
+    98% 24%,
+    99% 31%,
+    97% 43%,
+    98% 50%,
+    97% 61%,
+    98% 69%,
+    96% 81%,
+    97% 88%,
+    96% 98%,
+    73% 96%,
+    48% 100%,
+    23% 97%,
+    0 99%,
+    2% 89%,
+    1% 81%,
+    2% 72%,
+    1% 67%,
+    3% 54%,
+    2% 47%,
+    3% 38%,
+    2% 28%,
+    4% 14%,
+    2% 7%
+  );
 }
 
 .project-list-item:nth-child(even) .preview-tape {
   right: 1.75rem;
   left: auto;
-  background: color-mix(in srgb, var(--brutal-purple) 55%, transparent);
   transform: rotate(5deg);
 }
 
@@ -131,8 +209,38 @@ defineProps<{ projects: readonly Project[] }>()
   font-size: 0.8125rem;
 }
 
-.project-category .font-mono {
+.project-number {
+  position: relative;
+  isolation: isolate;
   font-size: 0.75rem;
+}
+
+.project-number::before {
+  position: absolute;
+  z-index: -1;
+  right: -0.25em;
+  bottom: 0.05em;
+  left: -0.25em;
+  height: 0.65em;
+  background: color-mix(in srgb, var(--content-link-color) 24%, transparent);
+  clip-path: polygon(1% 12%, 98% 0, 100% 86%, 3% 100%);
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.3);
+  transform-origin: left center;
+}
+
+.project-entry:focus-within .project-number {
+  color: var(--text-primary);
+}
+
+.project-entry:focus-within .project-number::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.project-entry:focus-within .preview-paper {
+  --paper-lift: 1;
 }
 
 .project-name {
@@ -230,22 +338,65 @@ defineProps<{ projects: readonly Project[] }>()
     animation-delay: calc(min(var(--motion-order), 4) * 70ms + 120ms);
   }
 
-  .project-preview {
+  .preview-paper {
+    transform: rotateX(calc(max(0, var(--paper-lift) - 1) * 3deg))
+      rotateZ(calc(max(0, var(--paper-lift) - 1) * var(--paper-hover-turn)));
     transition:
-      transform 240ms var(--ease-sticker),
-      box-shadow 240ms var(--ease-sticker);
+      transform 380ms var(--ease-sticker),
+      box-shadow 380ms var(--ease-sticker);
   }
 
-  .project-entry:focus-within .project-preview {
-    transform: rotate(0);
-    box-shadow: 6px 6px 0 var(--brutal-shadow);
+  .project-entry:focus-within .preview-paper {
+    transition-duration: 240ms;
+    transition-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1);
+  }
+
+  .project-name {
+    transition: translate 180ms ease-out;
+  }
+
+  .project-number {
+    transition: color 180ms ease-out;
+  }
+
+  .project-number::before {
+    transition:
+      opacity 180ms ease-out,
+      transform 220ms var(--ease-sticker);
+  }
+
+  .project-entry:focus-within .project-name {
+    translate: 2px 0;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-entry:hover .project-number {
+    color: var(--text-primary);
+  }
+
+  .project-entry:hover .project-number::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .project-entry:hover .preview-paper {
+    --paper-lift: 1;
+  }
+
+  .project-preview:hover .preview-paper {
+    --paper-lift: 2;
   }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .project-entry:hover .project-preview {
-    transform: rotate(0);
-    box-shadow: 6px 6px 0 var(--brutal-shadow);
+  .project-entry:hover .project-name {
+    translate: 2px 0;
+  }
+
+  .project-entry:hover .preview-paper {
+    transition-duration: 240ms;
+    transition-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1);
   }
 }
 </style>
