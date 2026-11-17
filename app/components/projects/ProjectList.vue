@@ -82,10 +82,15 @@ const { trackCardPointer, resetCardPointer } = useTapedCardMotion()
 
 <style scoped>
 .project-list {
+  --project-card-background: #fefbf5;
   container: project-list / inline-size;
   display: flex;
   flex-direction: column;
   gap: 4rem;
+}
+
+:global(.dark .project-list) {
+  --project-card-background: var(--surface-panel);
 }
 
 .project-entry {
@@ -113,7 +118,7 @@ const { trackCardPointer, resetCardPointer } = useTapedCardMotion()
   position: absolute;
   inset: 0;
   border: 1.5px solid var(--border-default);
-  background: var(--surface-panel);
+  background: var(--project-card-background);
   /* Keep the item cue crisp, then soften the shadow as the card lifts. */
   box-shadow:
     calc(4px + 5px * var(--paper-lift)) calc(4px + 5px * var(--paper-lift))

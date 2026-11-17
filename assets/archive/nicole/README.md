@@ -1,6 +1,6 @@
 # Nicole 仙灵动画留档
 
-状态：2026-11-17 暂停用于作品页。用户确认先恢复 `Nicole` 文字占位与通用纸卡指针动效，后续重新设计卡面。
+状态：2026-11-17 暂停用于作品页，仅保留设计探索资料。作品页已采用用户确认的静态手写仙灵卡面，沿用通用纸卡指针动效；当前素材见[制作记录](../../source/nicole-cover/prompt.txt)。
 
 - [nicole-floating.webp](nicole-floating.webp)：本轮精细往返版本，768×480、160 帧、20fps、8 秒循环；原文件完整保留。
 - [nicole-floating-still.png](nicole-floating-still.png)：同画布的静态参考姿态。

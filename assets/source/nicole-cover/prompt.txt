@@ -1,0 +1,39 @@
+Nicole 静态卡面制作记录
+状态：用户已确认最终字形、构图、明暗字迹和共享纸卡配色。
+工具：内置 image_gen；工具未披露底层模型版本。
+
+保留素材：
+- reference.png：用户确认的清晰大写 N 构图参考，1585×992；包含概念图中的边框、胶带和投影，仅用于追溯构图。
+- artwork-dark-transparent.png：最终深色主题源画稿，1586×992、带真实 Alpha；浅米金字迹、连接笔画和金色仙灵。
+- artwork-light-gold-transparent.png：最终浅色主题源画稿，1585×992、带真实 Alpha；以深色源画稿为输入，将字迹加深为柔和蜂蜜金。提示词色值目标约 #bd904f，实际生成稿包含细微色差，不是纯色填充。
+- public/projects/nicole-cover-light.webp / nicole-cover-dark.webp：正式页面使用的两张 1280×800 透明静态图，分别 72,636 / 66,844 字节。浅色从 artwork-light-gold-transparent.png 导出，深色从 artwork-dark-transparent.png 导出。
+
+原始品牌参考为 assets/archive/nicole/nicole-icon.png，来源由同目录 README.md 维护。静态卡面参考 https://github.com/stvlynn/spines 的独立印刷封面思路，未引入其代码、运行时服务或第三方品牌素材。
+
+保留清晰大写 N、左下字迹连接右上仙灵的构图。文字属于画稿，不作为 HTML 字体重绘；可访问说明由项目的 preview.label 提供。NicolePreview.vue 根据站点 .dark 显示对应画稿；两图同位叠放、绝对定位在内容区，避免图片撑高并遮住底边框。
+纸底、边框、胶带与指针动效由代码提供。两个作品共用 ProjectList.vue 的 --project-card-background，具体配色由 docs/specs/projects.md 的预览区约定维护，图片不含纸底、纸纹或重复外框。
+
+早期不透明纸底、墨棕字迹和中间平面稿已清理，不随项目保留。早期往返动画仍按用户要求留在 assets/archive/nicole，不由页面引用。以下保存最终两张源图所用的完整编辑提示词；其中暗色透明版的历史纸底输入已清理。
+
+浅色字迹编辑：输入 artwork-dark-transparent.png，transparent_background: true。
+Use case: precise-object-edit.
+Asset type: transparent Nicole card artwork, LIGHT THEME edition derived from the supplied approved gold-lettered transparent artwork.
+Primary request: darken ONLY the handwritten word "Nicole" from pale champagne gold to a slightly deeper, muted honey/antique gold, approximate #bd904f. It should sit comfortably on a pure white card: noticeably more readable and less glaring than the current pale cream, but still luminous warm gold rather than dark brown ink. Keep the word fairly uniform in gold hue, with restrained existing tonal variation. Smoothly blend the final e stroke back into the existing amber-gold tail connection; do not make a hard color seam.
+Preserve everything else: EXACT typography, clear capital N with two tall slanted stems and one descending diagonal, cursive lowercase icole, i dot, all stroke shapes and widths, original lower-left lettering and upper-right spirit composition, positions, scale, full original 8:5 canvas and margins. The orange-gold spirit, its exact silhouette and anatomy, highlights, gradients, tail, and placement must remain unchanged. Do NOT darken or recolor the spirit. No new font, no redraw, no re-layout, no crop to foreground.
+Transparency: preserve a real RGBA transparent background, alpha=0 outside the letters/stroke/spirit and in all open spaces. No paper, white fill, texture, opaque rectangle, halo, shadow, fringe, added border, tape, particles, extra text or objects. Output only the transparent full-canvas edited artwork. This is a small lettering color adjustment, not a redesign.
+
+深色透明画稿提取：输入为历史深色纸底试稿 artwork-dark.png（已清理），transparent_background: true。
+Use case: background-extraction.
+Asset type: transparent full-canvas Nicole cover artwork for an existing website card.
+Input image 1: exact edit target and visual truth. Preserve the entire existing wordmark and spirit pixel-faithfully wherever possible.
+Primary request: remove ALL background paper, paper color, paper texture and any background illumination, leaving ONLY the handwritten word Nicole, the thin connected rising amber stroke, and the golden-orange spirit on a genuinely transparent RGBA background. The real website provides its own paper background.
+Composition: preserve the original full landscape 8:5 canvas, original object positions, sizes, margins and lower-left word / upper-right spirit diagonal. Do NOT trim to the foreground bounds, zoom, center the foreground, add margins, move any letters or redraw the spirit.
+Invariants: preserve the exact clear uppercase N (two tall slanted stems and descending diagonal), the lowercase cursive icole, the i dot, the exact stroke from final e to the spirit's pointed tail, spirit anatomy, silhouette, internal light and shadow gradients and exact text color from the supplied image. The whole word must read Nicole. This is background removal, not new logo design.
+Transparency: actual alpha=0 everywhere outside the foreground, including ALL letter counters and open spaces between curved spirit ribbons. Smooth anti-aliased edges without beige, white, gray, brown or black paper fringe. Keep intended gold/amber highlights belonging to the spirit; remove the paper underneath them. No checkerboard baked into pixels, no opaque rectangle, no paper remnants, no new drop shadow, halo, glow, border, tape or texture.
+Output: high-resolution transparent PNG, full original composition.
+
+导出：
+ImageMagick 等比缩小源画稿，再居中裁齐至 1280×800；不将缩放后的素材称为原生分辨率。
+magick artwork-light-gold-transparent.png -resize '1280x800^' -background none -gravity center -extent 1280x800 -define webp:method=6 -define webp:alpha-quality=100 -quality 92 nicole-cover-light.webp
+magick artwork-dark-transparent.png -resize '1280x800^' -background none -gravity center -extent 1280x800 -define webp:method=6 -define webp:alpha-quality=100 -quality 92 nicole-cover-dark.webp
+注意 -extent 前显式设置 -background none，避免将透明像素合成到默认白色画布；导出后检查四角透明。正式页面只引用 WebP，源 PNG、参考图与本记录位于 public 外。
