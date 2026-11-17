@@ -1,5 +1,4 @@
 import type { Component } from "vue"
-import NicolePreview from "~/components/projects/NicolePreview.vue"
 
 export type ProjectPreviewContent =
   | { kind: "image"; src: string; alt: string }
@@ -43,11 +42,6 @@ export const projects: readonly Project[] = [
       { label: "查看源码", href: "https://github.com/LoTwT/nicole" },
       { label: "下载安装", href: "https://github.com/LoTwT/nicole/releases" },
     ],
-    preview: {
-      kind: "component",
-      component: NicolePreview,
-      label: "Nicole 的 Markdown 写作封面示意，非应用截图",
-    },
   },
   {
     id: "design-system",

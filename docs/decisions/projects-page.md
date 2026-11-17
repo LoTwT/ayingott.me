@@ -21,7 +21,7 @@
 ## 后续维护入口
 
 - 修改正式清单与顺序：编辑 [projects.ts](../../app/data/projects.ts)；可选字段省略即不展示，不向列表组件写入项目特例。
-- 修改预览：配置 `preview` 的image或component分支，支持带alt的图片或带可访问说明的Vue组件；默认字标由 [ProjectPreview.vue](../../app/components/projects/ProjectPreview.vue)处理。[NicolePreview.vue](../../app/components/projects/NicolePreview.vue)可独立替换，统一纸框/比例由 [ProjectList.vue](../../app/components/projects/ProjectList.vue)维护。
+- 修改预览：配置 `preview` 的image或component分支，支持带alt的图片或带可访问说明的Vue组件；省略 `preview` 时由 [ProjectPreview.vue](../../app/components/projects/ProjectPreview.vue)显示项目字标，统一纸框/比例由 [ProjectList.vue](../../app/components/projects/ProjectList.vue)维护。Nicole 当前使用字标占位，后续重新设计专属卡面；仙灵动图与制作资料见 [Nicole 留档](../../assets/archive/nicole/README.md)。
 - 页面介绍/SEO/分享图文本只改 [projects-page.ts](../../app/utils/projects-page.ts)，构建由 [projects-page.ts模块](../../modules/projects-page.ts)复用分享卡片管线。用途词组渲染见 [ProjectDescriptionText.vue](../../app/components/projects/ProjectDescriptionText.vue)，线条分色见 [content-link-color.ts](../../app/utils/content-link-color.ts)。
 - 修改后按[开发约定](../development.md#检查)执行必要检查，并在实际构建预览检查受影响行为。既有结论不能替代以后产品改动的验证。
 
