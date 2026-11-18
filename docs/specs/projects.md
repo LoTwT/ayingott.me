@@ -80,7 +80,7 @@
 
 ## 实施记录
 
-- 2026-11-16 用户指定第二项为 design-system。核对 [Ayingott Design System README](https://github.com/LoTwT/design-system/blob/db71ab8ed441a0c19bc44c8a34cc1eeb38176823/README.md)，确认主题包定位、Tailwind CSS v4、设计令牌、语义变量、基础样式、自托管字体和可访问性工具；第二项使用默认作品字标。
+- 2026-11-16 用户指定第二项为 design-system。核对 [Ayingott Design System README](https://github.com/LoTwT/design-system/blob/db71ab8ed441a0c19bc44c8a34cc1eeb38176823/README.md)，确认主题包定位、Tailwind CSS v4、设计令牌、语义变量、基础样式、自托管字体和可访问性工具。第二项初版使用默认作品字标，现行卡面见[预览区说明](#每个项目可定制的预览区)。
 - 2026-11-16 核对 [Nicole README](https://github.com/LoTwT/nicole/blob/c54abaa9efcf4d56d65da412e31e84eb925d51c5/README.md)：定位、macOS / Windows / Linux 与三种编辑模式均有公开依据；README 明确“当前能力”描述源码，页面以“源码能力”标注，不承诺安装包具备相同功能。
 - 同日检查该提交的完整公开文件树，图片只有品牌与应用图标，没有适合的编辑器截图。首版使用 `NicolePreview.vue` 的 Markdown 文件封面，画面与替代说明均明确为示意，非应用截图。后续可只替换项目的 `preview` 数据为图片（`src` / `alt`），不改列表。
 - 2026-11-17 探索过透明品牌图标、摆尾与往返仙灵动画。用户确认持续巡游的视觉权重偏强，暂不采用；往返阶段视觉大小不一致的问题保留为已知限制。精细 WebP、静态参考图、原始品牌图标、两张姿态源图与提示词统一保存在 [Nicole 留档](../../assets/archive/nicole/README.md)，来源、生成方式与参数由归档说明维护；旧版演示和格式对比文件已清理。
