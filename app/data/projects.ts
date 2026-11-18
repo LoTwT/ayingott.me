@@ -1,4 +1,5 @@
 import type { Component } from "vue"
+import DesignSystemPreview from "~/components/projects/DesignSystemPreview.vue"
 import NicolePreview from "~/components/projects/NicolePreview.vue"
 
 export type ProjectPreviewContent =
@@ -74,5 +75,10 @@ export const projects: readonly Project[] = [
       { label: "查看源码", href: "https://github.com/LoTwT/design-system" },
       { label: "查看文档", href: "https://design.ayingott.me/" },
     ],
+    preview: {
+      kind: "component",
+      component: DesignSystemPreview,
+      label: "Ayingott 字体与配色样张：Aa 字形及蓝、绿、黄色样",
+    },
   },
 ]

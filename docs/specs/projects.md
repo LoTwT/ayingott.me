@@ -36,7 +36,7 @@
 - 通用外层将固定胶带与纸卡分层。胶带沿用黄、紫两色，以暖纸白柔化色彩，底色完全不透明，遮住下方的卡片边框与背景；明暗主题共用纸质底色，避免深色下过度暗沉。保留不规则短边撕口、轻微纤维纹理与接触阴影；纹理来自本地 [paper-tape-grain.svg](../../public/textures/paper-tape-grain.svg)，不使用运行时随机值。纸卡围绕胶带贴合点变换，专属预览内容仍由原有 `preview` 数据提供。
 - 纸卡静止时保留清晰的硬边投影；随着抬起，近处投影逐渐柔化并降低不透明度，底部柔影同步扩散。整项悬停的弱提示保持可辨认，卡片悬停时进一步柔化，减轻厚卡板感；沿用同一抬起状态与过渡曲线，不改变三档之间的连续关系。
 - Nicole 通过 [NicolePreview.vue](../../app/components/projects/NicolePreview.vue) 按站点 `.dark` 切换本地[浅色画稿](../../public/projects/nicole-cover-light.webp)与[深色画稿](../../public/projects/nicole-cover-dark.webp)。两张透明静态图绝对定位在同一内容区，以 `object-fit: contain` 完整展示，避免图片最小尺寸撑高并遮住底边框；不设置专属底色，可访问说明统一由 `preview.label` 提供。确认参考图、最终两张透明源画稿与完整编辑提示词保存在 [制作记录](../../assets/source/nicole-cover/prompt.txt)，不随站点发布；已弃用的纸底、墨棕字迹及中间平面稿已清理。原始品牌图标与早期动画仍见 [Nicole 留档](../../assets/archive/nicole/README.md)，当前卡面不播放归档动图。以后可独立替换为有来源的真实截图并保留出处；不能用代码绘制的假界面冒充截图。
-- Ayingott Design System 使用默认作品字标；以后可通过现有 `preview` 数据独立替换展示内容。
+- Ayingott Design System 使用已确认的字体与配色样张。由 [DesignSystemPreview.vue](../../app/components/projects/DesignSystemPreview.vue) 排版，左侧用 Bricolage Grotesque 展示 `Aa` 和字形参考线，下方以 Space Mono 显示 `AYINGOTT`，右侧排列天蓝、薄荷绿和暖黄色样。天蓝主色样与紫色胶带区分，明暗模式分别使用 `--color-sky-400` 和 `--color-sky-300`，字形与短字标随主题切换颜色。样张保持静态，沿用共享纸底、胶带和指针动效。
 - 不要求安装或启动 Nicole，不访问用户正在编辑的私人文档，不上传私人数据。无需让整个应用运行在作品页中。
 - 图片随响应式布局缩放，保持用途可辨认；没有图片也应有合理的字标或定制封面，不显示坏图占位。装饰元素对读屏软件隐藏，真实信息图片有恰当替代文本。
 
