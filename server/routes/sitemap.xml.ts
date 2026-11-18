@@ -1,6 +1,7 @@
 import { queryCollection } from "@nuxt/content/server"
 import { defineEventHandler, setHeader } from "h3"
 import { siteOrigin } from "~~/app/utils/profile"
+import { projectsPage } from "~~/app/utils/projects-page"
 
 export default defineEventHandler(async (event) => {
   const posts = await queryCollection(event, "posts")
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event) => {
   const entries: { path: string; lastModified?: string }[] = [
     { path: "/" },
     { path: "/posts" },
+    { path: projectsPage.path },
     ...posts.map((post) => ({
       path: post.path,
       lastModified: post.updated ?? post.date,

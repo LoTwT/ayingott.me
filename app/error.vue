@@ -33,7 +33,14 @@ useSeoMeta({
         >
           {{ message }}
         </h1>
-        <SiteBackLink to="/" external class="mt-1">回到首页</SiteBackLink>
+        <SiteBackLink
+          to="/"
+          external
+          :decorated="error.status === 404"
+          class="mt-1"
+        >
+          {{ error.status === 404 ? "回首页看看" : "回到首页" }}
+        </SiteBackLink>
       </div>
     </main>
   </SiteFrame>

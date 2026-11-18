@@ -1,0 +1,61 @@
+Tool: built-in image_gen; the underlying model version was not exposed.
+Reference: nicole-icon.png, the unchanged original transparent Nicole mark, archived alongside the generated sources and deliveries.
+Source A: nicole-floating-right-to-left.png, 1254x1254 RGBA, 3x3 poses of 418x418 pixels.
+Source B: nicole-floating-left-to-right.png, 1254x1254 RGBA, 3x3 poses of 418x418 pixels.
+Source B is the result of a follow-up background-extraction edit; the initial version had an unwanted gray haze and was not selected.
+Archived deliveries: assets/archive/nicole/nicole-floating.webp and assets/archive/nicole/nicole-floating-still.png.
+Status: archived on 2026-11-17 at the user's request. Previously served from public/projects/; the page now uses a Nicole text placeholder and does not reference this animation. Source images, prompts and output bytes are preserved. Unequal visual size between outbound/return phases remains unresolved; see assets/archive/nicole/README.md.
+The WebP is assembled from generated poses; it is not a native animated image returned by the tool.
+
+Prompt A:
+Use case: identity-preserve.
+Asset: high-fidelity animation turnaround poses, PART A, for a small transparent website mascot. Input image 1 is the original Nicole golden fairy spirit and is the strict identity reference. This is animation of THAT mark, not a redesign.
+Output a square high-resolution transparent RGBA PNG sprite sheet, exactly THREE columns by THREE rows, nine equal square cells, ideally 2048 by 2048 pixels. No text, labels, numbers, grid lines or background pattern.
+Each cell contains one COMPLETE spirit at identical scale, with the upper-body mass center and vertical head position precisely registered. Fill around 78% of each cell's height, leaving 10% empty margins on all sides. All thin filaments and tapered tails fit inside their own cell.
+Subject identity: preserve the reference's rounded asymmetric translucent orange silk upper body, rounded golden light core, broad flowing curved membrane, delicate thin filament and long tapering orange-gold ribbon tail. Preserve layered amber/gold gradients and pristine smooth semi-transparent edges. No face, eyes, mouth, humanoid limbs, bird beak, fish fins or added accessories. No particles, specks, sparks, outline strokes or shadows. The spirit is softly luminous, not a burning flame.
+The nine cells show ONE continuous natural 180-degree turn, chronological row-major:
+1 right-facing profile, gently leaning into rightward flight, tail trailing left and slightly down.
+2 begins to yaw towards the viewer, only 22.5 degrees from cell 1.
+3 right three-quarter view, 45 degrees.
+4 nearly frontal from the right, 67.5 degrees.
+5 centered frontal view, 90 degrees; preserve volume and ONE golden core.
+6 nearly frontal towards the left, 112.5 degrees.
+7 left three-quarter view, 135 degrees.
+8 almost left profile, 157.5 degrees.
+9 left-facing profile, 180 degrees; tail trails right and slightly down.
+Exactly nine small equal increments in a volumetric turn. The head leads; the supple ribbon tail curves and follows a little later. All neighboring frames must preserve exactly the same anatomy, core size and material. The golden core follows the SAME physical rounded body through the turn; it must never duplicate or jump from side to side. Stable exposure, stable size, stable head mass center; no zoom or translation inside cells.
+Quality: sharp high-resolution source detail, ultra-smooth curved membrane edges, clean anti-aliasing, controlled soft alpha, refined silk gradients without grain, no pixel-art or rough painterly texture. A delicate buoyant fairy, not a rigid rotating flat logo. Fully transparent true alpha, no checkerboard or matte color.
+
+Prompt B (references the original Nicole mark and source A):
+Use case: identity-preserve.
+Asset: high-fidelity animation turnaround poses, PART B, complementary return turn for ONE transparent web animation.
+Input image 1 is the original Nicole golden fairy spirit and locks the character identity. Input image 2 is PART A, a completed 3x3 grid of its right-to-left turn; use it as the exact style, anatomy, scale and lighting match. Create the RETURN turn left-to-right. This is animation of the same mark, not a new mascot.
+Output one square high-resolution true-alpha RGBA PNG, exactly 3 columns by 3 rows, NINE equal cells, ideally 2048 by 2048. No labels, grid lines, text, checkerboard, matte background or added objects. All thin filaments and the complete tapering tail stay inside their cell with 10% empty margins. Same center, scale and exposure in every cell, subject fills about 78% of cell height.
+Nine sequential poses, row-major:
+1 exactly matches PART A cell 9: LEFT-facing profile, same rounded upper body and one golden core, long tail trailing right/down.
+2 begins turning toward the viewer, 22.5 degrees from left profile.
+3 left three-quarter, 45 degrees.
+4 almost frontal from left, 67.5 degrees.
+5 frontal, 90 degrees, matching PART A's frontal anatomy.
+6 almost frontal toward the right, 112.5 degrees.
+7 right three-quarter, 135 degrees.
+8 almost right profile, 157.5 degrees.
+9 exactly matches PART A cell 1: RIGHT-facing profile, tail trailing left/down, ready to close the animation loop.
+Natural supple volumetric yaw rather than horizontal flipping. Head leads; the thin filament and flowing silk ribbon tail lag gently and settle behind the new heading. Preserve a stable upper-body mass center and head height with small organic tail changes; do not translate or zoom the entire spirit between cells. The SAME single golden core follows the same physical body, never duplicates, inflates or jumps.
+Keep the original translucent orange/gold layered silk membranes, amber gradients, delicate tapering tail, smooth clean curved edges and refined semi-transparent glow. No rough or grainy texture, no pixel art, no edge outlines, no harsh bloom. Stable brightness, no particles or sparks. No eyes, mouth, humanoid limbs, wings, fish fins or bird shape. Exact same identity as both references, high source detail and pristine anti-aliased soft alpha.
+
+Background-extraction prompt applied to B:
+Use case: background-extraction.
+Edit target: the supplied 3x3 sprite sheet. Remove ONLY the unwanted cloudy gray-beige semi-transparent backdrop and colored low-opacity noise surrounding the nine golden spirits. Make ALL negative space actual transparent alpha zero, including corners, gutters, inside the open curves and around thin filaments. Preserve only the nine spirits and their own delicate semi-transparent membranes.
+Keep the exact 3x3 layout, positions, scale, chronological poses, orange-gold colors, anatomy, single luminous core, tail shapes, detailed silk shading, smooth anti-aliased edges and partial transparency of the subject unchanged. No new glow, no enlarged halo, no haze, no gray matte, no drop shadows, no checkerboard. Preserve fine tapering tails and filaments. Do not redraw or redesign the sprites. Output a clean high-resolution transparent RGBA PNG with all empty regions alpha 0.
+
+Export:
+Extract 418x418 cells; zero only alpha below 0.008, retain all other alpha.
+Register the upper-body alpha-cubed centroid (top 230px of the cell) at (256,175) on a 512x512 transparent working canvas.
+A0..A8 are the right-to-left turn. Return uses B0,B1,B2,B3,B4,A3,B6,B7,B8: B5 was rejected because its light core moved against the turn direction.
+Pose landmarks include four fixed canvas corners, head top and side bounds, golden core center, lower body and tail tip. ImageMagick Shepards distortion maps both neighboring poses to intermediate landmark positions before alpha-aware Blend composition. This reduces separate double cores/tails compared with a plain crossfade.
+The tail tip has an additional 8px horizontal and 2px vertical sine wave with a 2s period; the lower body has a smaller delayed sway.
+Timeline in seconds: B8 at 0; A0 at 0.4 and 3; A1..A8 from 3.125 to 4 at 0.125s increments; B0 at 4.4 and 7; return poses B1..B8 (with the A3 substitution) from 7.125 to 8 at 0.125s increments. Smoothstep blends neighboring landmark positions.
+768x480 delivery canvas, working sprite scaled to 110%. Upper-body anchor (384+dx,198+dy).
+For time t, dx is -132+264*smootherstep(t/3) for 0<=t<3; 132+8*sin(pi*(t-3))^2 for 3<=t<4; 132-264*smootherstep((t-4)/3) for 4<=t<7; otherwise -132-8*sin(pi*(t-7))^2. dy=10*sin(pi*t/2)+3*sin(pi*t+0.5). smootherstep(v)=v^3*(v*(v*6-15)+10).
+160 RGBA frames at 50ms (20fps), 8s infinite loop. Encode with img2webp -loop 0 -lossy -q 94 -m 4 -d 50, retaining the original soft alpha. The static fallback uses A0 centered on the same 768x480 canvas.

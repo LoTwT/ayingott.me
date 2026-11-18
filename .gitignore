@@ -14,6 +14,9 @@ node_modules
 .playwright-mcp
 .playwright-cli
 
+# Local design artifacts and acceptance tooling
+.ryugi/
+
 # Logs
 logs
 *.log
